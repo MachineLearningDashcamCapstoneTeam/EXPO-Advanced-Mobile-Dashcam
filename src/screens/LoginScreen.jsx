@@ -71,18 +71,9 @@ const LoginScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 20,
+    padding: 20,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  controls: {
-    flex: 1,
-  },
-
-  control: {
-    marginTop: 10
+    
   },
 
   error: {
