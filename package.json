@@ -28,7 +28,8 @@
     "react-native": "0.69.5",
     "react-native-elements": "^3.4.2",
     "react-native-screens": "~3.15.0",
-    "expo-location": "~14.3.0"
+    "expo-location": "~14.3.0",
+    "expo-file-system": "~14.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

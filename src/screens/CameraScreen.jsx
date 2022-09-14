@@ -5,6 +5,7 @@ import { Video } from 'expo-av';
 import { shareAsync } from 'expo-sharing';
 import * as MediaLibrary from 'expo-media-library';
 import * as Location from 'expo-location';
+import * as FileSystem from 'expo-file-system';
 
 const CameraScreen = () => {
   let cameraRef = useRef();
@@ -18,16 +19,15 @@ const CameraScreen = () => {
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [location, setLocation] = useState(null);
-  const [locations, setLocations] = useState({});
+  const [locations, setLocations] = useState([]);
 
   const newLocation = (location) => {
     
       console.log('update location!', location.coords.latitude, location.coords.longitude)
-      console.log('Test')
       setLocation(location)
       setLatitude(location.coords.latitude)
       setLongitude(location.coords.longitude);
-   
+      setLocations(locations => [...locations, location]);
     
     
   }
@@ -38,8 +38,7 @@ const CameraScreen = () => {
       const microphonePermission = await Camera.requestMicrophonePermissionsAsync();
       const mediaLibraryPermission = await MediaLibrary.requestPermissionsAsync();
       const locationPermission = await Location.requestForegroundPermissionsAsync();
-      console.log(locationPermission)
-
+    
       setHasCameraPermission(cameraPermission.status === "granted");
       setHasMicrophonePermission(microphonePermission.status === "granted");
       setHasMediaLibraryPermission(mediaLibraryPermission.status === "granted");
@@ -52,6 +51,7 @@ const CameraScreen = () => {
       setHasCameraPermission(null);
       setHasMicrophonePermission(null);
       setHasMediaLibraryPermission(null);
+      setHasLocationPermission(null);
     };
   }, []);
 
@@ -100,20 +100,31 @@ const CameraScreen = () => {
       });
     };
 
+    const saveFile = async () => {
+      let fileUri = FileSystem.documentDirectory + "text.txt";
+      console.log(fileUri);
+      await FileSystem.writeAsStringAsync(fileUri, locations.toString(), { encoding: FileSystem.EncodingType.UTF8 });
+      const asset = await MediaLibrary.createAssetAsync(fileUri).catch((error) => {
+        console.error(error);
+      });
+      await MediaLibrary.createAlbumAsync("Download", asset, false)
+    }
+
     const saveVideo = async () => {
       const EXPO_ALBUM_NAME = 'Dashcams';
       const expoAlbum = await MediaLibrary.getAlbumAsync(EXPO_ALBUM_NAME)
       const asset = await MediaLibrary.createAssetAsync(video.uri);
-      if (expoAlbum) {
-        console.log(expoAlbum);
-        await MediaLibrary.addAssetsToAlbumAsync(asset, expoAlbum.id).then(() => {
-          setVideo(undefined);
-        });
-      } else {
-        await MediaLibrary.createAlbumAsync(EXPO_ALBUM_NAME, asset).then(() => {
-          setVideo(undefined);
-        });
-      }
+      console.log(asset)
+      saveFile();
+      // if (expoAlbum) {
+      //   await MediaLibrary.addAssetsToAlbumAsync(asset, expoAlbum.id).then(() => {
+      //     setVideo(undefined);
+      //   });
+      // } else {
+      //   await MediaLibrary.createAlbumAsync(EXPO_ALBUM_NAME, asset).then(() => {
+      //     setVideo(undefined);
+      //   });
+      // }
 
     };
 
