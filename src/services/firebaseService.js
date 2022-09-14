@@ -2,12 +2,10 @@
 import { initializeApp } from 'firebase/app';
 import {
   getAuth,
-  onAuthStateChanged,
-  FacebookAuthProvider,
-  signInWithCredential,
 } from 'firebase/auth';
 import Constants from 'expo-constants';
-import 'firebase/firestore';
+import { getFirestore, setDoc, doc } from 'firebase/firestore';
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -25,7 +23,7 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
-export const fireDB = app.firestore();
+export const fireDB = getFirestore(app);
 
 
 export default { app, auth, fireDB};

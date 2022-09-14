@@ -12,8 +12,13 @@ function HomeScreen({navigation }) {
       <Text>Welcome {user?.email}!</Text>
 
       <Button
-        title="Go to Details"
+        title="Go to Camera"
         onPress={() => navigation.navigate('Camera')}
+      />
+
+<Button
+        title="Go to Video Picker"
+        onPress={() => navigation.navigate('VideoPicker')}
       />
 
       <Button title="Sign Out" style={styles.button} onPress={() => signOut(auth)} />

@@ -5,6 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import HomeScreen from '../screens/HomeScreen';
 import CameraScreen from '../screens/CameraScreen';
+import VideoPickerScreen from '../screens/VideoPickerScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -15,6 +16,7 @@ export default function UserStack() {
       <Stack.Navigator>
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Camera" component={CameraScreen} />
+        <Stack.Screen name='VideoPicker' component={VideoPickerScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

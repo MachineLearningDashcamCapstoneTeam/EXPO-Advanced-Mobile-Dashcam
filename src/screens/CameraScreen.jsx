@@ -4,24 +4,48 @@ import { Camera } from 'expo-camera';
 import { Video } from 'expo-av';
 import { shareAsync } from 'expo-sharing';
 import * as MediaLibrary from 'expo-media-library';
+import * as Location from 'expo-location';
 
 const CameraScreen = () => {
   let cameraRef = useRef();
   const [hasCameraPermission, setHasCameraPermission] = useState();
   const [hasMicrophonePermission, setHasMicrophonePermission] = useState();
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
+  const [hasLocationPermission, setHasLocationPermission] = useState();
   const [isRecording, setIsRecording] = useState(false);
   const [video, setVideo] = useState();
+
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
+  const [location, setLocation] = useState(null);
+  const [locations, setLocations] = useState({});
+
+  const newLocation = (location) => {
+    
+      console.log('update location!', location.coords.latitude, location.coords.longitude)
+      console.log('Test')
+      setLocation(location)
+      setLatitude(location.coords.latitude)
+      setLongitude(location.coords.longitude);
+   
+    
+    
+  }
 
   useEffect(() => {
     (async () => {
       const cameraPermission = await Camera.requestCameraPermissionsAsync();
       const microphonePermission = await Camera.requestMicrophonePermissionsAsync();
       const mediaLibraryPermission = await MediaLibrary.requestPermissionsAsync();
+      const locationPermission = await Location.requestForegroundPermissionsAsync();
+      console.log(locationPermission)
 
       setHasCameraPermission(cameraPermission.status === "granted");
       setHasMicrophonePermission(microphonePermission.status === "granted");
       setHasMediaLibraryPermission(mediaLibraryPermission.status === "granted");
+      setHasLocationPermission(locationPermission.status === "granted");
+
+
     })();
 
     return () => {
@@ -37,17 +61,30 @@ const CameraScreen = () => {
     return <Text>Permission for camera not granted.</Text>
   }
 
-  let recordVideo = () => {
+  let recordVideo = async () => {
+
+
+    const locationTracker =  await Location.watchPositionAsync({
+      accuracy: Location.Accuracy.High,
+      timeInterval: 1000,
+      distanceInterval: 0
+
+    },
+      (loc) => { newLocation(loc) }
+    );
+
     setIsRecording(true);
     let options = {
       quality: "1080p",
       mute: false
     };
 
-    cameraRef.current.recordAsync(options).then((recordedVideo) => {
+    await cameraRef.current.recordAsync(options).then((recordedVideo) => {
       setVideo(recordedVideo);
       setIsRecording(false);
     });
+
+    locationTracker.remove();
   };
 
   let stopRecording = () => {
@@ -55,7 +92,7 @@ const CameraScreen = () => {
     cameraRef.current.stopRecording();
   };
 
-  
+
   if (video) {
     let shareVideo = () => {
       shareAsync(video.uri).then(() => {
@@ -63,17 +100,28 @@ const CameraScreen = () => {
       });
     };
 
-    let saveVideo = () => {
-      MediaLibrary.saveToLibraryAsync(video.uri).then(() => {
-        setVideo(undefined);
-      });
+    const saveVideo = async () => {
+      const EXPO_ALBUM_NAME = 'Dashcams';
+      const expoAlbum = await MediaLibrary.getAlbumAsync(EXPO_ALBUM_NAME)
+      const asset = await MediaLibrary.createAssetAsync(video.uri);
+      if (expoAlbum) {
+        console.log(expoAlbum);
+        await MediaLibrary.addAssetsToAlbumAsync(asset, expoAlbum.id).then(() => {
+          setVideo(undefined);
+        });
+      } else {
+        await MediaLibrary.createAlbumAsync(EXPO_ALBUM_NAME, asset).then(() => {
+          setVideo(undefined);
+        });
+      }
+
     };
 
     return (
       <SafeAreaView style={styles.container}>
         <Video
           style={styles.video}
-          source={{uri: video.uri}}
+          source={{ uri: video.uri }}
           useNativeControls
           resizeMode='contain'
           isLooping
@@ -88,6 +136,7 @@ const CameraScreen = () => {
   return (
     <Camera style={styles.container} ref={cameraRef}>
       <View style={styles.buttonContainer}>
+        <Text>Test: {JSON.stringify(location)}</Text>
         <Button title={isRecording ? "Stop Recording" : "Record Video"} onPress={isRecording ? stopRecording : recordVideo} />
       </View>
     </Camera>
