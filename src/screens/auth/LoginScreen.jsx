@@ -7,7 +7,7 @@ import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 const auth = getAuth();
 
 const LoginScreen = () => {
-  const [value, setValue] = React.useState({
+  const [value, setValue] = useState({
     email: 'canaleal@sheridancollege.ca',
     password: 'brug',
     error: ''
