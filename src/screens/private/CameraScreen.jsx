@@ -17,6 +17,9 @@ const CameraScreen = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [video, setVideo] = useState();
 
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
+  const [location, setLocation] = useState(null);
   const [locations, setLocations] = useState([]);
 
   const newLocation = (location) => {
