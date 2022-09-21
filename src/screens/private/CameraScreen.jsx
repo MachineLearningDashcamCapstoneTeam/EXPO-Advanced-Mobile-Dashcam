@@ -36,12 +36,15 @@ const CameraScreen = () => {
       const microphonePermission = await Camera.requestMicrophonePermissionsAsync();
       const mediaLibraryPermission = await MediaLibrary.requestPermissionsAsync();
       const locationPermission = await Location.requestForegroundPermissionsAsync();
-    
+      
+
       setHasCameraPermission(cameraPermission.status === "granted");
       setHasMicrophonePermission(microphonePermission.status === "granted");
       setHasMediaLibraryPermission(mediaLibraryPermission.status === "granted");
       setHasLocationPermission(locationPermission.status === "granted");
-
+       
+      recordVideo();
+      
 
     })();
 
@@ -50,6 +53,8 @@ const CameraScreen = () => {
       setHasMicrophonePermission(null);
       setHasMediaLibraryPermission(null);
       setHasLocationPermission(null);
+     // recordVideo(null);
+      
     };
   }, []);
 
@@ -76,6 +81,7 @@ const CameraScreen = () => {
       quality: "1080p",
       mute: false
     };
+    
 
     await cameraRef.current.recordAsync(options).then((recordedVideo) => {
       setVideo(recordedVideo);
@@ -84,6 +90,8 @@ const CameraScreen = () => {
 
     locationTracker.remove();
   };
+
+  
 
   let stopRecording = () => {
     setIsRecording(false);
