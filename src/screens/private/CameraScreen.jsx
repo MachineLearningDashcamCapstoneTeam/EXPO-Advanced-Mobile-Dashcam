@@ -30,11 +30,11 @@ const CameraScreen = () => {
 
   }
 
-  const locationTracker = null;
+  
   let recordVideo = async () => {
 
 
-    locationTracker = await Location.watchPositionAsync({
+    const locationTracker = await Location.watchPositionAsync({
       accuracy: Location.Accuracy.High,
       timeInterval: 1000,
       distanceInterval: 0
@@ -53,6 +53,7 @@ const CameraScreen = () => {
     await cameraRef.current.recordAsync(options).then((recordedVideo) => {
       setVideo(recordedVideo);
       setIsRecording(false);
+      locationTracker.remove();
     });
 
    
@@ -96,7 +97,7 @@ const CameraScreen = () => {
   let stopRecording = () => {
     setIsRecording(false);
     cameraRef.current.stopRecording();
-    locationTracker.remove();
+   
   };
 
 
