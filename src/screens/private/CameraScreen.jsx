@@ -121,12 +121,12 @@ const CameraScreen = () => {
 
     const saveVideo = async () => {
 
-      const expoAlbum = await MediaLibrary.getAlbumAsync(ALBUM_NAME)
+      const expoAlbumExists = await MediaLibrary.getAlbumAsync(ALBUM_NAME)
       const video_asset = await MediaLibrary.createAssetAsync(video.uri);
       const coord_asset = await saveCoordinates();
 
      
-      if (expoAlbum) {
+      if (expoAlbumExists) {
         await MediaLibrary.addAssetsToAlbumAsync(video_asset, expoAlbum.id).then(() => {
           setVideo(undefined);
         });
