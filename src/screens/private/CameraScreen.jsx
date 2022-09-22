@@ -23,51 +23,17 @@ const CameraScreen = () => {
   const [locations, setLocations] = useState([]);
 
   const newLocation = (location) => {
-    
-      console.log('update location!', location.coords.latitude, location.coords.longitude)
-      setLocations(locations => [...locations, location]);
-    
-    
-  }
 
-  useEffect(() => {
-    (async () => {
-      const cameraPermission = await Camera.requestCameraPermissionsAsync();
-      const microphonePermission = await Camera.requestMicrophonePermissionsAsync();
-      const mediaLibraryPermission = await MediaLibrary.requestPermissionsAsync();
-      const locationPermission = await Location.requestForegroundPermissionsAsync();
-      
+    console.log('update location!', location.coords.latitude, location.coords.longitude)
+    setLocations(locations => [...locations, location]);
 
-      setHasCameraPermission(cameraPermission.status === "granted");
-      setHasMicrophonePermission(microphonePermission.status === "granted");
-      setHasMediaLibraryPermission(mediaLibraryPermission.status === "granted");
-      setHasLocationPermission(locationPermission.status === "granted");
-       
-      recordVideo();
-      
 
-    })();
-
-    return () => {
-      setHasCameraPermission(null);
-      setHasMicrophonePermission(null);
-      setHasMediaLibraryPermission(null);
-      setHasLocationPermission(null);
-     // recordVideo(null);
-      
-    };
-  }, []);
-
-  if (hasCameraPermission === undefined || hasMicrophonePermission === undefined) {
-    return <Text>Request permissions...</Text>
-  } else if (!hasCameraPermission) {
-    return <Text>Permission for camera not granted.</Text>
   }
 
   let recordVideo = async () => {
 
 
-    const locationTracker =  await Location.watchPositionAsync({
+    const locationTracker = await Location.watchPositionAsync({
       accuracy: Location.Accuracy.High,
       timeInterval: 1000,
       distanceInterval: 0
@@ -81,7 +47,7 @@ const CameraScreen = () => {
       quality: "1080p",
       mute: false
     };
-    
+
 
     await cameraRef.current.recordAsync(options).then((recordedVideo) => {
       setVideo(recordedVideo);
@@ -91,7 +57,40 @@ const CameraScreen = () => {
     locationTracker.remove();
   };
 
-  
+
+  const setPermissions = async () => {
+    const cameraPermission = await Camera.requestCameraPermissionsAsync();
+    const microphonePermission = await Camera.requestMicrophonePermissionsAsync();
+    const mediaLibraryPermission = await MediaLibrary.requestPermissionsAsync();
+    const locationPermission = await Location.requestForegroundPermissionsAsync();
+
+    setHasCameraPermission(cameraPermission.status === "granted");
+    setHasMicrophonePermission(microphonePermission.status === "granted");
+    setHasMediaLibraryPermission(mediaLibraryPermission.status === "granted");
+    setHasLocationPermission(locationPermission.status === "granted");
+
+    recordVideo();
+  }
+
+
+
+  useEffect(() => {
+    setPermissions();
+    return () => {
+      setHasCameraPermission(null);
+      setHasMicrophonePermission(null);
+      setHasMediaLibraryPermission(null);
+      setHasLocationPermission(null);
+
+    };
+  }, []);
+
+  if (hasCameraPermission === undefined || hasMicrophonePermission === undefined) {
+    return <Text>Request permissions...</Text>
+  } else if (!hasCameraPermission) {
+    return <Text>Permission for camera not granted.</Text>
+  }
+
 
   let stopRecording = () => {
     setIsRecording(false);
@@ -109,7 +108,7 @@ const CameraScreen = () => {
     const saveFile = async () => {
       const filename = FileSystem.documentDirectory + "coordinates.json";
       console.log(filename);
-    
+
       FileSystem.writeAsStringAsync(filename, JSON.stringify(locations), {
         encoding: FileSystem.EncodingType.UTF8
       }).then(() => {
@@ -119,11 +118,11 @@ const CameraScreen = () => {
         shareAsync(filename).then((result) => {
           console.log(result)
 
-          
+
           const asset = MediaLibrary.createAssetAsync(filename).catch((error) => {
             console.error(error);
           });
-          
+
           return asset;
         });
       })
@@ -131,7 +130,7 @@ const CameraScreen = () => {
     }
 
     const saveVideo = async () => {
-     
+
       const expoAlbum = await MediaLibrary.getAlbumAsync(ALBUM_NAME)
       const video_asset = await MediaLibrary.createAssetAsync(video.uri);
       console.log(video_asset)
@@ -142,7 +141,7 @@ const CameraScreen = () => {
         });
 
         await MediaLibrary.addAssetsToAlbumAsync(coord_asset, expoAlbum.id).then(() => {
-          
+
         });
       } else {
         await MediaLibrary.createAlbumAsync(ALBUM_NAME, video_asset).then(() => {
@@ -150,7 +149,7 @@ const CameraScreen = () => {
         });
 
         await MediaLibrary.addAssetsToAlbumAsync(ALBUM_NAME, coord_asset).then(() => {
-         
+
         });
       }
 
