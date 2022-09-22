@@ -30,10 +30,11 @@ const CameraScreen = () => {
 
   }
 
+  const locationTracker = null;
   let recordVideo = async () => {
 
 
-    const locationTracker = await Location.watchPositionAsync({
+    locationTracker = await Location.watchPositionAsync({
       accuracy: Location.Accuracy.High,
       timeInterval: 1000,
       distanceInterval: 0
@@ -54,7 +55,7 @@ const CameraScreen = () => {
       setIsRecording(false);
     });
 
-    locationTracker.remove();
+   
   };
 
 
@@ -95,6 +96,7 @@ const CameraScreen = () => {
   let stopRecording = () => {
     setIsRecording(false);
     cameraRef.current.stopRecording();
+    locationTracker.remove();
   };
 
 
@@ -105,36 +107,25 @@ const CameraScreen = () => {
       });
     };
 
-    const saveFile = async () => {
+    const saveCoordinates = async () => {
       const filename = FileSystem.documentDirectory + "coordinates.json";
-      console.log(filename);
-
+      
       FileSystem.writeAsStringAsync(filename, JSON.stringify(locations), {
         encoding: FileSystem.EncodingType.UTF8
       }).then(() => {
         console.log(`Saved file to: ${filename}`);
-
-
-        shareAsync(filename).then((result) => {
-          console.log(result)
-
-
-          const asset = MediaLibrary.createAssetAsync(filename).catch((error) => {
-            console.error(error);
-          });
-
-          return asset;
-        });
+       return filename;
       })
-
+      return filename;
     }
 
     const saveVideo = async () => {
 
       const expoAlbum = await MediaLibrary.getAlbumAsync(ALBUM_NAME)
       const video_asset = await MediaLibrary.createAssetAsync(video.uri);
-      console.log(video_asset)
-      const coord_asset = saveFile();
+      const coord_asset = await saveCoordinates();
+
+     
       if (expoAlbum) {
         await MediaLibrary.addAssetsToAlbumAsync(video_asset, expoAlbum.id).then(() => {
           setVideo(undefined);
