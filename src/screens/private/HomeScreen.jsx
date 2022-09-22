@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { useAuthentication } from '../../hooks/useAuthentication';
 import { Button } from 'react-native-elements';
 import { getAuth, signOut } from 'firebase/auth';
+import DropDownPicker from 'react-native-dropdown-picker';
 const auth = getAuth();
 function HomeScreen({navigation }) {
   const { user } = useAuthentication();
@@ -16,13 +17,18 @@ function HomeScreen({navigation }) {
         onPress={() => navigation.navigate('Camera')}
       />
 
-<Button
+      <Button
         title="Go to Video Picker"
         onPress={() => navigation.navigate('VideoPicker')}
       />
 
+<Button
+        title="Go to Setting"
+        onPress={() => navigation.navigate('Settings')}
+      />
+
       <Button title="Sign Out" style={styles.button} onPress={() => signOut(auth)} />
-    </View>
+      </View>
   );
 }
 

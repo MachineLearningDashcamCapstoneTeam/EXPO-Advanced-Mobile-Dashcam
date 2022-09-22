@@ -164,7 +164,7 @@ const CameraScreen = () => {
   return (
     <Camera style={styles.container} ref={cameraRef}>
       <View style={styles.buttonContainer}>
-        <Text>Test: {JSON.stringify(location)}</Text>
+        <Text>Test: {JSON.stringify(locations)}</Text>
         <Button title={isRecording ? "Stop Recording" : "Record Video"} onPress={isRecording ? stopRecording : recordVideo} />
       </View>
     </Camera>
