@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Button, SafeAreaView } from 'react-native';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Camera } from 'expo-camera';
 import { Video } from 'expo-av';
 import { shareAsync } from 'expo-sharing';
@@ -16,7 +16,8 @@ const CameraScreen = () => {
   const [hasLocationPermission, setHasLocationPermission] = useState();
   const [isRecording, setIsRecording] = useState(false);
   const [video, setVideo] = useState();
-
+  const [resolution, setResolution] = useState();
+  const [cameraType, setCameraType] = useState();
   const [locations, setLocations] = useState([]);
 
   const newLocation = (location) => {
@@ -26,6 +27,9 @@ const CameraScreen = () => {
     
     
   }
+  
+
+  
 
   useEffect(() => {
     (async () => {
@@ -39,6 +43,24 @@ const CameraScreen = () => {
       setHasMediaLibraryPermission(mediaLibraryPermission.status === "granted");
       setHasLocationPermission(locationPermission.status === "granted");
 
+      
+      try {
+        setResolution(await AsyncStorage.getItem('CameraResolution'))
+        if (resolution === null || resolution === '') {
+          setResolution('480p');
+        }
+      } catch (e) {
+        setResolution('async error');
+      }
+
+      try {
+        setCameraType(await AsyncStorage.getItem('CameraType'))
+        if (cameraType === null || cameraType === '') {
+          setCameraType('back');
+        }
+      } catch (e) {
+        setCameraType('async error');
+      }
 
     })();
 
@@ -162,8 +184,9 @@ const CameraScreen = () => {
   }
 
   return (
-    <Camera style={styles.container} ref={cameraRef}>
+    <Camera style={styles.container} ref={cameraRef} quality={resolution} type={cameraType}>
       <View style={styles.buttonContainer}>
+        <Text>Global: {resolution}</Text>
         <Text>Test: {JSON.stringify(locations)}</Text>
         <Button title={isRecording ? "Stop Recording" : "Record Video"} onPress={isRecording ? stopRecording : recordVideo} />
       </View>
