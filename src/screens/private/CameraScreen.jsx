@@ -7,6 +7,7 @@ import * as MediaLibrary from 'expo-media-library';
 import * as Location from 'expo-location';
 import * as FileSystem from 'expo-file-system';
 import { ALBUM_NAME } from '../../constants';
+import { gpsJsonToGeojson } from '../../utils/geojson-utils';
 
 const CameraScreen = () => {
   let cameraRef = useRef();
@@ -48,11 +49,10 @@ const CameraScreen = () => {
       setVideo(recordedVideo);
       setIsRecording(false);
       locSub.remove();
-   
-      console.log(tempLocations);
       setLocations(tempLocations);
+    }).catch((error) => {
+      console.error(error);
     });
-
   };
 
 
@@ -68,9 +68,10 @@ const CameraScreen = () => {
     setHasLocationPermission(locationPermission.status === "granted");
 
   
-    if(cameraPermission){
+    if(cameraPermission && cameraRef !== undefined){
       console.log('Camera Granted');
-      console.log(cameraRef)
+      console.log('Camera Ref Exists')
+      //recordVideo();
     }
     else{
       console.log('Does not have Camera Granted');
@@ -112,26 +113,32 @@ const CameraScreen = () => {
       shareAsync(video.uri).then(() => {
         setVideo(undefined);
       });
+
     };
 
     const saveData = async () => {
 
-      const expoAlbumExists = await MediaLibrary.getAlbumAsync(ALBUM_NAME)
+      const expoAlbum = await MediaLibrary.getAlbumAsync(ALBUM_NAME)
       const video_asset = await MediaLibrary.createAssetAsync(video.uri);
-      const filename = FileSystem.documentDirectory + "coordinates.json";
-      const fileResult = FileSystem.writeAsStringAsync(filename, JSON.stringify(locations), {
-        encoding: FileSystem.EncodingType.UTF8
-      });
-      console.log(`Saved file to: ${fileResult}`);
+      // const filename = FileSystem.documentDirectory + "coordinates.json";
+      // await FileSystem.writeAsStringAsync(filename, JSON.stringify(locations), {
+      //   encoding: FileSystem.EncodingType.UTF8
+      // });
+      // console.log(filename);
+      // const result = await FileSystem.readAsStringAsync(filename, {
+      //   encoding: FileSystem.EncodingType.UTF8
+      // });
+      //console.log(result); 
+      video_asset['exif'] = gpsJsonToGeojson(locations);
+      console.log(video_asset);
 
-
-      if (expoAlbumExists) {
-        await MediaLibrary.addAssetsToAlbumAsync(video_asset, expoAlbum.id).then(() => {
-          setVideo(undefined);
+      if (expoAlbum) {
+        await MediaLibrary.addAssetsToAlbumAsync(video_asset, expoAlbum.id).then((result) => {
+          console.log(result)
         });
       } else {
-        await MediaLibrary.createAlbumAsync(ALBUM_NAME, video_asset).then(() => {
-          setVideo(undefined);
+        await MediaLibrary.createAlbumAsync(ALBUM_NAME, video_asset).then((result) => {
+          console.log(result)
         });
       }
     };
