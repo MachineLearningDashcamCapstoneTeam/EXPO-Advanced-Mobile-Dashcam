@@ -7,6 +7,7 @@ import * as MediaLibrary from 'expo-media-library';
 import * as Location from 'expo-location';
 import * as FileSystem from 'expo-file-system';
 import { ALBUM_NAME } from '../../constants';
+import { gpsJsonToGeojson } from '../../utils/geojson-utils';
 
 const CameraScreen = () => {
   let cameraRef = useRef();
@@ -16,78 +17,94 @@ const CameraScreen = () => {
   const [hasLocationPermission, setHasLocationPermission] = useState();
   const [isRecording, setIsRecording] = useState(false);
   const [video, setVideo] = useState();
-
-  const [latitude, setLatitude] = useState(null);
-  const [longitude, setLongitude] = useState(null);
-  const [location, setLocation] = useState(null);
   const [locations, setLocations] = useState([]);
 
-  const newLocation = (location) => {
+  let recordVideo = async () => {
+
+    // Clear Locations and Video
+    setLocations([]);
+    setVideo(undefined);
+
+    // Set Location subscription
+    // Get location every second (1000 milliseconds)
+    const tempLocations = [];
+    let locSub = await Location.watchPositionAsync({
+      accuracy: Location.Accuracy.High,
+      timeInterval: 100,
+      distanceInterval: 0 
+    },
+      (location) => {
+        tempLocations.push(location);  
+      }
+    );
     
-      console.log('update location!', location.coords.latitude, location.coords.longitude)
-      setLocations(locations => [...locations, location]);
-    
-    
+    // Set the camera options
+    let cameraOptions = {
+      quality: "1080p",
+      mute: false
+    };
+   
+    setIsRecording(true);
+    await cameraRef.current.recordAsync(cameraOptions).then((recordedVideo) => {      
+      setVideo(recordedVideo);
+      setIsRecording(false);
+      locSub.remove();
+      setLocations(tempLocations);
+    }).catch((error) => {
+      console.error(error);
+    });
+  };
+
+
+  const setPermissions = async () => {
+    const cameraPermission = await Camera.requestCameraPermissionsAsync();
+    const microphonePermission = await Camera.requestMicrophonePermissionsAsync();
+    const mediaLibraryPermission = await MediaLibrary.requestPermissionsAsync();
+    const locationPermission = await Location.requestForegroundPermissionsAsync();
+
+    setHasCameraPermission(cameraPermission.status === "granted");
+    setHasMicrophonePermission(microphonePermission.status === "granted");
+    setHasMediaLibraryPermission(mediaLibraryPermission.status === "granted");
+    setHasLocationPermission(locationPermission.status === "granted");
+
+  
+    if(cameraPermission && cameraRef !== undefined){
+      console.log('Camera Granted');
+      console.log('Camera Ref Exists')
+      //recordVideo();
+    }
+    else{
+      console.log('Does not have Camera Granted');
+    }
+
   }
 
+
+
   useEffect(() => {
-    (async () => {
-      const cameraPermission = await Camera.requestCameraPermissionsAsync();
-      const microphonePermission = await Camera.requestMicrophonePermissionsAsync();
-      const mediaLibraryPermission = await MediaLibrary.requestPermissionsAsync();
-      const locationPermission = await Location.requestForegroundPermissionsAsync();
-    
-      setHasCameraPermission(cameraPermission.status === "granted");
-      setHasMicrophonePermission(microphonePermission.status === "granted");
-      setHasMediaLibraryPermission(mediaLibraryPermission.status === "granted");
-      setHasLocationPermission(locationPermission.status === "granted");
-
-
-    })();
-
+    setPermissions();
     return () => {
       setHasCameraPermission(null);
       setHasMicrophonePermission(null);
       setHasMediaLibraryPermission(null);
       setHasLocationPermission(null);
+
     };
   }, []);
 
-  if (hasCameraPermission === undefined || hasMicrophonePermission === undefined) {
+
+
+  if (hasCameraPermission === undefined || hasMicrophonePermission === undefined || hasLocationPermission === undefined) {
     return <Text>Request permissions...</Text>
   } else if (!hasCameraPermission) {
     return <Text>Permission for camera not granted.</Text>
   }
 
-  let recordVideo = async () => {
-
-
-    const locationTracker =  await Location.watchPositionAsync({
-      accuracy: Location.Accuracy.High,
-      timeInterval: 1000,
-      distanceInterval: 0
-
-    },
-      (loc) => { newLocation(loc) }
-    );
-
-    setIsRecording(true);
-    let options = {
-      quality: "1080p",
-      mute: false
-    };
-
-    await cameraRef.current.recordAsync(options).then((recordedVideo) => {
-      setVideo(recordedVideo);
-      setIsRecording(false);
-    });
-
-    locationTracker.remove();
-  };
 
   let stopRecording = () => {
-    setIsRecording(false);
+    
     cameraRef.current.stopRecording();
+    setIsRecording(false);
   };
 
 
@@ -96,56 +113,34 @@ const CameraScreen = () => {
       shareAsync(video.uri).then(() => {
         setVideo(undefined);
       });
+
     };
 
-    const saveFile = async () => {
-      const filename = FileSystem.documentDirectory + "coordinates.json";
-      console.log(filename);
-    
-      FileSystem.writeAsStringAsync(filename, JSON.stringify(locations), {
-        encoding: FileSystem.EncodingType.UTF8
-      }).then(() => {
-        console.log(`Saved file to: ${filename}`);
+    const saveData = async () => {
 
-
-        shareAsync(filename).then((result) => {
-          console.log(result)
-
-          
-          const asset = MediaLibrary.createAssetAsync(filename).catch((error) => {
-            console.error(error);
-          });
-          
-          return asset;
-        });
-      })
-
-    }
-
-    const saveVideo = async () => {
-     
       const expoAlbum = await MediaLibrary.getAlbumAsync(ALBUM_NAME)
       const video_asset = await MediaLibrary.createAssetAsync(video.uri);
-      console.log(video_asset)
-      const coord_asset = saveFile();
-      if (expoAlbum) {
-        await MediaLibrary.addAssetsToAlbumAsync(video_asset, expoAlbum.id).then(() => {
-          setVideo(undefined);
-        });
+      // const filename = FileSystem.documentDirectory + "coordinates.json";
+      // await FileSystem.writeAsStringAsync(filename, JSON.stringify(locations), {
+      //   encoding: FileSystem.EncodingType.UTF8
+      // });
+      // console.log(filename);
+      // const result = await FileSystem.readAsStringAsync(filename, {
+      //   encoding: FileSystem.EncodingType.UTF8
+      // });
+      //console.log(result); 
+      video_asset['exif'] = gpsJsonToGeojson(locations);
+      console.log(video_asset);
 
-        await MediaLibrary.addAssetsToAlbumAsync(coord_asset, expoAlbum.id).then(() => {
-          
+      if (expoAlbum) {
+        await MediaLibrary.addAssetsToAlbumAsync(video_asset, expoAlbum.id).then((result) => {
+          console.log(result)
         });
       } else {
-        await MediaLibrary.createAlbumAsync(ALBUM_NAME, video_asset).then(() => {
-          setVideo(undefined);
-        });
-
-        await MediaLibrary.addAssetsToAlbumAsync(ALBUM_NAME, coord_asset).then(() => {
-         
+        await MediaLibrary.createAlbumAsync(ALBUM_NAME, video_asset).then((result) => {
+          console.log(result)
         });
       }
-
     };
 
     return (
@@ -158,7 +153,7 @@ const CameraScreen = () => {
           isLooping
         />
         <Button title="Share" onPress={shareVideo} />
-        {hasMediaLibraryPermission ? <Button title="Save" onPress={saveVideo} /> : undefined}
+        {hasMediaLibraryPermission ? <Button title="Save" onPress={saveData} /> : undefined}
         <Button title="Discard" onPress={() => setVideo(undefined)} />
       </SafeAreaView>
     );
@@ -167,7 +162,6 @@ const CameraScreen = () => {
   return (
     <Camera style={styles.container} ref={cameraRef}>
       <View style={styles.buttonContainer}>
-        <Text>Test: {JSON.stringify(location)}</Text>
         <Button title={isRecording ? "Stop Recording" : "Record Video"} onPress={isRecording ? stopRecording : recordVideo} />
       </View>
     </Camera>
