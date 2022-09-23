@@ -16,42 +16,43 @@ const CameraScreen = () => {
   const [hasLocationPermission, setHasLocationPermission] = useState();
   const [isRecording, setIsRecording] = useState(false);
   const [video, setVideo] = useState();
-
-  const [locationTracker, setLocationTracker] = useState(null);
   const [locations, setLocations] = useState([]);
 
-  const newLocation = (location) => {
-    console.log('update location!', location.coords.latitude, location.coords.longitude)
-    setLocations(locations => [...locations, location]);
-  };
-
-  
   let recordVideo = async () => {
 
-    const tracker = await Location.watchPositionAsync({
+    // Clear Locations and Video
+    setLocations([]);
+    setVideo(undefined);
+
+    // Set Location subscription
+    // Get location every second (1000 milliseconds)
+    const tempLocations = [];
+    let locSub = await Location.watchPositionAsync({
       accuracy: Location.Accuracy.High,
-      timeInterval: 1000,
-      distanceInterval: 0
-
+      timeInterval: 100,
+      distanceInterval: 0 
     },
-      (loc) => { newLocation(loc) }
+      (location) => {
+        tempLocations.push(location);  
+      }
     );
-    setLocationTracker(tracker)
-
     
-    let options = {
+    // Set the camera options
+    let cameraOptions = {
       quality: "1080p",
       mute: false
     };
-
+   
     setIsRecording(true);
-    await cameraRef.current.recordAsync(options).then((recordedVideo) => {
+    await cameraRef.current.recordAsync(cameraOptions).then((recordedVideo) => {      
       setVideo(recordedVideo);
       setIsRecording(false);
-      locationTracker.remove();
+      locSub.remove();
+   
+      console.log(tempLocations);
+      setLocations(tempLocations);
     });
 
-   
   };
 
 
@@ -66,8 +67,15 @@ const CameraScreen = () => {
     setHasMediaLibraryPermission(mediaLibraryPermission.status === "granted");
     setHasLocationPermission(locationPermission.status === "granted");
 
-    // Call initial functions here
-    recordVideo();
+  
+    if(cameraPermission){
+      console.log('Camera Granted');
+      console.log(cameraRef)
+    }
+    else{
+      console.log('Does not have Camera Granted');
+    }
+
   }
 
 
@@ -83,7 +91,9 @@ const CameraScreen = () => {
     };
   }, []);
 
-  if (hasCameraPermission === undefined || hasMicrophonePermission === undefined) {
+
+
+  if (hasCameraPermission === undefined || hasMicrophonePermission === undefined || hasLocationPermission === undefined) {
     return <Text>Request permissions...</Text>
   } else if (!hasCameraPermission) {
     return <Text>Permission for camera not granted.</Text>
@@ -91,9 +101,9 @@ const CameraScreen = () => {
 
 
   let stopRecording = () => {
-    setIsRecording(false);
+    
     cameraRef.current.stopRecording();
-   
+    setIsRecording(false);
   };
 
 
@@ -104,43 +114,26 @@ const CameraScreen = () => {
       });
     };
 
-    const saveCoordinates = async () => {
-      const filename = FileSystem.documentDirectory + "coordinates.json";
-      
-      FileSystem.writeAsStringAsync(filename, JSON.stringify(locations), {
-        encoding: FileSystem.EncodingType.UTF8
-      }).then(() => {
-        console.log(`Saved file to: ${filename}`);
-       return filename;
-      })
-      return filename;
-    }
-
-    const saveVideo = async () => {
+    const saveData = async () => {
 
       const expoAlbumExists = await MediaLibrary.getAlbumAsync(ALBUM_NAME)
       const video_asset = await MediaLibrary.createAssetAsync(video.uri);
-      const coord_asset = await saveCoordinates();
+      const filename = FileSystem.documentDirectory + "coordinates.json";
+      const fileResult = FileSystem.writeAsStringAsync(filename, JSON.stringify(locations), {
+        encoding: FileSystem.EncodingType.UTF8
+      });
+      console.log(`Saved file to: ${fileResult}`);
 
-     
+
       if (expoAlbumExists) {
         await MediaLibrary.addAssetsToAlbumAsync(video_asset, expoAlbum.id).then(() => {
           setVideo(undefined);
-        });
-
-        await MediaLibrary.addAssetsToAlbumAsync(coord_asset, expoAlbum.id).then(() => {
-
         });
       } else {
         await MediaLibrary.createAlbumAsync(ALBUM_NAME, video_asset).then(() => {
           setVideo(undefined);
         });
-
-        await MediaLibrary.addAssetsToAlbumAsync(ALBUM_NAME, coord_asset).then(() => {
-
-        });
       }
-
     };
 
     return (
@@ -153,7 +146,7 @@ const CameraScreen = () => {
           isLooping
         />
         <Button title="Share" onPress={shareVideo} />
-        {hasMediaLibraryPermission ? <Button title="Save" onPress={saveVideo} /> : undefined}
+        {hasMediaLibraryPermission ? <Button title="Save" onPress={saveData} /> : undefined}
         <Button title="Discard" onPress={() => setVideo(undefined)} />
       </SafeAreaView>
     );
@@ -162,7 +155,6 @@ const CameraScreen = () => {
   return (
     <Camera style={styles.container} ref={cameraRef}>
       <View style={styles.buttonContainer}>
-        <Text>Test: {JSON.stringify(location)}</Text>
         <Button title={isRecording ? "Stop Recording" : "Record Video"} onPress={isRecording ? stopRecording : recordVideo} />
       </View>
     </Camera>
