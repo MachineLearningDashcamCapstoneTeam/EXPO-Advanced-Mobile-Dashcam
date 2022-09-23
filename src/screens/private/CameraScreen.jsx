@@ -17,24 +17,18 @@ const CameraScreen = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [video, setVideo] = useState();
 
-  const [latitude, setLatitude] = useState(null);
-  const [longitude, setLongitude] = useState(null);
-  const [location, setLocation] = useState(null);
+  const [locationTracker, setLocationTracker] = useState(null);
   const [locations, setLocations] = useState([]);
 
   const newLocation = (location) => {
-
     console.log('update location!', location.coords.latitude, location.coords.longitude)
     setLocations(locations => [...locations, location]);
-
-
-  }
+  };
 
   
   let recordVideo = async () => {
 
-
-    const locationTracker = await Location.watchPositionAsync({
+    const tracker = await Location.watchPositionAsync({
       accuracy: Location.Accuracy.High,
       timeInterval: 1000,
       distanceInterval: 0
@@ -42,14 +36,15 @@ const CameraScreen = () => {
     },
       (loc) => { newLocation(loc) }
     );
+    setLocationTracker(tracker)
 
-    setIsRecording(true);
+    
     let options = {
       quality: "1080p",
       mute: false
     };
 
-
+    setIsRecording(true);
     await cameraRef.current.recordAsync(options).then((recordedVideo) => {
       setVideo(recordedVideo);
       setIsRecording(false);
@@ -71,6 +66,7 @@ const CameraScreen = () => {
     setHasMediaLibraryPermission(mediaLibraryPermission.status === "granted");
     setHasLocationPermission(locationPermission.status === "granted");
 
+    // Call initial functions here
     recordVideo();
   }
 
