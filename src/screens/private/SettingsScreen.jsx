@@ -1,9 +1,9 @@
 import DropDownPicker from 'react-native-dropdown-picker';
 import { StyleSheet, Text, View, Button, SafeAreaView } from 'react-native';
 import { useEffect, useState, useRef } from 'react';
-// import AsyncStorage from '@react-native-async-storage/async-storage'
-// import { shareAsync } from 'expo-sharing';
-// import * as MediaLibrary from 'expo-media-library';
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { shareAsync } from 'expo-sharing';
+import * as MediaLibrary from 'expo-media-library';
 
 
 export default function SettingsScreen({navigation}) {
@@ -57,7 +57,7 @@ export default function SettingsScreen({navigation}) {
       </View>
     );
   }
-//testing commit
+
 
  
   const styles = StyleSheet.create({
