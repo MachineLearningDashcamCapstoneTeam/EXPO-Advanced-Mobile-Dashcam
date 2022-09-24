@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "~1.17.3",
     "@react-native-google-signin/google-signin": "^8.0.0",
     "@react-navigation/bottom-tabs": "^6.3.3",
     "@react-navigation/native": "^6.0.12",
@@ -30,8 +31,8 @@
     "react-native": "0.69.5",
     "react-native-dropdown-picker": "^5.4.2",
     "react-native-elements": "^3.4.2",
-    "react-native-screens": "~3.15.0",
-    "@react-native-async-storage/async-storage": "~1.17.3"
+    "react-native-paper": "^5.0.0-rc.6",
+    "react-native-screens": "~3.15.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
