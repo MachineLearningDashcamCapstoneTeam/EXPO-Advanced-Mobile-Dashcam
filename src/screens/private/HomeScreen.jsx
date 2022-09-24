@@ -1,47 +1,57 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useAuthentication } from '../../hooks/useAuthentication';
-import { Button } from 'react-native-elements';
+import { Button, Text, Divider } from 'react-native-paper';
 import { getAuth, signOut } from 'firebase/auth';
-import DropDownPicker from 'react-native-dropdown-picker';
 const auth = getAuth();
-function HomeScreen({navigation }) {
+function HomeScreen({ navigation }) {
   const { user } = useAuthentication();
 
   return (
     <View style={styles.container}>
-      <Text>Welcome {user?.email}!</Text>
 
-      <Button
-        title="Go to Camera"
-        onPress={() => navigation.navigate('Camera')}
-      />
+      <Text variant='headlineSmall'>
+        Home Page!
+      </Text>
 
-      <Button
-        title="Go to Video Picker"
-        onPress={() => navigation.navigate('VideoPicker')}
-      />
+      <Text variant='labelLarge'>
+        Esse sit exercitation dolor veniam tempor reprehenderit id veniam eu aliquip ex et.
+      </Text>
+      <Divider />
+      <Button style={styles.button} icon="camera" mode="contained" onPress={() => navigation.navigate('Camera')}>
+        Camera
+      </Button>
 
-<Button
-        title="Go to Setting"
-        onPress={() => navigation.navigate('Settings')}
-      />
+      <Button style={styles.button} icon="format-list-bulleted" mode="contained" onPress={() => navigation.navigate('VideoPicker')}>
+        Videos
+      </Button>
 
-      <Button title="Sign Out" style={styles.button} onPress={() => signOut(auth)} />
-      </View>
+      <Button style={styles.button} icon="cog" mode="outlined" onPress={() => navigation.navigate('Settings')}>
+        Settings
+      </Button>
+
+      <Button style={styles.button} icon="account" mode="outlined" onPress={() => signOut(auth)}>
+        Sign Out
+      </Button>
+      <Divider />
+
+      <Text variant='labelLarge'>
+        Dolore adipisicing ut commodo id cillum ea sint in cupidatat. Cillum incididunt qui amet ad. Irure magna ex ex mollit minim culpa consectetur nisi non minim nulla sunt ad. Eu voluptate consectetur est tempor nisi consectetur proident aliqua.
+      </Text>
+
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    margin: 10,
   },
   button: {
-    marginTop: 10
+    marginVertical: 10,
   }
+
 });
 
 export default HomeScreen;

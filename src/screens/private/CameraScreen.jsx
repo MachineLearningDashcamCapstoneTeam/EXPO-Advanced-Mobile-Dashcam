@@ -83,7 +83,7 @@ const CameraScreen = () => {
     try {
       setCameraType(await AsyncStorage.getItem('CameraType'))
       if (cameraType === null || cameraType === '') {
-        setCameraType('back');
+        setCameraType('Back');
       }
     } catch (e) {
       setCameraType('async error');

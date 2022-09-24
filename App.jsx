@@ -1,12 +1,12 @@
 import React from 'react';
-import { ThemeProvider } from 'react-native-elements';
+import { Provider as PaperProvider } from 'react-native-paper';
 import './src/services/firebaseService';
 import RootNavigation from './src/routes/index';
 
 export default function App() {
   return (
-    <ThemeProvider>
+    <PaperProvider>
       <RootNavigation />
-    </ThemeProvider>
+      </PaperProvider>
   );
 }

@@ -1,77 +1,191 @@
 import DropDownPicker from 'react-native-dropdown-picker';
-import { StyleSheet, Text, View, Button, SafeAreaView } from 'react-native';
+import { StyleSheet, View, SafeAreaView } from 'react-native';
 import { useEffect, useState, useRef } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { shareAsync } from 'expo-sharing';
-import * as MediaLibrary from 'expo-media-library';
+import { Button, Text, Snackbar, SegmentedButtons, Divider } from 'react-native-paper';
+
+export default function SettingsScreen({ navigation }) {
+
+  const [snackBarVisible, setSnackBarVisible] = useState(false);
+  const onDismissSnackBar = () => setSnackBarVisible(false);
+
+  const [selectedResolution, setSelectedResolution] = useState('480p');
+  const [resolutions, setResolutions] = useState([
+    { label: '480p', value: '480p' },
+    { label: '720p', value: '720p' },
+    { label: '1080p', value: '1080p' }
+  ]);
 
 
-export default function SettingsScreen({navigation}) {
-    const [open, setOpen] = useState(false);
-    const [value, setValue] = useState(null);
-    const [items, setItems] = useState([
-      {label: 'Apple', value: 'apple'},
-      {label: 'Banana', value: 'banana'},
-      {label: '1080p', value: '1080p'}
-    ]);
-    const [open1, setOpen1] = useState(false);
-    const [value1, setValue1] = useState(null);
-    const [items2, setItems2] = useState([
-      {label: 'Front', value: 'front'},
-      {label: 'Back', value: 'back'}
-      
-    ]);
+  const [selectedCameraType, setSelectedCameraType] = useState('Back');
+  const [cameraTypes, setCameraTypes] = useState([
+    { label: 'Front', value: 'Front' },
+    { label: 'Back', value: 'Back' }
 
-    const saveSetting = async() => {
-      try {
-        await AsyncStorage.setItem('CameraResolution', value);
-        await AsyncStorage.setItem('CameraType', value1);
+  ]);
 
 
-        
-      } catch(e) {
+  const [selectedZoom, setSelectedZoom] = useState('0');
+  const [zooms, setZoom] = useState([
+    { label: 'No Zoom', value: '0' },
+    { label: 'Medium Zoom', value: '0.5' },
+    { label: 'Max Zoom', value: '1' }
 
-      }
+  ]);
+
+  const [selectedRecordingLength, setSelectedRecordingLength] = useState('80');
+  const [recordingLengths, setRecordingLengths] = useState([
+    { label: '20min', value: '20' },
+    { label: '40min', value: '40' },
+    { label: '60min', value: '60' },
+    { label: '80min', value: '80' },
+  ]);
+
+
+  const [selectedMaxVideoFileSize, setSelectedMaxVideoFileSize] = useState('0');
+  const [maxVideoFileSizes, setMaxVideoFileSizes] = useState([
+    { label: 'No Limit', value: '0' },
+    { label: '1GB', value: '1073741824' },
+    { label: '2GB', value: '2147483648' },
+    { label: '4GB', value: '4294967296' },
+  ]);
+
+  const saveSetting = async () => {
+    try {
+      await AsyncStorage.setItem('CameraResolution', selectedResolution);
+      await AsyncStorage.setItem('CameraType', selectedCameraType);
+      await AsyncStorage.setItem('CameraZoom', selectedZoom);
+      await AsyncStorage.setItem('RecordingLength', selectedRecordingLength);
+      await AsyncStorage.setItem('MaxVideoFileSize', selectedMaxVideoFileSize);
+      setSnackBarVisible(true);
+
+    } catch (e) {
+
     }
-  
-    return (
-      <View style={styles.container}>
-        <DropDownPicker
-          open={open}
-          value={value}
-          items={items}
-          setOpen={setOpen}
-          setValue={setValue}
-          setItems={setItems}
-        />
-
-        <DropDownPicker
-          open={open1}
-          value={value1}
-          items={items2}
-          setOpen={setOpen1}
-          setValue={setValue1}
-          setItems={setItems2}
-        />
-        <Button title="Save" onPress={() => saveSetting()} />
-      </View>
-    );
   }
 
+  const setInitialValues = async () => {
 
- 
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    buttonContainer: {
-      backgroundColor: "#fff",
-      alignSelf: "flex-end"
-    },
-    video: {
-      flex: 1,
-      alignSelf: "stretch"
+    const tempResolution = await AsyncStorage.getItem('CameraResolution')
+    if (tempResolution !== null || tempResolution !== '') {
+      setSelectedResolution(tempResolution);
     }
-  });
+
+    const tempCameraType = await AsyncStorage.getItem('CameraType')
+    if (tempResolution !== null || tempResolution !== '') {
+      setSelectedCameraType(tempCameraType);
+    }
+
+    const tempZoom = await AsyncStorage.getItem('CameraZoom')
+    if (tempZoom !== null || tempZoom !== '') {
+      setSelectedZoom(tempZoom);
+    }
+
+    const tempRecordingLength = await AsyncStorage.getItem('RecordingLength')
+    if (tempRecordingLength !== null || tempRecordingLength !== '') {
+      setSelectedRecordingLength(tempRecordingLength);
+    }
+
+
+  }
+
+  useEffect(() => {
+    setInitialValues();
+  }, [])
+
+
+  return (
+    <View style={styles.container}>
+
+      <Text variant='headlineSmall'>
+        Camera
+      </Text>
+
+      <Text variant='labelLarge'>
+        Resolution
+      </Text>
+      <SegmentedButtons
+        value={selectedResolution}
+        onValueChange={setSelectedResolution}
+        buttons={resolutions}
+        style={styles.group}
+      />
+
+
+      <Text variant='labelLarge'>
+        Camera Type
+      </Text>
+      <SegmentedButtons
+        value={selectedCameraType}
+        onValueChange={setSelectedCameraType}
+        buttons={cameraTypes}
+        style={styles.group}
+      />
+
+      <Text variant='labelLarge'>
+        Camera Zoom
+      </Text>
+      <SegmentedButtons
+        value={selectedZoom}
+        onValueChange={setSelectedZoom}
+        buttons={zooms}
+        style={styles.group}
+      />
+
+      <Divider />
+
+      <Text variant='headlineSmall'>
+        Recordings
+      </Text>
+
+      <Text variant='labelLarge'>
+        Max Video Duration
+      </Text>
+      <SegmentedButtons
+        value={selectedRecordingLength}
+        onValueChange={setSelectedRecordingLength}
+        buttons={recordingLengths}
+        style={styles.group}
+      />
+
+      <Text variant='labelLarge'>
+        Max Video File Size
+      </Text>
+      <SegmentedButtons
+        value={selectedMaxVideoFileSize}
+        onValueChange={setSelectedMaxVideoFileSize}
+        buttons={maxVideoFileSizes}
+        style={styles.group}
+      />
+
+      <Divider />
+      <Button style={styles.button} icon="content-save" mode="contained" onPress={() => saveSetting()}>
+        Save
+      </Button>
+
+      <Snackbar
+        visible={snackBarVisible}
+        onDismiss={onDismissSnackBar}
+        action={{
+          label: 'Close',
+        }}>
+        Saved Settings to Local Storage
+      </Snackbar>
+
+    </View>
+  );
+}
+
+
+
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    margin: 10,
+  },
+  button: {
+    marginVertical: 10,
+  }
+
+});
