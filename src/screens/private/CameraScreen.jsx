@@ -1,6 +1,6 @@
 import { StyleSheet, View, SafeAreaView } from 'react-native';
 import { useEffect, useState, useRef } from 'react'; import AsyncStorage from '@react-native-async-storage/async-storage'
-import { Camera } from 'expo-camera';
+import { Camera , CameraType} from 'expo-camera';
 import { Video } from 'expo-av';
 import { shareAsync } from 'expo-sharing';
 import * as MediaLibrary from 'expo-media-library';
@@ -49,7 +49,6 @@ const CameraScreen = () => {
     // Set the camera options
     let cameraOptions = {
       quality: selectedResolution,
-      type: selectedCameraType,
       zoom: parseFloat(selectedZoom),
       maxDuration: parseInt(selectedRecordingLength),
       mute: false,
@@ -203,7 +202,7 @@ const CameraScreen = () => {
   }
 
   return (
-    <Camera style={styles.container} ref={cameraRef} onCameraReady={selectedAutomaticRecording === 'true' ? recordVideo : null} quality={selectedResolution} type={selectedCameraType} >
+    <Camera style={styles.container} ref={cameraRef} onCameraReady={selectedAutomaticRecording === 'true' ? recordVideo : null} quality={selectedResolution} type={selectedCameraType === 'Back'? CameraType.back : CameraType.front} >
       <View style={styles.buttonContainer}>
         <Text>Global: {selectedResolution}</Text>
         <Button style={styles.button} icon="camera" mode="contained" onPress={isRecording ? stopRecording : recordVideo} >{isRecording ? "Stop Recording" : "Record Video"} </Button>
