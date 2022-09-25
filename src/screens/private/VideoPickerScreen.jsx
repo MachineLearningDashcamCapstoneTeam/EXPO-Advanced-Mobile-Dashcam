@@ -1,4 +1,5 @@
-import { StyleSheet, Text, View, Button, SafeAreaView } from 'react-native';
+import  {Card,Button, Title, Paragraph,Text, Divider } from 'react-native-paper';
+import { StyleSheet, View} from 'react-native';
 import { useEffect, useState, useRef } from 'react';
 import { Video } from 'expo-av';
 import { shareAsync } from 'expo-sharing';
@@ -21,10 +22,12 @@ export default function VideoPickerScreen() {
       // Get the album and then the videos inside the album
       await MediaLibrary.getAlbumAsync(ALBUM_NAME).then((selectedAlbum) => {
         setAlbum(selectedAlbum)
+        console.log(selectedAlbum);
         return selectedAlbum;
       }).then((selectedAlbum) => {
         MediaLibrary.getAssetsAsync({ album: selectedAlbum.id, mediaType: 'video' }).then((assets) => {
           setVideos(assets['assets']);
+          console.log(assets);
         }).catch((error) => {
           console.error(error);
         });
@@ -50,18 +53,36 @@ export default function VideoPickerScreen() {
 
 
 
+  // return (
+  //   <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+  //     {
+  //       videos.map((videoAsset) =>
+  //         <Video
+  //           key={videoAsset.id}
+  //           style={styles.video}
+  //           source={{ uri: videoAsset.uri }}
+  //           useNativeControls
+  //           resizeMode='contain'
+  //         />
+
+  //       )
+  //     }
+
+  //   </View>
+  // );
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={styles.container}>
       {
         videos.map((videoAsset) =>
-          <Video
-            key={videoAsset.id}
-            style={styles.video}
-            source={{ uri: videoAsset.uri }}
-            useNativeControls
-            resizeMode='contain'
-          />
+          <Card key={videoAsset.id}>
 
+            <Card.Content>
+              <Title>{videoAsset.id}</Title>
+              <Paragraph variant='labelLarge'
+                
+              >{videoAsset.filename} </Paragraph>
+            </Card.Content>
+          </Card>
         )
       }
 
@@ -70,19 +91,28 @@ export default function VideoPickerScreen() {
 }
 
 
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//   },
+//   buttonContainer: {
+//     backgroundColor: "#fff",
+//     alignSelf: "flex-end"
+//   },
+//   video: {
+//     flex: 1,
+//     alignSelf: "stretch",
+//     margin: 10
+//   }
+// });
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    margin: 10,
   },
-  buttonContainer: {
-    backgroundColor: "#fff",
-    alignSelf: "flex-end"
-  },
-  video: {
-    flex: 1,
-    alignSelf: "stretch",
-    margin: 10
+  button: {
+    marginVertical: 10,
   }
 });
