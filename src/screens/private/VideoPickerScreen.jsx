@@ -14,7 +14,7 @@ export default function VideoPickerScreen() {
     const mediaLibraryPermission = await MediaLibrary.requestPermissionsAsync();
     setHasMediaLibraryPermission(mediaLibraryPermission.status === "granted");
 
-    if (mediaLibraryPermission) {
+    if (mediaLibraryPermission.status ==='granted') {
       console.log('Media Granted');
 
       // Get the album and then the videos inside the album
