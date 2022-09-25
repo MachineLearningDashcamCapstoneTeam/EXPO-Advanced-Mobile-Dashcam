@@ -50,6 +50,13 @@ export default function SettingsScreen({ navigation }) {
     { label: '4GB', value: '4294967296' },
   ]);
 
+  const [selectedAutomaticRecording, setSelectedAutomaticRecording] = useState('false');
+  const [automaticRecordings, setAutomaticRecordings] = useState([
+    { label: 'No', value: 'false' },
+    { label: 'Yes', value: 'true'},
+  ]);
+
+
   const saveSetting = async () => {
     try {
       await AsyncStorage.setItem('CameraResolution', selectedResolution);
@@ -57,6 +64,7 @@ export default function SettingsScreen({ navigation }) {
       await AsyncStorage.setItem('CameraZoom', selectedZoom);
       await AsyncStorage.setItem('RecordingLength', selectedRecordingLength);
       await AsyncStorage.setItem('MaxVideoFileSize', selectedMaxVideoFileSize);
+      await AsyncStorage.setItem('AutomaticRecording', selectedAutomaticRecording);
       setSnackBarVisible(true);
 
     } catch (e) {
@@ -72,7 +80,7 @@ export default function SettingsScreen({ navigation }) {
     }
 
     const tempCameraType = await AsyncStorage.getItem('CameraType')
-    if (tempResolution !== null || tempResolution !== '') {
+    if (tempCameraType !== null || tempCameraType !== '') {
       setSelectedCameraType(tempCameraType);
     }
 
@@ -84,6 +92,16 @@ export default function SettingsScreen({ navigation }) {
     const tempRecordingLength = await AsyncStorage.getItem('RecordingLength')
     if (tempRecordingLength !== null || tempRecordingLength !== '') {
       setSelectedRecordingLength(tempRecordingLength);
+    }
+
+    const tempMaxVideoFileSize = await AsyncStorage.getItem('MaxVideoFileSize')
+    if (tempMaxVideoFileSize !== null || tempMaxVideoFileSize !== '') {
+      setSelectedMaxVideoFileSize(tempMaxVideoFileSize);
+    }
+
+    const tempAutomaticRecording = await AsyncStorage.getItem('AutomaticRecording')
+    if (tempAutomaticRecording !== null || tempAutomaticRecording !== '') {
+      setSelectedAutomaticRecording(tempAutomaticRecording);
     }
 
 
@@ -137,6 +155,16 @@ export default function SettingsScreen({ navigation }) {
       <Text variant='headlineSmall'>
         Recordings
       </Text>
+
+      <Text variant='labelLarge'>
+        Start Automatic Recording
+      </Text>
+      <SegmentedButtons
+        value={selectedAutomaticRecording}
+        onValueChange={setSelectedAutomaticRecording}
+        buttons={automaticRecordings}
+        style={styles.group}
+      />
 
       <Text variant='labelLarge'>
         Max Video Duration
