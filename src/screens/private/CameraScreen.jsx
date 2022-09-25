@@ -1,13 +1,13 @@
-import { StyleSheet, Text, View, Button, SafeAreaView } from 'react-native';
+import { StyleSheet, View, SafeAreaView } from 'react-native';
 import { useEffect, useState, useRef } from 'react'; import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Camera } from 'expo-camera';
 import { Video } from 'expo-av';
 import { shareAsync } from 'expo-sharing';
 import * as MediaLibrary from 'expo-media-library';
 import * as Location from 'expo-location';
-import * as FileSystem from 'expo-file-system';
 import { ALBUM_NAME } from '../../constants';
 import { gpsJsonToGeojson } from '../../utils/geojson-utils';
+import { Button, Text, Divider } from 'react-native-paper';
 
 const CameraScreen = () => {
   let cameraRef = useRef();
@@ -17,10 +17,15 @@ const CameraScreen = () => {
   const [hasLocationPermission, setHasLocationPermission] = useState();
   const [isRecording, setIsRecording] = useState(false);
   const [video, setVideo] = useState();
-  const [resolution, setResolution] = useState();
-  const [cameraType, setCameraType] = useState();
-
   const [locations, setLocations] = useState([]);
+
+
+  const [selectedResolution, setSelectedResolution] = useState('480p');
+  const [selectedCameraType, setSelectedCameraType] = useState('Back');
+  const [selectedZoom, setSelectedZoom] = useState('0');
+  const [selectedRecordingLength, setSelectedRecordingLength] = useState('80');
+  const [selectedMaxVideoFileSize, setSelectedMaxVideoFileSize] = useState('0');
+  const [selectedAutomaticRecording, setSelectedAutomaticRecording] = useState(false);
 
   let recordVideo = async () => {
 
@@ -43,8 +48,12 @@ const CameraScreen = () => {
 
     // Set the camera options
     let cameraOptions = {
-      quality: "1080p",
-      mute: false
+      quality: selectedResolution,
+      type: selectedCameraType,
+      zoom: parseFloat(selectedZoom),
+      maxDuration: parseInt(selectedRecordingLength),
+      mute: false,
+      exif: true,
     };
 
     setIsRecording(true);
@@ -71,145 +80,145 @@ const CameraScreen = () => {
     setHasLocationPermission(locationPermission.status === "granted");
 
 
-    try {
-      setResolution(await AsyncStorage.getItem('CameraResolution'))
-      if (resolution === null || resolution === '') {
-        setResolution('480p');
-      }
-    } catch (e) {
-      setResolution('async error');
+    const tempResolution = await AsyncStorage.getItem('CameraResolution')
+    if (tempResolution !== null || tempResolution !== '') {
+      setSelectedResolution(tempResolution);
     }
 
-    try {
-      setCameraType(await AsyncStorage.getItem('CameraType'))
-      if (cameraType === null || cameraType === '') {
-        setCameraType('Back');
-      }
-    } catch (e) {
-      setCameraType('async error');
+    const tempCameraType = await AsyncStorage.getItem('CameraType')
+    if (tempCameraType !== null || tempCameraType !== '') {
+      setSelectedCameraType(tempCameraType);
+    }
+
+    const tempZoom = await AsyncStorage.getItem('CameraZoom')
+    if (tempZoom !== null || tempZoom !== '') {
+      setSelectedZoom(tempZoom);
+    }
+
+    const tempRecordingLength = await AsyncStorage.getItem('RecordingLength')
+    if (tempRecordingLength !== null || tempRecordingLength !== '') {
+      setSelectedRecordingLength(tempRecordingLength);
+    }
+
+    const tempMaxVideoFileSize = await AsyncStorage.getItem('MaxVideoFileSize')
+    if (tempMaxVideoFileSize !== null || tempMaxVideoFileSize !== '') {
+      setSelectedMaxVideoFileSize(tempMaxVideoFileSize);
+    }
+
+    const tempAutomaticRecording = await AsyncStorage.getItem('AutomaticRecording')
+    if (tempAutomaticRecording !== null || tempAutomaticRecording !== '') {
+      setSelectedAutomaticRecording(tempAutomaticRecording);
     }
 
 
     if (cameraPermission && cameraRef !== undefined) {
       console.log('Camera Granted');
-      console.log('Camera Ref Exists')
-      //recordVideo();
     }
     else {
       console.log('Does not have Camera Granted');
     }
 
-
-  if (cameraPermission && cameraRef !== undefined) {
-    console.log('Camera Granted');
-    console.log('Camera Ref Exists')
-    //recordVideo();
-  }
-  else {
-    console.log('Does not have Camera Granted');
   }
 
-}
+
+
+  useEffect(() => {
+    setPermissions();
+    return () => {
+      setHasCameraPermission(null);
+      setHasMicrophonePermission(null);
+      setHasMediaLibraryPermission(null);
+      setHasLocationPermission(null);
+
+    };
+  }, []);
 
 
 
-useEffect(() => {
-  setPermissions();
-  return () => {
-    setHasCameraPermission(null);
-    setHasMicrophonePermission(null);
-    setHasMediaLibraryPermission(null);
-    setHasLocationPermission(null);
-
-  };
-}, []);
+  if (hasCameraPermission === undefined || hasMicrophonePermission === undefined || hasLocationPermission === undefined) {
+    return <Text>Request permissions...</Text>
+  } else if (!hasCameraPermission) {
+    return <Text>Permission for camera not granted.</Text>
+  }
 
 
+  let stopRecording = () => {
 
-if (hasCameraPermission === undefined || hasMicrophonePermission === undefined || hasLocationPermission === undefined) {
-  return <Text>Request permissions...</Text>
-} else if (!hasCameraPermission) {
-  return <Text>Permission for camera not granted.</Text>
-}
-
-
-let stopRecording = () => {
-
-  cameraRef.current.stopRecording();
-  setIsRecording(false);
-};
-
-
-if (video) {
-  let shareVideo = () => {
-    shareAsync(video.uri).then(() => {
-      setVideo(undefined);
-    });
-
+    cameraRef.current.stopRecording();
+    setIsRecording(false);
   };
 
-  const saveData = async () => {
 
-    const expoAlbum = await MediaLibrary.getAlbumAsync(ALBUM_NAME)
-    const video_asset = await MediaLibrary.createAssetAsync(video.uri);
-    // const filename = FileSystem.documentDirectory + "coordinates.json";
-    // await FileSystem.writeAsStringAsync(filename, JSON.stringify(locations), {
-    //   encoding: FileSystem.EncodingType.UTF8
-    // });
-    // console.log(filename);
-    // const result = await FileSystem.readAsStringAsync(filename, {
-    //   encoding: FileSystem.EncodingType.UTF8
-    // });
-    //console.log(result); 
-    video_asset['exif'] = gpsJsonToGeojson(locations);
-    console.log(video_asset);
-
-    if (expoAlbum) {
-      await MediaLibrary.addAssetsToAlbumAsync(video_asset, expoAlbum.id).then((result) => {
-        console.log(result)
+  if (video) {
+    let shareVideo = () => {
+      shareAsync(video.uri).then(() => {
+        setVideo(undefined);
       });
-    } else {
-      await MediaLibrary.createAlbumAsync(ALBUM_NAME, video_asset).then((result) => {
-        console.log(result)
-      });
-    }
-  };
+
+    };
+
+    const saveData = async () => {
+
+      const expoAlbum = await MediaLibrary.getAlbumAsync(ALBUM_NAME)
+      const video_asset = await MediaLibrary.createAssetAsync(video.uri);
+      // const filename = FileSystem.documentDirectory + "coordinates.json";
+      // await FileSystem.writeAsStringAsync(filename, JSON.stringify(locations), {
+      //   encoding: FileSystem.EncodingType.UTF8
+      // });
+      // console.log(filename);
+      // const result = await FileSystem.readAsStringAsync(filename, {
+      //   encoding: FileSystem.EncodingType.UTF8
+      // });
+      //console.log(result); 
+      video_asset['exif'] = gpsJsonToGeojson(locations);
+      console.log(video_asset);
+
+      if (expoAlbum) {
+        await MediaLibrary.addAssetsToAlbumAsync(video_asset, expoAlbum.id).then((result) => {
+          console.log(result)
+        });
+      } else {
+        await MediaLibrary.createAlbumAsync(ALBUM_NAME, video_asset).then((result) => {
+          console.log(result)
+        });
+      }
+    };
+
+    return (
+      <SafeAreaView style={styles.container}>
+        <Video
+          style={styles.video}
+          source={{ uri: video.uri }}
+          useNativeControls
+          resizeMode='contain'
+          isLooping
+        />
+        <Button style={styles.button} icon="share" mode="contained" onPress={shareVideo} > Share</Button>
+        {hasMediaLibraryPermission ? 
+        <Button style={styles.button} icon="content-save" mode="contained" onPress={saveData} >Save </Button> 
+        : undefined}
+        <Button style={styles.button} icon="camera" mode="outlined" onPress={() => setVideo(undefined)} >Discard </Button>
+      </SafeAreaView>
+    );
+  }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Video
-        style={styles.video}
-        source={{ uri: video.uri }}
-        useNativeControls
-        resizeMode='contain'
-        isLooping
-      />
-      <Button title="Share" onPress={shareVideo} />
-      {hasMediaLibraryPermission ? <Button title="Save" onPress={saveData} /> : undefined}
-      <Button title="Discard" onPress={() => setVideo(undefined)} />
-    </SafeAreaView>
+    <Camera style={styles.container} ref={cameraRef} onCameraReady={selectedAutomaticRecording === 'true' ? recordVideo : null} quality={selectedResolution} type={selectedCameraType} >
+      <View style={styles.buttonContainer}>
+        <Text>Global: {selectedResolution}</Text>
+        <Button style={styles.button} icon="camera" mode="contained" onPress={isRecording ? stopRecording : recordVideo} >{isRecording ? "Stop Recording" : "Record Video"} </Button>
+      </View>
+    </Camera>
   );
-}
-
-return (
-  <Camera style={styles.container} ref={cameraRef} quality={resolution} type={cameraType}>
-    <View style={styles.buttonContainer}>
-      <Text>Global: {resolution}</Text>
-      <Button title={isRecording ? "Stop Recording" : "Record Video"} onPress={isRecording ? stopRecording : recordVideo} />
-    </View>
-  </Camera>
-);
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    margin: 10,
   },
-  buttonContainer: {
-    backgroundColor: "#fff",
-    alignSelf: "flex-end"
+  button: {
+    marginVertical: 10,
   },
   video: {
     flex: 1,
