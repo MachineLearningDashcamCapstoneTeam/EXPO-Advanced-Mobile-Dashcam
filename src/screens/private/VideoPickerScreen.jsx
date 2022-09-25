@@ -17,6 +17,7 @@ export default function VideoPickerScreen() {
     if (mediaLibraryPermission.status ==='granted') {
       console.log('Media Granted');
 
+      console.log(ALBUM_NAME);
       // Get the album and then the videos inside the album
       await MediaLibrary.getAlbumAsync(ALBUM_NAME).then((selectedAlbum) => {
         setAlbum(selectedAlbum)
@@ -27,6 +28,8 @@ export default function VideoPickerScreen() {
         }).catch((error) => {
           console.error(error);
         });
+      }).catch((error) => {
+        console.error(error);
       });
 
     }
