@@ -25,7 +25,7 @@ const CameraScreen = () => {
   const [selectedZoom, setSelectedZoom] = useState('0');
   const [selectedRecordingLength, setSelectedRecordingLength] = useState('80');
   const [selectedMaxVideoFileSize, setSelectedMaxVideoFileSize] = useState('0');
-  const [selectedAutomaticRecording, setSelectedAutomaticRecording] = useState(false);
+  const [selectedAutomaticRecording, setSelectedAutomaticRecording] = useState('false');
 
   let recordVideo = async () => {
 
@@ -129,6 +129,12 @@ const CameraScreen = () => {
 
     if (cameraPermission && cameraRef !== undefined) {
       console.log('Camera Granted');
+      console.log(`Reso ${selectedResolution}`)
+      console.log(`cam type ${selectedCameraType}`)
+      console.log(`zoom ${selectedZoom}`)
+      console.log(`record lnght ${selectedRecordingLength}`)
+      console.log(`max size ${selectedMaxVideoFileSize}`)
+      console.log(`auto record ${selectedAutomaticRecording}`)
     }
     else {
       console.log('Does not have Camera Granted');
