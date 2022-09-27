@@ -83,31 +83,50 @@ const CameraScreen = () => {
     if (tempResolution !== null || tempResolution !== '') {
       setSelectedResolution(tempResolution);
     }
+    else{
+      setSelectedResolution('480p');
+    }
 
     const tempCameraType = await AsyncStorage.getItem('CameraType')
     if (tempCameraType !== null || tempCameraType !== '') {
       setSelectedCameraType(tempCameraType);
+    }
+    else{
+      setSelectedCameraType('Back');
     }
 
     const tempZoom = await AsyncStorage.getItem('CameraZoom')
     if (tempZoom !== null || tempZoom !== '') {
       setSelectedZoom(tempZoom);
     }
+    else{
+      setSelectedZoom('0');
+    }
 
     const tempRecordingLength = await AsyncStorage.getItem('RecordingLength')
     if (tempRecordingLength !== null || tempRecordingLength !== '') {
       setSelectedRecordingLength(tempRecordingLength);
+    }
+    else{
+      setSelectedRecordingLength('80')
     }
 
     const tempMaxVideoFileSize = await AsyncStorage.getItem('MaxVideoFileSize')
     if (tempMaxVideoFileSize !== null || tempMaxVideoFileSize !== '') {
       setSelectedMaxVideoFileSize(tempMaxVideoFileSize);
     }
+    else{
+      setSelectedMaxVideoFileSize('4294967296');
+    }
 
     const tempAutomaticRecording = await AsyncStorage.getItem('AutomaticRecording')
     if (tempAutomaticRecording !== null || tempAutomaticRecording !== '') {
       setSelectedAutomaticRecording(tempAutomaticRecording);
     }
+    else{
+      setSelectedAutomaticRecording('false');
+    }
+
 
 
     if (cameraPermission && cameraRef !== undefined) {
