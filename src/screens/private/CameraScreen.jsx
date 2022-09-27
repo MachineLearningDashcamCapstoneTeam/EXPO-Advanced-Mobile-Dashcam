@@ -49,8 +49,6 @@ const CameraScreen = () => {
     // Set the camera options
     let cameraOptions = {
       quality: selectedResolution,
-      zoom: parseFloat(selectedZoom),
-      maxDuration: parseInt(selectedRecordingLength),
       mute: false,
       exif: true,
     };
