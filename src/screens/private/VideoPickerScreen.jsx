@@ -6,7 +6,7 @@ import { shareAsync } from 'expo-sharing';
 import * as MediaLibrary from 'expo-media-library';
 import { ALBUM_NAME } from '../../constants';
 
-export default function VideoPickerScreen() {
+export default function VideoPickerScreen({navigation}) {
   const [videos, setVideos] = useState([]);
   const [album, setAlbum] = useState();
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
@@ -81,6 +81,12 @@ export default function VideoPickerScreen() {
               <Paragraph variant='labelLarge'
                 
               >{videoAsset.filename} </Paragraph>
+  <Button style={styles.button} icon="cog" mode="outlined" onPress={() => navigation.navigate('VideoPlayer',{fileURI:videoAsset.uri})}>
+        Preview
+      </Button>
+      
+
+      
             </Card.Content>
           </Card>
         )
