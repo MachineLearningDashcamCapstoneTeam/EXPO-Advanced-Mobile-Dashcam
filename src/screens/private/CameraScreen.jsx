@@ -8,6 +8,7 @@ import * as Location from 'expo-location';
 import { ALBUM_NAME } from '../../constants';
 import { gpsJsonToGeojson } from '../../utils/geojson-utils';
 import { Button, Text, Divider } from 'react-native-paper';
+//import VideoRecorder from 'react-native-beautiful-video-recorder';
 
 const CameraScreen = () => {
   let cameraRef = useRef();
@@ -232,6 +233,16 @@ const CameraScreen = () => {
       </View>
     </Camera>
   );
+//react native beatiful video recorder button
+  // return(
+  //   <View>
+	// 		......
+	// 	  <TouchableOpacity onPress={isRecording ? stopRecording : recordVideo}>
+	// 	  	<Text>Start</Text>
+	// 	  </TouchableOpacity>
+	// 	  <VideoRecorder ref={cameraRef} />
+	// 	</View>
+  // );
 }
 
 const styles = StyleSheet.create({
