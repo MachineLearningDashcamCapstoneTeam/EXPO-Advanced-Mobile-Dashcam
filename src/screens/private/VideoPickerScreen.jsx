@@ -1,5 +1,5 @@
 import  {Card,Button, Title, Paragraph,Text, Divider } from 'react-native-paper';
-import { StyleSheet, View} from 'react-native';
+import { StyleSheet, View, ScrollView} from 'react-native';
 import { useEffect, useState, useRef } from 'react';
 import { Video } from 'expo-av';
 import { shareAsync } from 'expo-sharing';
@@ -9,6 +9,7 @@ import { ALBUM_NAME } from '../../constants';
 export default function VideoPickerScreen({navigation}) {
   const [videos, setVideos] = useState([]);
   const [album, setAlbum] = useState();
+  const [assetInfo, setAssetInfo] = useState();
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
 
   const setPermissions = async () => {
@@ -18,20 +19,22 @@ export default function VideoPickerScreen({navigation}) {
     if (mediaLibraryPermission.status ==='granted') {
       console.log('Media Granted');
 
-      console.log(ALBUM_NAME);
+      console.log("Album: " + ALBUM_NAME);
       // Get the album and then the videos inside the album
       await MediaLibrary.getAlbumAsync(ALBUM_NAME).then((selectedAlbum) => {
         setAlbum(selectedAlbum)
-        console.log(selectedAlbum);
+        console.log("Album Title: " + selectedAlbum.title);
         return selectedAlbum;
       }).then((selectedAlbum) => {
         MediaLibrary.getAssetsAsync({ album: selectedAlbum.id, mediaType: 'video' }).then((assets) => {
           setVideos(assets['assets']);
           console.log(assets);
         }).catch((error) => {
+          console.error("getAssetsAsync failed");
           console.error(error);
         });
       }).catch((error) => {
+        console.error("getAlbumAsync failed");
         console.error(error);
       });
 
@@ -41,9 +44,19 @@ export default function VideoPickerScreen({navigation}) {
     }
 
   }
+  
+
+  const getInfo = async (asset, callback) => {
+    await MediaLibrary.getAssetInfoAsync(asset).then((info) => {
+      setAssetInfo(info);
+      callback(info);
+    });
+  }
 
   useEffect(() => {
     setPermissions();
+
+    const refreshList = navigation.addListener('focus', () => {console.log("Getting new List..."); setPermissions()})
 
     return () => {
       setHasMediaLibraryPermission(null);
@@ -71,21 +84,21 @@ export default function VideoPickerScreen({navigation}) {
   //   </View>
   // );
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       {
         videos.map((videoAsset) =>
           <Card key={videoAsset.id}>
 
             <Card.Content>
-              <Title>{videoAsset.id}</Title> // removed the iD 
+              <Title>{videoAsset.id}</Title> 
               
               <Paragraph variant='labelLarge'
                 
               >{videoAsset.filename} </Paragraph>
-  <Button style={styles.button} mode="outlined" onPress={() => navigation.navigate('VideoPlayer',{fileURI:videoAsset.uri})}>
-        Preview
-      </Button>
-    <Button style={styles.button} mode="outlined" > Delete</Button>   
+            <Button style={styles.button} mode="outlined" onPress={() => getInfo(videoAsset, (assetInfo) => navigation.navigate('VideoPlayer',{ assetInfo: assetInfo}))}>
+                Preview
+              </Button>
+      
 
       
             </Card.Content>
@@ -93,7 +106,7 @@ export default function VideoPickerScreen({navigation}) {
         )
       }
 
-    </View>
+    </ScrollView>
   );
 }
 

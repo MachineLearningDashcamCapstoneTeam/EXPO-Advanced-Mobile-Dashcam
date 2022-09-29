@@ -7,10 +7,14 @@ import * as MediaLibrary from 'expo-media-library';
 import * as Location from 'expo-location';
 import { ALBUM_NAME } from '../../constants';
 import { gpsJsonToGeojson } from '../../utils/geojson-utils';
-import { Button, Text, Divider } from 'react-native-paper';
+import { Button, Text, Snackbar, SegmentedButtons, Divider } from 'react-native-paper';
+
 
 const CameraScreen = () => {
   let cameraRef = useRef();
+
+  const [snackBarVisible, setSnackBarVisible] = useState(false);
+
   const [hasCameraPermission, setHasCameraPermission] = useState();
   const [hasMicrophonePermission, setHasMicrophonePermission] = useState();
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
@@ -29,9 +33,12 @@ const CameraScreen = () => {
 
   let recordVideo = async () => {
 
+    if (!cameraRef) return;
+
+    setSnackBarVisible(true);
     // Clear Locations and Video
     setLocations([]);
-    setVideo(undefined);
+    setVideo(null);
 
     // Set Location subscription
     // Get location every second (1000 milliseconds)
@@ -45,6 +52,8 @@ const CameraScreen = () => {
         tempLocations.push(location);
       }
     );
+
+    console.log(locSub)
 
     // Set the camera options
     let cameraOptions = {
@@ -151,7 +160,11 @@ const CameraScreen = () => {
       setHasMicrophonePermission(null);
       setHasMediaLibraryPermission(null);
       setHasLocationPermission(null);
-
+     
+      setIsRecording(false);
+      setVideo(null);
+      setLocations([]);
+ 
     };
   }, []);
 
@@ -225,22 +238,43 @@ const CameraScreen = () => {
   }
 
   return (
-    <Camera style={styles.container} ref={cameraRef} onCameraReady={selectedAutomaticRecording === 'true' ? recordVideo : null} quality={selectedResolution} type={selectedCameraType === 'Back'? CameraType.back : CameraType.front} >
+    <View style={styles.container}>
+
+<Camera style={styles.container} ref={cameraRef} onCameraReady={selectedAutomaticRecording === 'true' ? recordVideo : null} quality={selectedResolution} type={selectedCameraType === 'Back'? CameraType.back : CameraType.front} >
       <View style={styles.buttonContainer}>
         <Text>Global: {selectedResolution}</Text>
         <Button style={styles.button} icon="camera" mode="contained" onPress={isRecording ? stopRecording : recordVideo} >{isRecording ? "Stop Recording" : "Record Video"} </Button>
       </View>
     </Camera>
+
+    <Snackbar
+        visible={snackBarVisible}
+        onDismiss={() => setSnackBarVisible(false)}
+        duration={3000}
+        action={{
+          label: 'Close',
+        }}>
+        Recording Started
+      </Snackbar>
+    </View>
+    
   );
+//react native beatiful video recorder button
+  // return(
+  //   <View>
+	// 		......
+	// 	  <TouchableOpacity onPress={isRecording ? stopRecording : recordVideo}>
+	// 	  	<Text>Start</Text>
+	// 	  </TouchableOpacity>
+	// 	  <VideoRecorder ref={cameraRef} />
+	// 	</View>
+  // );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     margin: 10,
-  },
-  button: {
-    marginVertical: 10,
   },
   video: {
     flex: 1,
