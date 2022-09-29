@@ -77,14 +77,15 @@ export default function VideoPickerScreen({navigation}) {
           <Card key={videoAsset.id}>
 
             <Card.Content>
-              <Title>{videoAsset.id}</Title>
+              <Title>{videoAsset.id}</Title> // removed the iD 
+              
               <Paragraph variant='labelLarge'
                 
               >{videoAsset.filename} </Paragraph>
   <Button style={styles.button} mode="outlined" onPress={() => navigation.navigate('VideoPlayer',{fileURI:videoAsset.uri})}>
         Preview
       </Button>
-      
+    <Button style={styles.button} mode="outlined" > Delete</Button>   
 
       
             </Card.Content>

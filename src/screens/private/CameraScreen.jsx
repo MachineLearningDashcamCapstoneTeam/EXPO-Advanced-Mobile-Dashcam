@@ -23,7 +23,7 @@ const CameraScreen = () => {
   const [selectedResolution, setSelectedResolution] = useState('480p');
   const [selectedCameraType, setSelectedCameraType] = useState('Back');
   const [selectedZoom, setSelectedZoom] = useState('0');
-  const [selectedRecordingLength, setSelectedRecordingLength] = useState('80');
+  const [selectedRecordingLength, setSelectedRecordingLength] = useState('8');
   const [selectedMaxVideoFileSize, setSelectedMaxVideoFileSize] = useState('0');
   const [selectedAutomaticRecording, setSelectedAutomaticRecording] = useState('false');
 
