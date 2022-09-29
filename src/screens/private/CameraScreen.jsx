@@ -259,6 +259,16 @@ const CameraScreen = () => {
     </View>
     
   );
+//react native beatiful video recorder button
+  // return(
+  //   <View>
+	// 		......
+	// 	  <TouchableOpacity onPress={isRecording ? stopRecording : recordVideo}>
+	// 	  	<Text>Start</Text>
+	// 	  </TouchableOpacity>
+	// 	  <VideoRecorder ref={cameraRef} />
+	// 	</View>
+  // );
 }
 
 const styles = StyleSheet.create({
