@@ -68,10 +68,13 @@ export default function VideoPickerScreen({navigation}) {
     MediaLibrary.deleteAssetsAsync([videoAsset])
           .then((success) => {
             if (success) {
-              Alert.alert("Video successfully deleted");
-              navigation.goBack();
+              let tempList = videos;
+              tempList= tempList.filter(item => item.id !==videoAsset.id)
+              setVideos(tempList);
+              setSnackBarVisible(true);
+              
             } else {
-              Alert.alert("Failed to delete video");
+              console.log("Failed to delete video");
             }
           })
   }
@@ -109,7 +112,7 @@ export default function VideoPickerScreen({navigation}) {
             <Button style={styles.button} mode="outlined" onPress={() => getInfo(videoAsset, (assetInfo) => navigation.navigate('VideoPlayer',{ assetInfo: assetInfo}))}>
                 Preview
               </Button>
-              <Button style={styles.button} icon="delete" mode="contained" onPress={deleteVideo(videoAsset)} > Delete</Button>
+              <Button style={styles.button} icon="delete" mode="contained" onPress={() => deleteVideo(videoAsset)} > Delete</Button>
       
 
       
