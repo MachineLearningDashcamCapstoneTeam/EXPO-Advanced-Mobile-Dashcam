@@ -1,6 +1,6 @@
 import { StyleSheet, View, SafeAreaView } from 'react-native';
 import { useEffect, useState, useRef } from 'react'; import AsyncStorage from '@react-native-async-storage/async-storage'
-import { Camera , CameraType} from 'expo-camera';
+import { Camera, CameraType } from 'expo-camera';
 import { Video } from 'expo-av';
 import { shareAsync } from 'expo-sharing';
 import * as MediaLibrary from 'expo-media-library';
@@ -90,7 +90,7 @@ const CameraScreen = () => {
     if (tempResolution !== null || tempResolution !== '') {
       setSelectedResolution(tempResolution);
     }
-    else{
+    else {
       setSelectedResolution('480p');
     }
 
@@ -98,7 +98,7 @@ const CameraScreen = () => {
     if (tempCameraType !== null || tempCameraType !== '') {
       setSelectedCameraType(tempCameraType);
     }
-    else{
+    else {
       setSelectedCameraType('Back');
     }
 
@@ -106,7 +106,7 @@ const CameraScreen = () => {
     if (tempZoom !== null || tempZoom !== '') {
       setSelectedZoom(tempZoom);
     }
-    else{
+    else {
       setSelectedZoom('0');
     }
 
@@ -114,7 +114,7 @@ const CameraScreen = () => {
     if (tempRecordingLength !== null || tempRecordingLength !== '') {
       setSelectedRecordingLength(tempRecordingLength);
     }
-    else{
+    else {
       setSelectedRecordingLength('80')
     }
 
@@ -122,7 +122,7 @@ const CameraScreen = () => {
     if (tempMaxVideoFileSize !== null || tempMaxVideoFileSize !== '') {
       setSelectedMaxVideoFileSize(tempMaxVideoFileSize);
     }
-    else{
+    else {
       setSelectedMaxVideoFileSize('4294967296');
     }
 
@@ -130,7 +130,7 @@ const CameraScreen = () => {
     if (tempAutomaticRecording !== null || tempAutomaticRecording !== '') {
       setSelectedAutomaticRecording(tempAutomaticRecording);
     }
-    else{
+    else {
       setSelectedAutomaticRecording('false');
     }
 
@@ -160,11 +160,11 @@ const CameraScreen = () => {
       setHasMicrophonePermission(null);
       setHasMediaLibraryPermission(null);
       setHasLocationPermission(null);
-     
+
       setIsRecording(false);
       setVideo(null);
       setLocations([]);
- 
+
     };
   }, []);
 
@@ -229,9 +229,9 @@ const CameraScreen = () => {
           isLooping
         />
         <Button style={styles.button} icon="share" mode="contained" onPress={shareVideo} > Share</Button>
-        {hasMediaLibraryPermission ? 
-        <Button style={styles.button} icon="content-save" mode="contained" onPress={saveData} >Save </Button> 
-        : undefined}
+        {hasMediaLibraryPermission ?
+          <Button style={styles.button} icon="content-save" mode="contained" onPress={saveData} >Save </Button>
+          : undefined}
         <Button style={styles.button} icon="camera" mode="outlined" onPress={() => setVideo(undefined)} >Discard </Button>
       </SafeAreaView>
     );
@@ -240,14 +240,14 @@ const CameraScreen = () => {
   return (
     <View style={styles.container}>
 
-<Camera style={styles.container} ref={cameraRef} onCameraReady={selectedAutomaticRecording === 'true' ? recordVideo : null} quality={selectedResolution} type={selectedCameraType === 'Back'? CameraType.back : CameraType.front} >
-      <View style={styles.buttonContainer}>
-        <Text>Global: {selectedResolution}</Text>
-        <Button style={styles.button} icon="camera" mode="contained" onPress={isRecording ? stopRecording : recordVideo} >{isRecording ? "Stop Recording" : "Record Video"} </Button>
-      </View>
-    </Camera>
+      <Camera style={styles.container} ref={cameraRef} onCameraReady={selectedAutomaticRecording === 'true' ? recordVideo : null} quality={selectedResolution} type={selectedCameraType === 'Back' ? CameraType.back : CameraType.front} >
+        <View style={styles.buttonContainer}>
+          <Text>Global: {selectedResolution}</Text>
+          <Button style={styles.button} icon="camera" mode="contained" onPress={isRecording ? stopRecording : recordVideo} >{isRecording ? "Stop Recording" : "Record Video"} </Button>
+        </View>
+      </Camera>
 
-    <Snackbar
+      <Snackbar
         visible={snackBarVisible}
         onDismiss={() => setSnackBarVisible(false)}
         duration={3000}
@@ -257,17 +257,17 @@ const CameraScreen = () => {
         Recording Started
       </Snackbar>
     </View>
-    
+
   );
-//react native beatiful video recorder button
+  //react native beatiful video recorder button
   // return(
   //   <View>
-	// 		......
-	// 	  <TouchableOpacity onPress={isRecording ? stopRecording : recordVideo}>
-	// 	  	<Text>Start</Text>
-	// 	  </TouchableOpacity>
-	// 	  <VideoRecorder ref={cameraRef} />
-	// 	</View>
+  // 		......
+  // 	  <TouchableOpacity onPress={isRecording ? stopRecording : recordVideo}>
+  // 	  	<Text>Start</Text>
+  // 	  </TouchableOpacity>
+  // 	  <VideoRecorder ref={cameraRef} />
+  // 	</View>
   // );
 }
 
