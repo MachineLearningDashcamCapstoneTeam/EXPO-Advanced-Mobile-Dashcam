@@ -62,16 +62,17 @@ export default function VideoPickerScreen({ navigation }) {
 
   let deleteVideo = (videoAsset) => {
     MediaLibrary.deleteAssetsAsync([videoAsset])
-      .then((success) => {
-        if (success) {
-          let tempList = videos;
-          tempList = tempList.filter(item => item.id !== videoAsset.id)
-          setVideos(tempList);
-          setSnackBarVisible(true);
-        } else {
-          console.log("Failed to delete video");
-        }
-      })
+          .then((success) => {
+            if (success) {
+              let tempList = videos;
+              tempList= tempList.filter(item => item.id !==videoAsset.id)
+              setVideos(tempList);
+              setSnackBarVisible(true);
+              
+            } else {
+              console.log("Failed to delete video");
+            }
+          })
   }
 
 
