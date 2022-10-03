@@ -1,4 +1,4 @@
-import { Card, Button, Title, Paragraph, Text, Snackbar } from 'react-native-paper';
+import { Card, Button, Title, Paragraph, Text, Snackbar, Searchbar } from 'react-native-paper';
 import { StyleSheet, View, ScrollView } from 'react-native';
 import { useEffect, useState, useRef } from 'react';
 import * as MediaLibrary from 'expo-media-library';
@@ -7,6 +7,7 @@ import { timeStampToDate } from '../../utils/fetch-time';
 import { Video, AVPlaybackStatus } from 'expo-av';
 
 export default function VideoPickerScreen({ navigation }) {
+  const [searchQuery, setSearchQuery] = useState('');
   const [snackBarVisible, setSnackBarVisible] = useState(false);
   const [videos, setVideos] = useState([]);
   const [album, setAlbum] = useState();
@@ -62,52 +63,61 @@ export default function VideoPickerScreen({ navigation }) {
 
   let deleteVideo = (videoAsset) => {
     MediaLibrary.deleteAssetsAsync([videoAsset])
-          .then((success) => {
-            if (success) {
-              let tempList = videos;
-              tempList= tempList.filter(item => item.id !==videoAsset.id)
-              setVideos(tempList);
-              setSnackBarVisible(true);
-              
-            } else {
-              console.log("Failed to delete video");
-            }
-          })
+      .then((success) => {
+        if (success) {
+          let tempList = videos;
+          tempList = tempList.filter(item => item.id !== videoAsset.id)
+          setVideos(tempList);
+          setSnackBarVisible(true);
+
+        } else {
+          console.log("Failed to delete video");
+        }
+      })
   }
 
-
+  const onChangeSearch = query => setSearchQuery(query);
   return (
     <View style={styles.container}>
 
 
-      <ScrollView>
+      <Searchbar
+        placeholder="Search Videos"
+        onChangeText={onChangeSearch}
+        value={searchQuery}
+        style={styles.search}
+      />
+
+      <ScrollView >
         {
           videos.map((videoAsset) =>
-            <Card key={videoAsset.id}>
-
+            <Card key={videoAsset.id} mode="elevated" style={styles.card}>
+              <Card.Cover source={{ uri: videoAsset.uri }} />
               <Card.Content>
                 <Title>{videoAsset.id}</Title>
 
 
-                <Video
-                  style={styles.video}
-                  source={{ uri: videoAsset.uri }}
-                  resizeMode="contain"
-                  isLooping
-                />
-
-                <Text variant='labelLarge'>
-                  {timeStampToDate(videoAsset.creationTime)}
+                <Text variant='labelSmall'>
+                  Created: {timeStampToDate(videoAsset.creationTime)}
                 </Text>
 
-                <Text variant='labelLarge'>
+
+                <Text variant='labelSmall'>
                   Duration: {videoAsset.duration}s
                 </Text>
 
-                <Button style={styles.button} mode="outlined" onPress={() => getInfo(videoAsset, (assetInfo) => navigation.navigate('VideoPlayer', { assetInfo: assetInfo }))}>
+                <Text variant='labelSmall'>
+                  Media Type: {videoAsset.mediaType}
+                </Text>
+
+                <Text style={styles.bottomMargin} variant='labelSmall'>
+                  Size: {videoAsset.height} x {videoAsset.width}
+                </Text>
+
+                <Button style={styles.button} icon="eye" mode="contained" onPress={() => getInfo(videoAsset, (assetInfo) => navigation.navigate('VideoPlayer', { assetInfo: assetInfo }))}>
                   Preview
                 </Button>
-                <Button style={styles.button} icon="delete" mode="contained" onPress={() => deleteVideo(videoAsset)} > Delete</Button>
+                <Button style={styles.button} icon="delete" mode="outlined" onPress={() => deleteVideo(videoAsset)} > Delete</Button>
 
               </Card.Content>
             </Card>
@@ -135,12 +145,16 @@ const styles = StyleSheet.create({
     flex: 1,
     margin: 10,
   },
-  video: {
-    alignSelf: 'center',
-    width: 320,
-    height: 200,
+  search: {
+    marginBottom: 10,
+  },
+  card: {
+    marginBottom: 10,
   },
   button: {
-    marginVertical: 10,
+    marginBottom: 5,
+  },
+  bottomMargin:{
+    marginBottom: 10,
   }
 });

@@ -1,10 +1,11 @@
 import { useEffect, useState, useRef } from 'react';
 import * as MediaLibrary from 'expo-media-library'
 import { View, StyleSheet, Alert } from 'react-native';
-import { Button, Text } from 'react-native-paper';
+import { Card, Button, Title, Paragraph, Text, Snackbar } from 'react-native-paper';
 import { Video, AVPlaybackStatus } from 'expo-av';
+import { timeStampToDate } from '../../utils/fetch-time';
 import { shareAsync } from 'expo-sharing';
-
+import * as FileSystem from 'expo-file-system';
 export default function VideoPlayerScreen({ route, navigation }) {
   const { assetInfo } = route.params;
 
@@ -15,9 +16,17 @@ export default function VideoPlayerScreen({ route, navigation }) {
     console.log(assetInfo);
   }, []);
 
-  let shareVideo = () => {
-    shareAsync(assetInfo.uri).then(() => {
-     
+  let shareVideo = async () => {
+
+    const filename = `${FileSystem.documentDirectory}${assetInfo.filename}.txt`;
+    const result = await FileSystem.readAsStringAsync(filename, {
+      encoding: FileSystem.EncodingType.UTF8
+    });
+
+    //! Somehow share video and coordinates together
+    console.log(result);
+    shareAsync(filename).then(() => {
+
     });
 
   };
@@ -36,24 +45,71 @@ export default function VideoPlayerScreen({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-      <Video
-        ref={video}
-        style={styles.video}
-        source={{ uri: assetInfo.uri }}
-        useNativeControls
-        resizeMode="contain"
-        isLooping
-        onPlaybackStatusUpdate={status => setStatus(() => status)}
-      />
-      <View style={styles.buttons}>
-        <Button
-          onPress={() =>
+
+      <View style={styles.header}>
+        <Title style={{ color: 'white' }}>
+          {assetInfo.id}
+        </Title>
+
+        <Text variant='labelSmall' style={{ color: 'white' }}>Culpa aliquip esse quis veniam eu sunt.</Text>
+      </View>
+
+      <Card key={assetInfo.id} mode="elevated" style={styles.card}>
+        <Card.Content>
+
+          <Video
+            ref={video}
+            style={styles.video}
+            source={{ uri: assetInfo.uri }}
+            useNativeControls
+            resizeMode='contain'
+            isLooping
+            onPlaybackStatusUpdate={status => setStatus(() => status)}
+          />
+
+
+
+          <Text variant='labelSmall'>
+            Created: {timeStampToDate(assetInfo.creationTime)}
+          </Text>
+
+          <Text variant='labelSmall'>
+            Modified: {timeStampToDate(assetInfo.modificationTime)}
+          </Text>
+
+          <Text variant='labelSmall'>
+            Duration: {assetInfo.duration}s
+          </Text>
+
+          <Text variant='labelSmall'>
+            Media Type: {assetInfo.mediaType}
+          </Text>
+
+          <Text variant='labelSmall'>
+            Size: {assetInfo.height} x {assetInfo.width}
+          </Text>
+
+          <Text style={styles.bottomMargin} variant='labelSmall'>
+            Path: {assetInfo.uri}
+          </Text>
+
+
+          <Button style={styles.button} mode="contained" onPress={() =>
             status.isPlaying ? video.current.pauseAsync() : video.current.playAsync()
           }
-        >{status.isPlaying ? 'Pause' : 'Play'}</Button>
-      </View>
-      <Button style={styles.button} icon="share" mode="contained" onPress={shareVideo} > Share</Button>
-      <Button style={styles.button} icon="delete" mode="contained" onPress={deleteVideo} > Delete</Button>
+
+            icon={status.isPlaying ? 'pause' : 'play'}
+          >{status.isPlaying ? 'Pause' : 'Play'}</Button>
+
+          <Button style={styles.button} icon="share" mode="outlined" onPress={shareVideo} > Share</Button>
+          <Button style={styles.button} icon="delete" mode="outlined" onPress={deleteVideo} > Delete</Button>
+
+        </Card.Content>
+
+
+      </Card>
+
+
     </View>
   );
 }
@@ -61,17 +117,29 @@ export default function VideoPlayerScreen({ route, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    backgroundColor: '#ecf0f1',
+    backgroundColor: '#244c98'
   },
   video: {
-    alignSelf: 'center',
-    width: 320,
-    height: 200,
+    alignSelf: "stretch",
+    width: window.full,
+    height: 350,
+    marginBottom: 10,
+  },
+  bottomMargin: {
+    marginBottom: 10,
   },
   button: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    marginBottom: 5,
   },
+  card:{
+    flex: 1,
+  },
+  header: {
+    padding: 10,
+    backgroundColor: "#244c98",
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: 'white',
+  }
+
 });
