@@ -4,7 +4,7 @@ import { View, StyleSheet, Alert } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import { Video, AVPlaybackStatus } from 'expo-av';
 import { shareAsync } from 'expo-sharing';
-
+import * as FileSystem from 'expo-file-system';
 export default function VideoPlayerScreen({ route, navigation }) {
   const { assetInfo } = route.params;
 
@@ -15,8 +15,14 @@ export default function VideoPlayerScreen({ route, navigation }) {
     console.log(assetInfo);
   }, []);
 
-  let shareVideo = () => {
-    shareAsync(assetInfo.uri).then(() => {
+  let shareVideo = async () => {
+
+    const filename = `${FileSystem.documentDirectory}${assetInfo.filename}.txt`;
+    const result = await FileSystem.readAsStringAsync(filename, {
+      encoding: FileSystem.EncodingType.UTF8
+    });
+    console.log(result); 
+    shareAsync(filename).then(() => {
      
     });
 
