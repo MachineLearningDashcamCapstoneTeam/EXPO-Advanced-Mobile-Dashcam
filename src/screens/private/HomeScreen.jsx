@@ -13,7 +13,7 @@ function HomeScreen({ navigation }) {
 
 
 
-        <Card mode="elevated">
+        <Card mode="elevated" style={styles.card}>
           <Card.Cover source={{ uri: 'https://www.vancouverplanner.com/wp-content/uploads/2019/07/sea-to-sky-highway.jpeg' }} />
           <Card.Content>
             <Title>Attention Drivers!</Title>
@@ -74,8 +74,8 @@ const styles = StyleSheet.create({
   bottomMargin: {
     marginBottom: 10,
   },
-  titleText: {
-    color: 'white',
+  card:{
+    flex: 2,
   },
   attention: { 
     flex: 1, 

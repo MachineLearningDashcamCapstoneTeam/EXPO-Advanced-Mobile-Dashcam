@@ -139,7 +139,7 @@ export default function SettingsScreen({ navigation }) {
             <Title>Camera</Title>
 
 
-            <Text variant='labelLarge'>
+            <Text variant='labelSmall'>
               Resolution
             </Text>
             <SegmentedButtons
@@ -150,7 +150,7 @@ export default function SettingsScreen({ navigation }) {
             />
 
 
-            <Text variant='labelLarge'>
+            <Text variant='labelSmall'>
               Camera Type
             </Text>
             <SegmentedButtons
@@ -160,7 +160,7 @@ export default function SettingsScreen({ navigation }) {
               style={styles.group}
             />
 
-            <Text variant='labelLarge'>
+            <Text variant='labelSmall'>
               Camera Zoom
             </Text>
             <SegmentedButtons
@@ -170,14 +170,7 @@ export default function SettingsScreen({ navigation }) {
               style={styles.group}
             />
 
-
-            <Title>
-              Recordings
-            </Title>
-
-
-
-            <Text variant='labelLarge'>
+            <Text variant='labelSmall'>
               Start Automatic Recording
             </Text>
             <SegmentedButtons
@@ -187,7 +180,7 @@ export default function SettingsScreen({ navigation }) {
               style={styles.group}
             />
 
-            <Text variant='labelLarge'>
+            <Text variant='labelSmall'>
               Max Video Duration
             </Text>
             <SegmentedButtons
@@ -197,7 +190,7 @@ export default function SettingsScreen({ navigation }) {
               style={styles.group}
             />
 
-            <Text variant='labelLarge'>
+            <Text variant='labelSmall'>
               Max Video File Size
             </Text>
             <SegmentedButtons
@@ -211,6 +204,10 @@ export default function SettingsScreen({ navigation }) {
               Save
             </Button>
 
+
+            <Button style={styles.button} icon="restart" mode="outlined" >
+              Reset to Default
+            </Button>
           </Card.Content>
 
         </Card>
@@ -229,6 +226,7 @@ export default function SettingsScreen({ navigation }) {
           Saved Settings to Local Storage
         </Snackbar>
       </ScrollView>
+      
     </View>
   );
 }
@@ -242,10 +240,21 @@ const styles = StyleSheet.create({
     backgroundColor: '#244c98'
   },
   card: {
-    marginBottom: 10,
+    marginBottom: 0,
   },
   button: {
     marginVertical: 5,
+  },
+  group: {
+    marginBottom: 5,
+  },
+  attention: { 
+    flex: 1, 
+    margin: 10,
+    backgroundColor: "#244c98", 
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: 'white',
   }
 
 });
