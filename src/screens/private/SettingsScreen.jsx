@@ -1,8 +1,8 @@
-import DropDownPicker from 'react-native-dropdown-picker';
-import { StyleSheet, View, SafeAreaView } from 'react-native';
+
+import { StyleSheet, View, ScrollView } from 'react-native';
 import { useEffect, useState, useRef } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { Button, Text, Snackbar, SegmentedButtons, Divider } from 'react-native-paper';
+import { Card, Button, Title, Text, Snackbar, SegmentedButtons, Divider } from 'react-native-paper';
 
 export default function SettingsScreen({ navigation }) {
 
@@ -53,7 +53,7 @@ export default function SettingsScreen({ navigation }) {
   const [selectedAutomaticRecording, setSelectedAutomaticRecording] = useState('false');
   const [automaticRecordings, setAutomaticRecordings] = useState([
     { label: 'No', value: 'false' },
-    { label: 'Yes', value: 'true'},
+    { label: 'Yes', value: 'true' },
   ]);
 
 
@@ -78,7 +78,7 @@ export default function SettingsScreen({ navigation }) {
     if (tempResolution !== null || tempResolution !== '') {
       setSelectedResolution(tempResolution);
     }
-    else{
+    else {
       setSelectedResolution('480p');
     }
 
@@ -86,7 +86,7 @@ export default function SettingsScreen({ navigation }) {
     if (tempCameraType !== null || tempCameraType !== '') {
       setSelectedCameraType(tempCameraType);
     }
-    else{
+    else {
       setSelectedCameraType('Back');
     }
 
@@ -94,7 +94,7 @@ export default function SettingsScreen({ navigation }) {
     if (tempZoom !== null || tempZoom !== '') {
       setSelectedZoom(tempZoom);
     }
-    else{
+    else {
       setSelectedZoom('0');
     }
 
@@ -102,7 +102,7 @@ export default function SettingsScreen({ navigation }) {
     if (tempRecordingLength !== null || tempRecordingLength !== '') {
       setSelectedRecordingLength(tempRecordingLength);
     }
-    else{
+    else {
       setSelectedRecordingLength('80')
     }
 
@@ -110,7 +110,7 @@ export default function SettingsScreen({ navigation }) {
     if (tempMaxVideoFileSize !== null || tempMaxVideoFileSize !== '') {
       setSelectedMaxVideoFileSize(tempMaxVideoFileSize);
     }
-    else{
+    else {
       setSelectedMaxVideoFileSize('4294967296');
     }
 
@@ -118,7 +118,7 @@ export default function SettingsScreen({ navigation }) {
     if (tempAutomaticRecording !== null || tempAutomaticRecording !== '') {
       setSelectedAutomaticRecording(tempAutomaticRecording);
     }
-    else{
+    else {
       setSelectedAutomaticRecording('false');
     }
 
@@ -132,92 +132,101 @@ export default function SettingsScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-
-      <Text variant='headlineSmall'>
-        Camera
-      </Text>
-
-      <Text variant='labelLarge'>
-        Resolution
-      </Text>
-      <SegmentedButtons
-        value={selectedResolution}
-        onValueChange={setSelectedResolution}
-        buttons={resolutions}
-        style={styles.group}
-      />
+      <ScrollView >
+        <Card mode="elevated" style={styles.card}>
+        <Card.Cover source={{ uri: 'https://cdn.hswstatic.com/gif/car-engine-new1.jpg' }} />
+          <Card.Content>
+            <Title>Camera</Title>
 
 
-      <Text variant='labelLarge'>
-        Camera Type
-      </Text>
-      <SegmentedButtons
-        value={selectedCameraType}
-        onValueChange={setSelectedCameraType}
-        buttons={cameraTypes}
-        style={styles.group}
-      />
+            <Text variant='labelSmall'>
+              Resolution
+            </Text>
+            <SegmentedButtons
+              value={selectedResolution}
+              onValueChange={setSelectedResolution}
+              buttons={resolutions}
+              style={styles.group}
+            />
 
-      <Text variant='labelLarge'>
-        Camera Zoom
-      </Text>
-      <SegmentedButtons
-        value={selectedZoom}
-        onValueChange={setSelectedZoom}
-        buttons={zooms}
-        style={styles.group}
-      />
 
-      <Divider />
+            <Text variant='labelSmall'>
+              Camera Type
+            </Text>
+            <SegmentedButtons
+              value={selectedCameraType}
+              onValueChange={setSelectedCameraType}
+              buttons={cameraTypes}
+              style={styles.group}
+            />
 
-      <Text variant='headlineSmall'>
-        Recordings
-      </Text>
+            <Text variant='labelSmall'>
+              Camera Zoom
+            </Text>
+            <SegmentedButtons
+              value={selectedZoom}
+              onValueChange={setSelectedZoom}
+              buttons={zooms}
+              style={styles.group}
+            />
 
-      <Text variant='labelLarge'>
-        Start Automatic Recording
-      </Text>
-      <SegmentedButtons
-        value={selectedAutomaticRecording}
-        onValueChange={setSelectedAutomaticRecording}
-        buttons={automaticRecordings}
-        style={styles.group}
-      />
+            <Text variant='labelSmall'>
+              Start Automatic Recording
+            </Text>
+            <SegmentedButtons
+              value={selectedAutomaticRecording}
+              onValueChange={setSelectedAutomaticRecording}
+              buttons={automaticRecordings}
+              style={styles.group}
+            />
 
-      <Text variant='labelLarge'>
-        Max Video Duration
-      </Text>
-      <SegmentedButtons
-        value={selectedRecordingLength}
-        onValueChange={setSelectedRecordingLength}
-        buttons={recordingLengths}
-        style={styles.group}
-      />
+            <Text variant='labelSmall'>
+              Max Video Duration
+            </Text>
+            <SegmentedButtons
+              value={selectedRecordingLength}
+              onValueChange={setSelectedRecordingLength}
+              buttons={recordingLengths}
+              style={styles.group}
+            />
 
-      <Text variant='labelLarge'>
-        Max Video File Size
-      </Text>
-      <SegmentedButtons
-        value={selectedMaxVideoFileSize}
-        onValueChange={setSelectedMaxVideoFileSize}
-        buttons={maxVideoFileSizes}
-        style={styles.group}
-      />
+            <Text variant='labelSmall'>
+              Max Video File Size
+            </Text>
+            <SegmentedButtons
+              value={selectedMaxVideoFileSize}
+              onValueChange={setSelectedMaxVideoFileSize}
+              buttons={maxVideoFileSizes}
+              style={styles.group}
+            />
 
-      <Divider />
-      <Button style={styles.button} icon="content-save" mode="contained" onPress={() => saveSetting()}>
-        Save
-      </Button>
+            <Button style={styles.button} icon="content-save" mode="contained" onPress={() => saveSetting()}>
+              Save
+            </Button>
 
-      <Snackbar
-        visible={snackBarVisible}
-        onDismiss={onDismissSnackBar}
-        action={{
-          label: 'Close',
-        }}>
-        Saved Settings to Local Storage
-      </Snackbar>
 
+            <Button style={styles.button} icon="restart" mode="outlined" >
+              Reset to Default
+            </Button>
+          </Card.Content>
+
+        </Card>
+
+
+
+
+
+        <Snackbar
+          visible={snackBarVisible}
+          onDismiss={onDismissSnackBar}
+          duration={3000}
+          action={{
+            label: 'Close',
+          }}>
+          Saved Settings to Local Storage
+        </Snackbar>
+      </ScrollView>
+      
     </View>
   );
 }
@@ -228,10 +237,24 @@ export default function SettingsScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    margin: 10,
+    backgroundColor: '#244c98'
+  },
+  card: {
+    marginBottom: 0,
   },
   button: {
-    marginVertical: 10,
+    marginVertical: 5,
+  },
+  group: {
+    marginBottom: 5,
+  },
+  attention: { 
+    flex: 1, 
+    margin: 10,
+    backgroundColor: "#244c98", 
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: 'white',
   }
 
 });
