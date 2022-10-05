@@ -1,10 +1,11 @@
 import { useEffect, useState, useRef } from 'react';
 import * as MediaLibrary from 'expo-media-library'
-import { View, StyleSheet, Alert } from 'react-native';
+import { View, StyleSheet, Alert, ScrollView } from 'react-native';
 import { Card, Button, Title, Paragraph, Text, Snackbar } from 'react-native-paper';
 import { Video, AVPlaybackStatus } from 'expo-av';
 import { timeStampToDate } from '../../utils/fetch-time';
 import { shareAsync } from 'expo-sharing';
+
 import * as FileSystem from 'expo-file-system';
 export default function VideoPlayerScreen({ route, navigation }) {
   const { assetInfo } = route.params;
@@ -44,7 +45,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
 
       <View style={styles.header}>
         <Title style={{ color: 'white' }}>
@@ -103,6 +104,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
 
           <Button style={styles.button} icon="share" mode="outlined" onPress={shareVideo} > Share</Button>
           <Button style={styles.button} icon="delete" mode="outlined" onPress={deleteVideo} > Delete</Button>
+          <Button style={styles.button} icon="map" mode="outlined" onPress={() => navigation.navigate('Settings')} > Map</Button>
 
         </Card.Content>
 
@@ -110,13 +112,13 @@ export default function VideoPlayerScreen({ route, navigation }) {
       </Card>
 
 
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    //flex: 1,
     backgroundColor: '#244c98'
   },
   video: {
@@ -132,7 +134,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   card:{
-    flex: 1,
+    //flex: 1,
   },
   header: {
     padding: 10,
