@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#244c98'
   },
   mainContainer: {
-    flex: 1,
+    //flex: 1,
   },
   button: {
     marginBottom: 5,
@@ -75,15 +75,17 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   card:{
-    flex: 2,
+    
+    //flex: 2,
   },
   attention: { 
-    flex: 1, 
+    //flex: 1, 
     margin: 10,
     backgroundColor: "#244c98", 
     alignItems: 'center',
     justifyContent: 'center',
     color: 'white',
+    
   }
 });
 
