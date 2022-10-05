@@ -94,9 +94,10 @@ export default function VideoPickerScreen({navigation}) {
               <Paragraph variant='labelLarge'
                 
               >{videoAsset.filename} </Paragraph>
-            <Button style={styles.button} mode="outlined" onPress={() => getInfo(videoAsset, (assetInfo) => navigation.navigate('VideoPlayer',{ assetInfo: assetInfo}))}>
-                Preview
+            <Button style={styles.button} mode="outlined" onPress={() => getInfo(videoAsset, (assetInfo) => navigation.navigate('VideoPlayer',{ assetInfo: assetInfo}))}>   Preview
               </Button>
+            
+             
       
 
       
