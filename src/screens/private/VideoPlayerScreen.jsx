@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import * as MediaLibrary from 'expo-media-library'
-import { View, StyleSheet, Alert, ScrollView } from 'react-native';
+import { View, StyleSheet, Alert, ScrollView, Platform } from 'react-native';
 import { Card, Button, Title, Paragraph, Text, Snackbar } from 'react-native-paper';
 import { Video, AVPlaybackStatus } from 'expo-av';
 import { timeStampToDate } from '../../utils/fetch-time';
@@ -61,7 +61,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
           <Video
             ref={video}
             style={styles.video}
-            source={{ uri: assetInfo.uri }}
+            source={{ uri: (Platform.OS === "android") ? assetInfo.uri : assetInfo.localUri}}
             useNativeControls
             resizeMode='contain'
             isLooping
