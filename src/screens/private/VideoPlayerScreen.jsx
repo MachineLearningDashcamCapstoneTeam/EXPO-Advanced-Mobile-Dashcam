@@ -104,7 +104,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
 
           <Button style={styles.button} icon="share" mode="outlined" onPress={shareVideo} > Share</Button>
           <Button style={styles.button} icon="delete" mode="outlined" onPress={deleteVideo} > Delete</Button>
-          <Button style={styles.button} icon="map" mode="outlined" onPress={() => navigation.navigate('Settings')} > Map</Button>
+          <Button style={styles.button} icon="map" mode="outlined" onPress={() => navigation.navigate('Map', { assetInfo: assetInfo })} > Map</Button>
 
         </Card.Content>
 

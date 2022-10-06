@@ -193,25 +193,23 @@ const CameraScreen = () => {
         const expoAlbum = await MediaLibrary.getAlbumAsync(ALBUM_NAME)
         const video_asset = await MediaLibrary.createAssetAsync(video.uri);
         const filename = `${FileSystem.documentDirectory}${video_asset.filename}.txt`;
+
+        await FileSystem.writeAsStringAsync(filename, JSON.stringify(gpsJsonToGeojson(locations)), {
+          encoding: FileSystem.EncodingType.UTF8
+        });
+
         if (expoAlbum) {
           await MediaLibrary.addAssetsToAlbumAsync([video_asset], expoAlbum.id).then((result) => {
             console.log(result)
-          });
-
-          await FileSystem.writeAsStringAsync(filename, JSON.stringify(gpsJsonToGeojson(locations)), {
-            encoding: FileSystem.EncodingType.UTF8
           });
 
         } else {
           await MediaLibrary.createAlbumAsync(ALBUM_NAME, video_asset).then((result) => {
             console.log(result)
           });
-
-          await FileSystem.writeAsStringAsync(filename, JSON.stringify(gpsJsonToGeojson(locations)), {
-            encoding: FileSystem.EncodingType.UTF8
-          });
-
         }
+
+        
         setVideo(null);
         setAlreadySaved(true);
       }
