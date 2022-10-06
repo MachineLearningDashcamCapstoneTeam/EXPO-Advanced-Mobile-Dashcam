@@ -22,22 +22,22 @@ const MapScreen = ({ route, navigation }) => {
         const result = await FileSystem.readAsStringAsync(filename, {
             encoding: FileSystem.EncodingType.UTF8
         });
-
+   
         const gpsData = JSON.parse(result);
         setMapRegion({
-            latitude: gpsData[0].coords.latitude,
-            longitude: gpsData[0].coords.longitude,
+            latitude: gpsData.features[0].geometry.coordinates[1],
+            longitude: gpsData.features[0].geometry.coordinates[0],
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
         })
 
         let tempList = []
-        gpsData.forEach(function (gpsPoint) {
+        gpsData.features.forEach(function (gpsPoint) {
             const point = {
-                latitude: gpsPoint.coords.latitude,
-                longitude: gpsPoint.coords.longitude,
+                latitude: gpsPoint.geometry.coordinates[1],
+                longitude: gpsPoint.geometry.coordinates[0],
                 title: 'GPS Point',
-                subtitle: timeStampToDate(gpsPoint.timestamp)
+                subtitle: timeStampToDate(gpsPoint.properties.timestamp)
             }
             tempList.push(point);
         });
