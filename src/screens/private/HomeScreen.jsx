@@ -1,12 +1,8 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { useAuthentication } from '../../hooks/useAuthentication';
 import { Appbar, Card, Title, Button, Text, Divider } from 'react-native-paper';
-import { getAuth, signOut } from 'firebase/auth';
-const auth = getAuth();
-function HomeScreen({ navigation }) {
-  const { user } = useAuthentication();
 
+function HomeScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
