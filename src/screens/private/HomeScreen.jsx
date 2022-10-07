@@ -30,7 +30,7 @@ function HomeScreen({ navigation }) {
               Settings
             </Button>
 
-            <Button style={styles.button} icon="help-circle-outline" mode="outlined" onPress={() => navigation.navigate('Settings')}>
+            <Button style={styles.button} icon="help-circle-outline" mode="outlined" onPress={() => navigation.navigate('Help')}>
               App Help
             </Button>
 

@@ -8,7 +8,7 @@ import VideoPickerScreen from '../screens/private/VideoPickerScreen';
 import SettingsScreen from '../screens/private/SettingsScreen';
 import VideoPlayerScreen from '../screens/private/VideoPlayerScreen';
 import MapScreen from '../screens/private/MapScreen';
-
+import HelpScreen from '../screens/private/HelpScreen';
 const Stack = createNativeStackNavigator();
 
 export default function UserStack() {
@@ -21,6 +21,7 @@ export default function UserStack() {
         <Stack.Screen name='Settings' component={SettingsScreen}/>
         <Stack.Screen name='VideoPlayer' component={VideoPlayerScreen}/>
         <Stack.Screen name='Map' component={MapScreen}/>
+        <Stack.Screen name='Help' component={HelpScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
