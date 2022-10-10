@@ -1,21 +1,84 @@
 import React from 'react';
+import { useEffect, useState, createContext } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Appbar, Card, Title, Button, Text, Divider } from 'react-native-paper';
+import { Card, Title, Button, Text, Avatar } from 'react-native-paper';
+
+import * as Google from 'expo-auth-session/providers/google';
+import * as WebBrowser from 'expo-web-browser';
+import { GOOGLE_CONFIG } from '../../constants';
+import { getGoogleUserInfo } from '../../services/googleService';
+
+WebBrowser.maybeCompleteAuthSession();
+export const UserContext = createContext({});
 
 function HomeScreen({ navigation }) {
+  const [user, setUser] = useState();
+  const [accessToken, setAccessToken] = useState();
+  const [request, response, promptAsync] = Google.useAuthRequest(GOOGLE_CONFIG);
+
+  useEffect(() => {
+    if (response?.type === "success") {
+      setAccessToken(response.authentication.accessToken);
+      if(user === undefined){
+        getUserData();
+      } 
+    }
+  }, [response]);
+
+  const fetchGoogle = async () =>{
+    promptAsync({ useProxy: true, showInRecents: true })
+    getUserData();
+  }
+
+  const getUserData = async () => {
+    const data = await getGoogleUserInfo();
+    setUser(data)
+  };
+
+  const showUserInfo = () => {
+    if (user) {
+      return (
+        <View style={styles.attention}>
+          <Title style={styles.whiteText}>
+            {user.name}
+          </Title>
+          <Text variant='labelSmall' style={styles.whiteText}>
+            {user.email}
+          </Text>
+          <Avatar.Image style={{ marginVertical: 10 }} size={64} source={{ uri: user.picture }} />
+          <Text variant='labelSmall' style={{ color: 'white', marginVertical: 10 }}>
+            With Google, you'll be able to share your data to Google Drive with one click on the preview screen.
+          </Text>
+        </View>
+      );
+    }
+    else {
+      return (
+        <View style={styles.attention}>
+          <Title style={styles.whiteText}>
+            Uploading to the Cloud
+          </Title>
+          <Text variant='labelSmall' style={styles.whiteText}>
+            Want to upload your videos to the cloud? Use the share button in the preview screen or if you signed in, use the upload to Google Drive button instead.
+          </Text>
+          <Text variant='labelSmall' style={{ color: 'white', marginVertical: 10 }}>
+            - Advanced Mobile Dashcam
+          </Text>
+        </View>
+      );
+    }
+  }
+
 
   return (
-    <View style={styles.container}>
-
-
-
+    <UserContext.Provider value={user}>
+      <View style={styles.container}>
         <Card mode="elevated" style={styles.card}>
           <Card.Cover source={{ uri: 'https://www.vancouverplanner.com/wp-content/uploads/2019/07/sea-to-sky-highway.jpeg' }} />
           <Card.Content>
             <Title>Attention Drivers!</Title>
             <Text style={styles.bottomMargin} variant='labelSmall'>
-              Laborum in ut consequat magna ipsum. Magna amet nisi exercitation ex nulla. Exercitation ut adipisicing voluptate irure.
-
+              The application is currently in development. If something breaks, just contact the development team.
             </Text>
 
             <Button style={styles.button} icon="camera" mode="contained" onPress={() => navigation.navigate('Camera')}>
@@ -34,25 +97,21 @@ function HomeScreen({ navigation }) {
               App Help
             </Button>
 
+            {accessToken === undefined &&
+              <Button
+                style={styles.button} icon="help-circle-outline" mode="outlined"
+                onPress={() => fetchGoogle()}>
+                Login
+              </Button>
+            }
 
           </Card.Content>
         </Card>
 
+        {showUserInfo()}
 
-
-      <View style={styles.attention}>
-        <Title style={{color: 'white'}}>
-          Recent Recordings
-        </Title>
-        <Text variant='labelSmall' style={{color: 'white'}}>
-          Esse sint consectetur occaecat tempor et commodo laboris id fugiat. Minim laborum minim elit esse culpa amet id ullamco exercitation labore exercitation id commodo fugiat. Amet excepteur ad enim dolor commodo adipisicing nostrud sint id irure nulla laboris.
-        </Text>
-        <Text variant='labelSmall' style={{color: 'white', marginVertical: 10}}>
-          - Advanced Mobile Dashcam
-        </Text>
       </View>
-    </View>
-
+    </UserContext.Provider>
   );
 }
 
@@ -70,18 +129,21 @@ const styles = StyleSheet.create({
   bottomMargin: {
     marginBottom: 10,
   },
-  card:{
-    
+  card: {
+
     //flex: 2,
   },
-  attention: { 
+  attention: {
     //flex: 1, 
     margin: 10,
-    backgroundColor: "#244c98", 
+    backgroundColor: "#244c98",
     alignItems: 'center',
     justifyContent: 'center',
     color: 'white',
-    
+
+  },
+  whiteText: {
+    color: 'white'
   }
 });
 

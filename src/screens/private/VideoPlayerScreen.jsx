@@ -1,20 +1,24 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useContext  } from 'react';
 import * as MediaLibrary from 'expo-media-library'
 import { View, StyleSheet, Alert, ScrollView, Platform } from 'react-native';
-import { Card, Button, Title, Paragraph, Text, Snackbar } from 'react-native-paper';
-import { Video, AVPlaybackStatus } from 'expo-av';
+import { Card, Button, Title, Text } from 'react-native-paper';
+import { Video } from 'expo-av';
 import { timeStampToDate } from '../../utils/fetch-time';
 import { shareAsync } from 'expo-sharing';
-
 import * as FileSystem from 'expo-file-system';
-export default function VideoPlayerScreen({ route, navigation }) {
-  const { assetInfo } = route.params;
 
+import { UserContext } from "./HomeScreen";
+
+export default function VideoPlayerScreen({ route, navigation }) {
+  const user = useContext(UserContext);
+  const { assetInfo } = route.params;
+  
   const video = useRef(null);
   const [status, setStatus] = useState({});
 
   useEffect(() => {
     console.log(assetInfo);
+    console.log(user);
   }, []);
 
   let shareVideo = async () => {
@@ -51,8 +55,6 @@ export default function VideoPlayerScreen({ route, navigation }) {
         <Title style={{ color: 'white' }}>
           {assetInfo.id}
         </Title>
-
-        <Text variant='labelSmall' style={{ color: 'white' }}>Culpa aliquip esse quis veniam eu sunt.</Text>
       </View>
 
       <Card key={assetInfo.id} mode="elevated" style={styles.card}>

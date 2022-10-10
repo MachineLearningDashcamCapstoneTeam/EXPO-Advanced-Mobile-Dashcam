@@ -19,9 +19,12 @@ export default {
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.canaleal.capstone",
+      "buildNumber": "3"
     },
     "android": {
+      "package": "com.canaleal.capstone",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
