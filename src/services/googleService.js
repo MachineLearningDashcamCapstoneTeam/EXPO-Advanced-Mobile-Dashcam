@@ -1,6 +1,6 @@
 import { GOOGLE_USER_INFO_URL } from '../constants';
 
-export const getGoogleUserInfo = async () => {
+export const getGoogleUserInfo = async (accessToken) => {
     const response = await fetch(GOOGLE_USER_INFO_URL, {
       method: 'GET',
       headers: {

@@ -5,8 +5,8 @@ import { Card, Title, Button, Text, Avatar } from 'react-native-paper';
 
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
-import { GOOGLE_CONFIG } from '../../constants';
-import { getGoogleUserInfo } from '../../services/googleService';
+import { GOOGLE_CONFIG } from '../constants';
+import { getGoogleUserInfo } from '../services/googleService';
 
 WebBrowser.maybeCompleteAuthSession();
 export const UserContext = createContext({});
@@ -17,21 +17,25 @@ function HomeScreen({ navigation }) {
   const [request, response, promptAsync] = Google.useAuthRequest(GOOGLE_CONFIG);
 
   useEffect(() => {
-    if (response?.type === "success") {
-      setAccessToken(response.authentication.accessToken);
-      if(user === undefined){
-        getUserData();
-      } 
-    }
+    checkIfUserLoggedIn();
   }, [response]);
 
-  const fetchGoogle = async () =>{
-    promptAsync({ useProxy: true, showInRecents: true })
-    getUserData();
+  // Check if the user already logged in with google
+  const checkIfUserLoggedIn = () =>{
+    if (response?.type === "success") {
+      setAccessToken(response.authentication.accessToken);
+      getUserData(); 
+    }
   }
 
+  // Start google Sign In and then get the user data
+  const fetchGoogle = async () =>{
+    await promptAsync({ useProxy: true, showInRecents: true })
+  }
+
+  // Fetch the user data from googles APIs and set the data
   const getUserData = async () => {
-    const data = await getGoogleUserInfo();
+    const data = await getGoogleUserInfo(accessToken);
     setUser(data)
   };
 
@@ -99,9 +103,9 @@ function HomeScreen({ navigation }) {
 
             {accessToken === undefined &&
               <Button
-                style={styles.button} icon="help-circle-outline" mode="outlined"
+                style={styles.button} icon="google" mode="outlined"
                 onPress={() => fetchGoogle()}>
-                Login
+                Login to Google Drive
               </Button>
             }
 

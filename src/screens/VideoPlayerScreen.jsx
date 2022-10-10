@@ -3,7 +3,7 @@ import * as MediaLibrary from 'expo-media-library'
 import { View, StyleSheet, Alert, ScrollView, Platform } from 'react-native';
 import { Card, Button, Title, Text } from 'react-native-paper';
 import { Video } from 'expo-av';
-import { timeStampToDate } from '../../utils/fetch-time';
+import { timeStampToDate } from '../utils/fetch-time';
 import { shareAsync } from 'expo-sharing';
 import * as FileSystem from 'expo-file-system';
 
