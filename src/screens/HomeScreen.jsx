@@ -75,7 +75,7 @@ function HomeScreen({ navigation }) {
 
 
   return (
-    <UserContext.Provider value={user}>
+    <UserContext.Provider value={accessToken}>
       <View style={styles.container}>
         <Card mode="elevated" style={styles.card}>
           <Card.Cover source={{ uri: 'https://www.vancouverplanner.com/wp-content/uploads/2019/07/sea-to-sky-highway.jpeg' }} />

@@ -10,7 +10,7 @@ import * as FileSystem from 'expo-file-system';
 import { UserContext } from "./HomeScreen";
 
 export default function VideoPlayerScreen({ route, navigation }) {
-  const user = useContext(UserContext);
+  const accessToken = useContext(UserContext);
   const { assetInfo } = route.params;
   
   const video = useRef(null);
@@ -18,7 +18,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
 
   useEffect(() => {
     console.log(assetInfo);
-    console.log(user);
+    console.log(accessToken);
   }, []);
 
   let shareVideo = async () => {
