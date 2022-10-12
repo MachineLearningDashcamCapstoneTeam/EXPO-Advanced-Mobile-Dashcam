@@ -2,16 +2,13 @@ import { Card, Button, Title, Paragraph, Text, Snackbar, Searchbar } from 'react
 import { StyleSheet, View, ScrollView } from 'react-native';
 import { useEffect, useState, useRef } from 'react';
 import * as MediaLibrary from 'expo-media-library';
-import { ALBUM_NAME } from '../../constants';
-import { timeStampToDate } from '../../utils/fetch-time';
-import { Video, AVPlaybackStatus } from 'expo-av';
+import { ALBUM_NAME } from '../constants';
+import { timeStampToDate } from '../utils/fetch-time';
 
 export default function VideoPickerScreen({ navigation }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [snackBarVisible, setSnackBarVisible] = useState(false);
   const [videos, setVideos] = useState([]);
-  const [album, setAlbum] = useState();
-  const [assetInfo, setAssetInfo] = useState();
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
 
   const setPermissions = async () => {
@@ -19,35 +16,32 @@ export default function VideoPickerScreen({ navigation }) {
     setHasMediaLibraryPermission(mediaLibraryPermission.status === "granted");
 
     if (mediaLibraryPermission.status === 'granted') {
-      console.log('Media Granted');
-
-      await MediaLibrary.getAlbumAsync(ALBUM_NAME).then((selectedAlbum) => {
-        setAlbum(selectedAlbum)
-        console.log("Album Title: " + selectedAlbum.title);
-        return selectedAlbum;
-      }).then((selectedAlbum) => {
-        MediaLibrary.getAssetsAsync({ album: selectedAlbum.id, mediaType: 'video' }).then((assets) => {
-          setVideos(assets['assets']);
-        }).catch((error) => {
-          console.error("getAssetsAsync failed");
-          console.error(error);
-        });
-      }).catch((error) => {
-        console.error("getAlbumAsync failed");
-        console.error(error);
-      });
-
+      getAlbumData();
     }
     else {
       console.log('Does not have Media Granted');
     }
+  }
 
+  const getAlbumData = async () => {
+    console.log('Media Granted');
+
+    await MediaLibrary.getAlbumAsync(ALBUM_NAME).then((selectedAlbum) => {
+      return selectedAlbum;
+    }).then((selectedAlbum) => {
+      MediaLibrary.getAssetsAsync({ album: selectedAlbum.id, mediaType: 'video' }).then((assets) => {
+        setVideos(assets['assets']);
+      }).catch((error) => {
+        console.error(error);
+      });
+    }).catch((error) => {
+      console.error(error);
+    });
   }
 
 
   const getInfo = async (asset, callback) => {
     await MediaLibrary.getAssetInfoAsync(asset).then((info) => {
-      setAssetInfo(info);
       callback(info);
     });
   }
@@ -61,7 +55,7 @@ export default function VideoPickerScreen({ navigation }) {
     };
   }, []);
 
-  let deleteVideo = (videoAsset) => {
+  const deleteVideo = (videoAsset) => {
     MediaLibrary.deleteAssetsAsync([videoAsset])
       .then((success) => {
         if (success) {
@@ -154,7 +148,7 @@ const styles = StyleSheet.create({
   button: {
     marginBottom: 5,
   },
-  bottomMargin:{
+  bottomMargin: {
     marginBottom: 10,
   }
 });

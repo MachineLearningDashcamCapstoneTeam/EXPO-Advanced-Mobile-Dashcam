@@ -2,6 +2,8 @@
 /* eslint-disable max-len */
 /* eslint-disable dot-notation */
 /* eslint-disable no-restricted-syntax */
+import { timeStampToDate } from '../utils/fetch-time';
+
 export const gpsJsonToGeojson = (data) => {
   const geojson = { type: 'FeatureCollection', features: [] };
   for (const point of data) {
@@ -22,5 +24,20 @@ export const gpsJsonToGeojson = (data) => {
   }
   return geojson;
 };
+
+
+export const gpsJsonToGoogleMarkers = (gpsData) =>{
+  let tempList = []
+        gpsData.features.forEach(function (gpsPoint) {
+            const point = {
+                latitude: gpsPoint.geometry.coordinates[1],
+                longitude: gpsPoint.geometry.coordinates[0],
+                title: 'GPS Point',
+                subtitle: timeStampToDate(gpsPoint.properties.timestamp)
+            }
+            tempList.push(point);
+        });
+  return tempList;
+}
 
 export default gpsJsonToGeojson;

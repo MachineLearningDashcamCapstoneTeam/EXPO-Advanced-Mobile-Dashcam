@@ -6,8 +6,8 @@ import { shareAsync } from 'expo-sharing';
 import * as MediaLibrary from 'expo-media-library';
 import * as Location from 'expo-location';
 import * as FileSystem from 'expo-file-system';
-import { ALBUM_NAME } from '../../constants';
-import { gpsJsonToGeojson } from '../../utils/geojson-utils';
+import { ALBUM_NAME } from '../constants';
+import { gpsJsonToGeojson } from '../utils/geojson-utils';
 import { Button, Text, Snackbar, SegmentedButtons, Divider } from 'react-native-paper';
 
 

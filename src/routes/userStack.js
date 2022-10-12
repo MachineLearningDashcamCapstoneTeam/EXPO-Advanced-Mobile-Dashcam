@@ -2,13 +2,13 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import HomeScreen from '../screens/private/HomeScreen';
-import CameraScreen from '../screens/private/CameraScreen';
-import VideoPickerScreen from '../screens/private/VideoPickerScreen';
-import SettingsScreen from '../screens/private/SettingsScreen';
-import VideoPlayerScreen from '../screens/private/VideoPlayerScreen';
-import MapScreen from '../screens/private/MapScreen';
-import HelpScreen from '../screens/private/HelpScreen';
+import HomeScreen from '../screens/HomeScreen';
+import CameraScreen from '../screens/CameraScreen';
+import VideoPickerScreen from '../screens/VideoPickerScreen';
+import SettingsScreen from '../screens/SettingsScreen';
+import VideoPlayerScreen from '../screens/VideoPlayerScreen';
+import MapScreen from '../screens/MapScreen';
+import HelpScreen from '../screens/HelpScreen';
 const Stack = createNativeStackNavigator();
 
 export default function UserStack() {

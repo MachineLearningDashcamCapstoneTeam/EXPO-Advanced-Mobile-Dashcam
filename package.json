@@ -34,7 +34,11 @@
     "react-native-paper": "^5.0.0-rc.6",
     "react-native-safe-area-context": "^3.4.1",
     "react-native-screens": "~3.15.0",
-    "react-native-maps": "0.31.1"
+    "react-native-maps": "0.31.1",
+    "expo-auth-session": "~3.7.1",
+    "expo-random": "~12.3.0",
+    "expo-google-app-auth": "~8.3.0",
+    "expo-web-browser": "~11.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
