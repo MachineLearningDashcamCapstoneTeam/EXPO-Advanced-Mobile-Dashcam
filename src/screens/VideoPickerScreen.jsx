@@ -5,6 +5,8 @@ import * as MediaLibrary from 'expo-media-library';
 import { ALBUM_NAME } from '../constants';
 import { timeStampToDate } from '../utils/fetch-time';
 
+import {sortByLengthShortToLong} from '../utils/sorting-video-assets';
+
 export default function VideoPickerScreen({ navigation }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [snackBarVisible, setSnackBarVisible] = useState(false);
@@ -71,10 +73,18 @@ export default function VideoPickerScreen({ navigation }) {
   }
 
   const onChangeSearch = query => setSearchQuery(query);
+  const sortByLengthASC = () => {
+    const tempList = videos;
+    console.log(videos)
+    const sortedArray = sortByLengthShortToLong(tempList)
+    console.log(tempList)
+    setVideos(sortedArray)
+  }
   return (
     <View style={styles.container}>
+      
 
-
+<Button style={styles.button}  mode="outlined" onPress={() => sortByLengthASC()} > Sort Short to Long</Button>
       <Searchbar
         placeholder="Search Videos"
         onChangeText={onChangeSearch}
