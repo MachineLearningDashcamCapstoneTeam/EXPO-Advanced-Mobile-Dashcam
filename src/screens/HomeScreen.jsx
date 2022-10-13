@@ -36,6 +36,7 @@ function HomeScreen({ navigation }) {
   // Fetch the user data from googles APIs and set the data
   const getUserData = async () => {
     const data = await getGoogleUserInfo(accessToken);
+    console.log(data)
     setUser(data)
   };
 
