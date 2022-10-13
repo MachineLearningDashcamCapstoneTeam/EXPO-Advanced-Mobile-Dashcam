@@ -5,7 +5,7 @@ import * as MediaLibrary from 'expo-media-library';
 import { ALBUM_NAME } from '../constants';
 import { timeStampToDate } from '../utils/fetch-time';
 
-import {sortByLengthShortToLong} from '../utils/sorting-video-assets';
+import {sortByLengthShortToLong, sortByLengthLongToShort} from '../utils/sorting-video-assets';
 
 export default function VideoPickerScreen({ navigation }) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -26,8 +26,6 @@ export default function VideoPickerScreen({ navigation }) {
   }
 
   const getAlbumData = async () => {
-    console.log('Media Granted');
-
     await MediaLibrary.getAlbumAsync(ALBUM_NAME).then((selectedAlbum) => {
       return selectedAlbum;
     }).then((selectedAlbum) => {
@@ -73,18 +71,37 @@ export default function VideoPickerScreen({ navigation }) {
   }
 
   const onChangeSearch = query => setSearchQuery(query);
+
   const sortByLengthASC = () => {
     const tempList = videos;
-    console.log(videos)
     const sortedArray = sortByLengthShortToLong(tempList)
-    console.log(tempList)
-    setVideos(sortedArray)
+    setVideos([...sortedArray])
   }
+
+  const sortByLengthDSC = () => {
+    const tempList = videos;
+    const sortedArray = sortByLengthLongToShort(tempList)
+    setVideos([...sortedArray])
+  }
+
+  // Todo Add the sort by ascending time here (sortByTimeOldestToRecent)
+
+
+  // Todo Add the sort by descending time here (sortByTimeRecentToOldest)
+
+
+  //! To reset the video list, use the sortByTimeRecentToOldest function
+  const resetVideoList = () =>{
+
+  }
+
   return (
     <View style={styles.container}>
       
 
-<Button style={styles.button}  mode="outlined" onPress={() => sortByLengthASC()} > Sort Short to Long</Button>
+      <Button style={styles.button}  mode="outlined" onPress={() => sortByLengthASC()} > Sort by Duration : Short to Long</Button>
+      <Button style={styles.button}  mode="outlined" onPress={() => sortByLengthDSC()} > Sort by Duration : Long to Short</Button>
+      
       <Searchbar
         placeholder="Search Videos"
         onChangeText={onChangeSearch}

@@ -17,6 +17,7 @@ function HomeScreen({ navigation }) {
   const [request, response, promptAsync] = Google.useAuthRequest(GOOGLE_CONFIG);
 
   useEffect(() => {
+    console.log(user);
     checkIfUserLoggedIn();
   }, [response]);
 
@@ -24,7 +25,9 @@ function HomeScreen({ navigation }) {
   const checkIfUserLoggedIn = () =>{
     if (response?.type === "success") {
       setAccessToken(response.authentication.accessToken);
-      getUserData(); 
+      if(user === undefined){
+        getUserData(); 
+      }  
     }
   }
 
@@ -36,7 +39,6 @@ function HomeScreen({ navigation }) {
   // Fetch the user data from googles APIs and set the data
   const getUserData = async () => {
     const data = await getGoogleUserInfo(accessToken);
-    console.log(data)
     setUser(data)
   };
 
