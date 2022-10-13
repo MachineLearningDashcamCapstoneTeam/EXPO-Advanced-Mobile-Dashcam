@@ -7,40 +7,52 @@ import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
 import { GOOGLE_CONFIG } from '../constants';
 import { getGoogleUserInfo } from '../services/googleService';
+import { getDashcamVideos, uploadDashcamVideos } from '../services/googleDriveService';
 
 WebBrowser.maybeCompleteAuthSession();
-export const UserContext = createContext({});
+export const UserContext = createContext();
 
 function HomeScreen({ navigation }) {
   const [user, setUser] = useState();
-  const [accessToken, setAccessToken] = useState();
+  const [accessToken, setAccessToken] = useState('Default');
   const [request, response, promptAsync] = Google.useAuthRequest(GOOGLE_CONFIG);
 
   useEffect(() => {
-    console.log(user);
     checkIfUserLoggedIn();
   }, [response]);
 
   // Check if the user already logged in with google
-  const checkIfUserLoggedIn = () =>{
+  const checkIfUserLoggedIn = () => {
     if (response?.type === "success") {
       setAccessToken(response.authentication.accessToken);
-      if(user === undefined){
-        getUserData(); 
-      }  
+      if (user === undefined) {
+        getUserData(response.authentication.accessToken);
+      }
     }
   }
 
   // Start google Sign In and then get the user data
-  const fetchGoogle = async () =>{
+  const fetchGoogle = async () => {
     await promptAsync({ useProxy: true, showInRecents: true })
   }
 
   // Fetch the user data from googles APIs and set the data
-  const getUserData = async () => {
-    const data = await getGoogleUserInfo(accessToken);
+  const getUserData = async (accessTokenValue) => {
+    const data = await getGoogleUserInfo(accessTokenValue);
     setUser(data)
   };
+
+  const getDriveFiles = async () => {
+
+    const response = await getDashcamVideos(accessToken);
+    if (response.status === 200) {
+      const files = response.data.files;
+      console.log("App.js | files", response.data.files);
+    }
+
+  };
+
+
 
   const showUserInfo = () => {
     if (user) {
@@ -112,13 +124,15 @@ function HomeScreen({ navigation }) {
               </Button>
             }
 
+          
+
           </Card.Content>
         </Card>
 
         {showUserInfo()}
 
       </View>
-    </UserContext.Provider>
+    </UserContext.Provider >
   );
 }
 

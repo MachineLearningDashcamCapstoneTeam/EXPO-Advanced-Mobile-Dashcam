@@ -1,13 +1,15 @@
 import { Card, Button, Title, Paragraph, Text, Snackbar, Searchbar } from 'react-native-paper';
 import { StyleSheet, View, ScrollView } from 'react-native';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef , useContext} from 'react';
 import * as MediaLibrary from 'expo-media-library';
 import { ALBUM_NAME } from '../constants';
 import { timeStampToDate } from '../utils/fetch-time';
 
 import {sortByLengthShortToLong, sortByLengthLongToShort} from '../utils/sorting-video-assets';
 
+import { UserContext } from "./HomeScreen";
 export default function VideoPickerScreen({ navigation }) {
+  const accessToken = useContext(UserContext);
   const [searchQuery, setSearchQuery] = useState('');
   const [snackBarVisible, setSnackBarVisible] = useState(false);
   const [videos, setVideos] = useState([]);
@@ -48,6 +50,7 @@ export default function VideoPickerScreen({ navigation }) {
 
 
   useEffect(() => {
+    console.log(accessToken);
     setPermissions();
     return () => {
       setHasMediaLibraryPermission(null);
