@@ -1,11 +1,18 @@
 
 //! Use the property (creationTime)
 export const sortByTimeRecentToOldest = (video_array) => {
+    const sortedArray = video_array.sort(
+        (objA, objB) => objB.creationTime - objA.creationTime,
+    );
+    return sortedArray
 
 }
 
 export const sortByTimeOldestToRecent = (video_array) => {
-
+    const sortedArray = video_array.sort(
+        (objA, objB) => objA.creationTime - objB.creationTime,
+    );
+    return sortedArray
 }
 
 export const sortByLengthShortToLong = (video_array) => {
@@ -23,10 +30,3 @@ export const sortByLengthLongToShort = (video_array) => {
 }
 
 
-//! File size does not exist in the object. I recommend deleting this function
-export const sortBySizeSmallToBig = (video_array) => {
-
-}
-export const sortBySizeBigToSmall = (video_array) => {
-
-}

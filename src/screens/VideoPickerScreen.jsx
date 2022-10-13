@@ -5,7 +5,7 @@ import * as MediaLibrary from 'expo-media-library';
 import { ALBUM_NAME } from '../constants';
 import { timeStampToDate } from '../utils/fetch-time';
 
-import {sortByLengthShortToLong, sortByLengthLongToShort} from '../utils/sorting-video-assets';
+import {sortByLengthShortToLong, sortByLengthLongToShort, sortByTimeRecentToOldest, ortByTimeOldestToRecent, sortByTimeOldestToRecent} from '../utils/sorting-video-assets';
 
 import { UserContext } from "./HomeScreen";
 export default function VideoPickerScreen({ navigation }) {
@@ -88,9 +88,20 @@ export default function VideoPickerScreen({ navigation }) {
   }
 
   // Todo Add the sort by ascending time here (sortByTimeOldestToRecent)
+const sortByTimeASC =() => {
+  const tempList = videos;
+  const sortedArray = sortByTimeOldestToRecent(tempList)
+  setVideos([...sortedArray])
 
+}
 
   // Todo Add the sort by descending time here (sortByTimeRecentToOldest)
+  const sortByTimeDSC=()=>{
+    const tempList = videos;
+    const sortedArray = sortByTimeRecentToOldest(tempList)
+    setVideos([...sortedArray])
+
+  }
 
 
   //! To reset the video list, use the sortByTimeRecentToOldest function
@@ -104,6 +115,8 @@ export default function VideoPickerScreen({ navigation }) {
 
       <Button style={styles.button}  mode="outlined" onPress={() => sortByLengthASC()} > Sort by Duration : Short to Long</Button>
       <Button style={styles.button}  mode="outlined" onPress={() => sortByLengthDSC()} > Sort by Duration : Long to Short</Button>
+      <Button style={styles.button}  mode="outlined" onPress={() => sortByTimeASC()} > Sort by Time : Oldest to Recent</Button>
+      <Button style={styles.button}  mode="outlined" onPress={() => sortByTimeDSC()} > Sort by Time : Recent to Oldest</Button>
       
       <Searchbar
         placeholder="Search Videos"
