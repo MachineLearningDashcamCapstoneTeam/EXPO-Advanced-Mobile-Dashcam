@@ -106,6 +106,9 @@ const sortByTimeASC =() => {
 
   //! To reset the video list, use the sortByTimeRecentToOldest function
   const resetVideoList = () =>{
+    const tempList = videos;
+    const sortedArray = sortByTimeRecentToOldest(tempList)
+    setVideos([...sortedArray])
 
   }
 
@@ -117,6 +120,7 @@ const sortByTimeASC =() => {
       <Button style={styles.button}  mode="outlined" onPress={() => sortByLengthDSC()} > Sort by Duration : Long to Short</Button>
       <Button style={styles.button}  mode="outlined" onPress={() => sortByTimeASC()} > Sort by Time : Oldest to Recent</Button>
       <Button style={styles.button}  mode="outlined" onPress={() => sortByTimeDSC()} > Sort by Time : Recent to Oldest</Button>
+      <Button style={styles.button}  mode="outlined" onPress={() => resetVideoList()} > Reset </Button>
       
       <Searchbar
         placeholder="Search Videos"
