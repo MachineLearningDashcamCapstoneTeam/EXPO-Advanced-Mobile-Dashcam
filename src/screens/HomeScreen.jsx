@@ -14,7 +14,7 @@ export const UserContext = createContext();
 
 function HomeScreen({ navigation }) {
   const [user, setUser] = useState();
-  const [accessToken, setAccessToken] = useState('Default');
+  const [accessToken, setAccessToken] = useState();
   const [request, response, promptAsync] = Google.useAuthRequest(GOOGLE_CONFIG);
 
   useEffect(() => {
@@ -116,7 +116,7 @@ function HomeScreen({ navigation }) {
               App Help
             </Button>
 
-            {accessToken === undefined &&
+            {user === undefined &&
               <Button
                 style={styles.button} icon="google" mode="outlined"
                 onPress={() => fetchGoogle()}>

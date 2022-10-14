@@ -5,7 +5,7 @@ import * as MediaLibrary from 'expo-media-library';
 import { ALBUM_NAME } from '../constants';
 import { timeStampToDate } from '../utils/fetch-time';
 
-import {sortByLengthShortToLong, sortByLengthLongToShort, sortByTimeRecentToOldest, ortByTimeOldestToRecent, sortByTimeOldestToRecent} from '../utils/sorting-video-assets';
+import {sortByLengthShortToLong, sortByLengthLongToShort, sortByTimeRecentToOldest, sortByTimeOldestToRecent} from '../utils/sorting-video-assets';
 
 import { UserContext } from "./HomeScreen";
 export default function VideoPickerScreen({ navigation }) {
@@ -32,7 +32,10 @@ export default function VideoPickerScreen({ navigation }) {
       return selectedAlbum;
     }).then((selectedAlbum) => {
       MediaLibrary.getAssetsAsync({ album: selectedAlbum.id, mediaType: 'video' }).then((assets) => {
-        setVideos(assets['assets']);
+
+        const tempList = assets['assets'];
+        const sortedArray = sortByTimeRecentToOldest(tempList)
+        setVideos([...sortedArray])
       }).catch((error) => {
         console.error(error);
       });
@@ -50,7 +53,6 @@ export default function VideoPickerScreen({ navigation }) {
 
 
   useEffect(() => {
-    console.log(accessToken);
     setPermissions();
     return () => {
       setHasMediaLibraryPermission(null);
