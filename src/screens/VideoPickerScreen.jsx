@@ -1,16 +1,15 @@
-import { Card, Button, Title, Paragraph, Text, Snackbar, Searchbar } from 'react-native-paper';
+import { Card, Button, Title, Text, Snackbar, Searchbar } from 'react-native-paper';
 import { StyleSheet, View, ScrollView } from 'react-native';
-import { useEffect, useState, useRef , useContext} from 'react';
+import { useEffect, useState, useContext } from 'react';
 import * as MediaLibrary from 'expo-media-library';
 import { ALBUM_NAME } from '../constants';
 import { timeStampToDate } from '../utils/fetch-time';
 
-import {sortByLengthShortToLong, sortByLengthLongToShort, sortByTimeRecentToOldest, sortByTimeOldestToRecent} from '../utils/sorting-video-assets';
+import { sortByLengthShortToLong, sortByLengthLongToShort, sortByTimeRecentToOldest, sortByTimeOldestToRecent } from '../utils/sorting-video-assets';
 
 import { UserContext } from "./HomeScreen";
 export default function VideoPickerScreen({ navigation }) {
   const accessToken = useContext(UserContext);
-  const [searchQuery, setSearchQuery] = useState('');
   const [snackBarVisible, setSnackBarVisible] = useState(false);
   const [videos, setVideos] = useState([]);
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
@@ -75,8 +74,6 @@ export default function VideoPickerScreen({ navigation }) {
       })
   }
 
-  const onChangeSearch = query => setSearchQuery(query);
-
   const sortByLengthASC = () => {
     const tempList = videos;
     const sortedArray = sortByLengthShortToLong(tempList)
@@ -90,15 +87,15 @@ export default function VideoPickerScreen({ navigation }) {
   }
 
   // Todo Add the sort by ascending time here (sortByTimeOldestToRecent)
-const sortByTimeASC =() => {
-  const tempList = videos;
-  const sortedArray = sortByTimeOldestToRecent(tempList)
-  setVideos([...sortedArray])
+  const sortByTimeASC = () => {
+    const tempList = videos;
+    const sortedArray = sortByTimeOldestToRecent(tempList)
+    setVideos([...sortedArray])
 
-}
+  }
 
   // Todo Add the sort by descending time here (sortByTimeRecentToOldest)
-  const sortByTimeDSC=()=>{
+  const sortByTimeDSC = () => {
     const tempList = videos;
     const sortedArray = sortByTimeRecentToOldest(tempList)
     setVideos([...sortedArray])
@@ -107,7 +104,7 @@ const sortByTimeASC =() => {
 
 
   //! To reset the video list, use the sortByTimeRecentToOldest function
-  const resetVideoList = () =>{
+  const resetVideoList = () => {
     const tempList = videos;
     const sortedArray = sortByTimeRecentToOldest(tempList)
     setVideos([...sortedArray])
@@ -116,20 +113,30 @@ const sortByTimeASC =() => {
 
   return (
     <View style={styles.container}>
-      
 
-      <Button style={styles.button}  mode="outlined" onPress={() => sortByLengthASC()} > Sort by Duration : Short to Long</Button>
-      <Button style={styles.button}  mode="outlined" onPress={() => sortByLengthDSC()} > Sort by Duration : Long to Short</Button>
-      <Button style={styles.button}  mode="outlined" onPress={() => sortByTimeASC()} > Sort by Time : Oldest to Recent</Button>
-      <Button style={styles.button}  mode="outlined" onPress={() => sortByTimeDSC()} > Sort by Time : Recent to Oldest</Button>
-      <Button style={styles.button}  mode="outlined" onPress={() => resetVideoList()} > Reset </Button>
+      <Button style={styles.button} icon="filter" mode="contained" onPress={() => resetVideoList()} > Reset </Button>
+      <View style={styles.buttonGroup}>
+        <View style={styles.buttonContainer}>
+          <Button style={styles.button} icon="filter" mode="outlined" onPress={() => sortByLengthASC()} >Short to Long</Button>
+        </View>
+        <View style={styles.buttonContainer}>
+          <Button style={styles.button} icon="filter" mode="outlined" onPress={() => sortByLengthDSC()} >Long to Short</Button>
+        </View>
+      </View>
+
+      <View style={styles.buttonGroup}>
+        <View style={styles.buttonContainer}>
+         
+      <Button style={styles.button} icon="filter" mode="outlined" onPress={() => sortByTimeASC()} >Oldest to Recent</Button>
       
-      <Searchbar
-        placeholder="Search Videos"
-        onChangeText={onChangeSearch}
-        value={searchQuery}
-        style={styles.search}
-      />
+        </View>
+        <View style={styles.buttonContainer}>
+        <Button style={styles.button} icon="filter" mode="outlined" onPress={() => sortByTimeDSC()} >Recent to Oldest</Button>
+
+        </View>
+      </View>
+
+
 
       <ScrollView >
         {
@@ -188,11 +195,16 @@ const styles = StyleSheet.create({
     flex: 1,
     margin: 10,
   },
-  search: {
-    marginBottom: 10,
-  },
   card: {
     marginBottom: 10,
+  },
+  buttonGroup: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  buttonContainer: {
+    flex: 1,
+    
   },
   button: {
     marginBottom: 5,
