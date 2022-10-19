@@ -30,12 +30,12 @@ export default function SettingsScreen({ navigation }) {
 
   ]);
 
-  const [selectedRecordingLength, setSelectedRecordingLength] = useState('80');
+  const [selectedRecordingLength, setSelectedRecordingLength] = useState('1');
   const [recordingLengths, setRecordingLengths] = useState([
-    { label: '20min', value: '20' },
-    { label: '40min', value: '40' },
-    { label: '60min', value: '60' },
-    { label: '80min', value: '80' },
+    { label: '1min', value: '1' },
+    { label: '3min', value: '3' },
+    { label: '6min', value: '6' },
+    { label: '10min', value: '10' },
   ]);
 
 

@@ -27,7 +27,7 @@ const CameraScreen = () => {
   const [selectedResolution, setSelectedResolution] = useState('480p');
   const [selectedCameraType, setSelectedCameraType] = useState('Back');
   const [selectedZoom, setSelectedZoom] = useState('0');
-  const [selectedRecordingLength, setSelectedRecordingLength] = useState('8');
+  const [selectedRecordingLength, setSelectedRecordingLength] = useState('1');
   const [selectedMaxVideoFileSize, setSelectedMaxVideoFileSize] = useState('0');
   const [selectedAutomaticRecording, setSelectedAutomaticRecording] = useState('false');
 
@@ -56,13 +56,23 @@ const CameraScreen = () => {
 
 
     setVideo(null);
-
-
+    console.log(`selectedAutomaticRecording ${selectedAutomaticRecording}`)
+    if(selectedAutomaticRecording === 'true'){   
+      recordVideo();
+    } 
   };
 
   let recordVideo = async () => {
 
     if (!cameraRef) return;
+
+    console.log('Camera Granted');
+    console.log(`Resolution ${selectedResolution}`)
+    console.log(`cam type ${selectedCameraType}`)
+    console.log(`zoom ${selectedZoom}`)
+    console.log(`record length ${selectedRecordingLength}`)
+    console.log(`max size ${selectedMaxVideoFileSize}`)
+    console.log(`auto record ${selectedAutomaticRecording}`)
 
     //* Clear Locations and Video
     setVideo(null);
@@ -142,7 +152,7 @@ const CameraScreen = () => {
       setSelectedRecordingLength(tempRecordingLength);
     }
     else {
-      setSelectedRecordingLength('80')
+      setSelectedRecordingLength('1')
     }
 
     const tempMaxVideoFileSize = await AsyncStorage.getItem('MaxVideoFileSize')
@@ -164,13 +174,7 @@ const CameraScreen = () => {
 
 
     if (cameraPermission && cameraRef !== undefined) {
-      console.log('Camera Granted');
-      console.log(`Resolution ${selectedResolution}`)
-      console.log(`cam type ${selectedCameraType}`)
-      console.log(`zoom ${selectedZoom}`)
-      console.log(`record length ${selectedRecordingLength}`)
-      console.log(`max size ${selectedMaxVideoFileSize}`)
-      console.log(`auto record ${selectedAutomaticRecording}`)
+     console.log('Camera Set')
     }
     else {
       console.log('Does not have Camera Granted');
@@ -204,8 +208,9 @@ const CameraScreen = () => {
 
 
   let stopRecording = () => {
-    cameraRef.current.stopRecording();
     setIsRecording(false);
+    cameraRef.current.stopRecording();
+  
   };
 
   return (
