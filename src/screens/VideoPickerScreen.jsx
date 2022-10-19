@@ -4,14 +4,14 @@ import { useEffect, useState, useContext } from 'react';
 import * as MediaLibrary from 'expo-media-library';
 import { ALBUM_NAME } from '../constants';
 import { timeStampToDate } from '../utils/fetch-time';
-
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { sortByLengthShortToLong, sortByLengthLongToShort, sortByTimeRecentToOldest, sortByTimeOldestToRecent } from '../utils/sorting-video-assets';
 
 import { UserContext } from "./HomeScreen";
 export default function VideoPickerScreen({ navigation }) {
-  const accessToken = useContext(UserContext);
   const [snackBarVisible, setSnackBarVisible] = useState(false);
   const [videos, setVideos] = useState([]);
+  const [savedFavoriteVideosIds, setSavedFavoriteVideosIds] = useState([]);
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
 
   const setPermissions = async () => {
@@ -38,6 +38,15 @@ export default function VideoPickerScreen({ navigation }) {
     }).catch((error) => {
       console.error(error);
     });
+
+
+    //* Load Favorite videos
+    const tempSavedFavoriteVideosIds = await AsyncStorage.getItem('FavoriteVideosIds');
+    if (tempSavedFavoriteVideosIds && tempSavedFavoriteVideosIds !== null) {
+      const tempSavedFavoriteVideosIdsArray = JSON.parse(tempSavedFavoriteVideosIds)
+      setSavedFavoriteVideosIds([...tempSavedFavoriteVideosIdsArray]);
+    }
+
   }
 
 
@@ -54,6 +63,36 @@ export default function VideoPickerScreen({ navigation }) {
       setVideos([]);
     };
   }, []);
+
+  const saveVideoToSavedVideoIds = async (videoAsset) => {
+    const result = savedFavoriteVideosIds.includes(videoAsset.id);
+    if (result === false) {
+
+      //* Video does not exist is saved videos list
+      const tempSavedFavoriteVideosIds = savedFavoriteVideosIds;
+      tempSavedFavoriteVideosIds.push(videoAsset.id);
+      const tempSavedFavoriteVideosIdsString = JSON.stringify(tempSavedFavoriteVideosIds);
+      await AsyncStorage.setItem('FavoriteVideosIds', tempSavedFavoriteVideosIdsString);
+
+      console.log(tempSavedFavoriteVideosIdsString)
+      setSavedFavoriteVideosIds([...tempSavedFavoriteVideosIds]);
+    }
+  }
+
+  const deleteVideoFromFavoriteVideos = async (videoAsset) => {
+    const result = savedFavoriteVideosIds.includes(videoAsset.id);
+    if (result) {
+
+      //* Video exists, delete from the favorites list
+      let tempSavedFavoriteVideosIds = savedFavoriteVideosIds;
+      tempSavedFavoriteVideosIds = tempSavedFavoriteVideosIds.filter(id => id !== videoAsset.id)
+      const tempSavedFavoriteVideosIdsString = JSON.stringify(tempSavedFavoriteVideosIds);
+      await AsyncStorage.setItem('FavoriteVideosIds', tempSavedFavoriteVideosIdsString);
+
+      console.log(tempSavedFavoriteVideosIdsString)
+      setSavedFavoriteVideosIds([...tempSavedFavoriteVideosIds]);
+    }
+  }
 
   const deleteVideo = (videoAsset) => {
     MediaLibrary.deleteAssetsAsync([videoAsset])
@@ -109,6 +148,22 @@ export default function VideoPickerScreen({ navigation }) {
 
   }
 
+  const getSaveOrDeleteFromFavoritesButton = (videoAsset) => {
+    const result = savedFavoriteVideosIds.includes(videoAsset.id);
+
+    if (result) {
+      return (<Button style={styles.button} icon="delete" mode="contained" onPress={() => deleteVideoFromFavoriteVideos(videoAsset)}>
+        Delete from Favorites
+      </Button>)
+    }
+    else {
+      return (<Button style={styles.button} icon="content-save" mode="contained" onPress={() => saveVideoToSavedVideoIds(videoAsset)}>
+        Add to Favorites
+      </Button>)
+    }
+
+  }
+
   return (
     <View style={styles.container}>
 
@@ -117,7 +172,7 @@ export default function VideoPickerScreen({ navigation }) {
       <Button style={styles.button} icon="filter" mode="outlined" onPress={() => sortByLengthDSC()} >Long to Short</Button>
       <Button style={styles.button} icon="filter" mode="outlined" onPress={() => sortByTimeASC()} >Oldest to Recent</Button>
       <Button style={styles.button} icon="filter" mode="outlined" onPress={() => sortByTimeDSC()} >Recent to Oldest</Button>
-     
+
 
       <ScrollView >
         {
@@ -148,6 +203,10 @@ export default function VideoPickerScreen({ navigation }) {
                 <Button style={styles.button} icon="eye" mode="contained" onPress={() => getInfo(videoAsset, (assetInfo) => navigation.navigate('VideoPlayer', { assetInfo: assetInfo }))}>
                   Preview
                 </Button>
+
+                {getSaveOrDeleteFromFavoritesButton(videoAsset)}
+
+
                 <Button style={styles.button} icon="delete" mode="outlined" onPress={() => deleteVideo(videoAsset)} > Delete</Button>
 
               </Card.Content>
