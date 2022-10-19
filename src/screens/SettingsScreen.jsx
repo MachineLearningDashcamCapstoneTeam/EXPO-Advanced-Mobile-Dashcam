@@ -3,6 +3,7 @@ import { StyleSheet, View, ScrollView , Alert} from 'react-native';
 import { useEffect, useState, useRef } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Card, Button, Title, Text, Snackbar, SegmentedButtons, Divider } from 'react-native-paper';
+import GlobalStyles from '../styles/global-styles';
 
 export default function SettingsScreen({ navigation }) {
 
@@ -128,9 +129,9 @@ export default function SettingsScreen({ navigation }) {
 
 
   return (
-    <View style={styles.container}>
+    <View style={GlobalStyles.container}>
       <ScrollView >
-        <Card mode="elevated" style={styles.card}>
+        <Card mode="elevated" style={GlobalStyles.card}>
         <Card.Cover source={{ uri: 'https://cdn.hswstatic.com/gif/car-engine-new1.jpg' }} />
           <Card.Content>
             <Title>Camera</Title>
@@ -143,7 +144,7 @@ export default function SettingsScreen({ navigation }) {
               value={selectedResolution}
               onValueChange={setSelectedResolution}
               buttons={resolutions}
-              style={styles.group}
+              style={GlobalStyles.bottomMargin}
             />
 
 
@@ -154,7 +155,7 @@ export default function SettingsScreen({ navigation }) {
               value={selectedCameraType}
               onValueChange={setSelectedCameraType}
               buttons={cameraTypes}
-              style={styles.group}
+              style={GlobalStyles.bottomMargin}
             />
 
             <Text variant='labelSmall'>
@@ -164,7 +165,7 @@ export default function SettingsScreen({ navigation }) {
               value={selectedZoom}
               onValueChange={setSelectedZoom}
               buttons={zooms}
-              style={styles.group}
+              style={GlobalStyles.bottomMargin}
             />
 
             <Text variant='labelSmall'>
@@ -174,7 +175,7 @@ export default function SettingsScreen({ navigation }) {
               value={selectedAutomaticRecording}
               onValueChange={setSelectedAutomaticRecording}
               buttons={automaticRecordings}
-              style={styles.group}
+              style={GlobalStyles.bottomMargin}
             />
 
             <Text variant='labelSmall'>
@@ -184,7 +185,7 @@ export default function SettingsScreen({ navigation }) {
               value={selectedRecordingLength}
               onValueChange={setSelectedRecordingLength}
               buttons={recordingLengths}
-              style={styles.group}
+              style={GlobalStyles.bottomMargin}
             />
 
             <Text variant='labelSmall'>
@@ -194,15 +195,15 @@ export default function SettingsScreen({ navigation }) {
               value={selectedMaxVideoFileSize}
               onValueChange={setSelectedMaxVideoFileSize}
               buttons={maxVideoFileSizes}
-              style={styles.group}
+              style={GlobalStyles.bottomMargin}
             />
 
-            <Button style={styles.button} icon="content-save" mode="contained" onPress={() => saveSetting()}>
+            <Button style={GlobalStyles.button} icon="content-save" mode="contained" onPress={() => saveSetting()}>
               Save
             </Button>
 
 
-            <Button style={styles.button} icon="restart" mode="outlined" >
+            <Button style={GlobalStyles.button} icon="restart" mode="outlined" >
               Reset to Default
             </Button>
           </Card.Content>
@@ -218,28 +219,3 @@ export default function SettingsScreen({ navigation }) {
 
 
 
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#244c98'
-  },
-  card: {
-    marginBottom: 0,
-  },
-  button: {
-    marginVertical: 5,
-  },
-  group: {
-    marginBottom: 5,
-  },
-  attention: { 
-    flex: 1, 
-    margin: 10,
-    backgroundColor: "#244c98", 
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: 'white',
-  }
-
-});

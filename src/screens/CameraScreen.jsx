@@ -10,6 +10,7 @@ import { ALBUM_NAME } from '../constants';
 import { gpsJsonToGeojson } from '../utils/geojson-utils';
 import { Button, Text, Snackbar, SegmentedButtons, Divider } from 'react-native-paper';
 
+import GlobalStyles from '../styles/global-styles';
 
 const CameraScreen = () => {
   let cameraRef = useRef();
@@ -214,11 +215,11 @@ const CameraScreen = () => {
   };
 
   return (
-    <View style={styles.camera}>
+    <View style={GlobalStyles.camera}>
 
-      <Camera style={styles.camera} ref={cameraRef} onCameraReady={selectedAutomaticRecording === 'true' ? recordVideo : null} quality={selectedResolution} type={selectedCameraType === 'Back' ? CameraType.back : CameraType.front} >
-        <View style={styles.buttonContainer}>
-          <Button style={styles.button} icon="camera" mode="contained" onPress={isRecording ? stopRecording : recordVideo} >{isRecording ? "Stop Recording" : "Record Video"} </Button>
+      <Camera style={GlobalStyles.camera} ref={cameraRef} onCameraReady={selectedAutomaticRecording === 'true' ? recordVideo : null} quality={selectedResolution} type={selectedCameraType === 'Back' ? CameraType.back : CameraType.front} >
+        <View style={GlobalStyles.buttonContainer}>
+          <Button style={GlobalStyles.button} icon="camera" mode="contained" onPress={isRecording ? stopRecording : recordVideo} >{isRecording ? "Stop Recording" : "Record Video"} </Button>
         </View>
       </Camera>
 
@@ -235,22 +236,5 @@ const CameraScreen = () => {
 
   );
 }
-
-const styles = StyleSheet.create({
-  camera: {
-    flex: 1,
-  },
-  container: {
-    flex: 1,
-    margin: 10,
-  },
-  video: {
-    flex: 1,
-    alignSelf: "stretch"
-  },
-  button: {
-    marginBottom: 5,
-  }
-});
 
 export default CameraScreen;

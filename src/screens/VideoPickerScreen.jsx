@@ -1,4 +1,4 @@
-import { Card, Button, Title, Text, Searchbar } from 'react-native-paper';
+import { Card, Button, Title, Text, IconButton, MD3Colors } from 'react-native-paper';
 import { StyleSheet, View, ScrollView, Alert } from 'react-native';
 import { useEffect, useState, useContext } from 'react';
 import * as MediaLibrary from 'expo-media-library';
@@ -10,6 +10,7 @@ import { getDashcamVideos, uploadDashcamVideos , deleteGoogleDriveFile} from '..
 import { AccessContext } from '../context/accessTokenContext';
 
 import GoogleVideoCard from '../widget/googleVideoCard';
+import GlobalStyles from '../styles/global-styles';
 
 export default function VideoPickerScreen({ navigation }) {
 
@@ -63,9 +64,9 @@ export default function VideoPickerScreen({ navigation }) {
   }
 
 
-  const getInfo = async (asset, callback) => {
+  const getInfo = async (asset) => {
     await MediaLibrary.getAssetInfoAsync(asset).then((info) => {
-      callback(info);
+      navigation.navigate('VideoPlayer', { assetInfo: info });
     });
   }
 
@@ -196,12 +197,12 @@ export default function VideoPickerScreen({ navigation }) {
     const result = savedFavoriteVideosIds.includes(videoAsset.id);
 
     if (result) {
-      return (<Button style={styles.button} icon="delete" mode="contained" onPress={() => deleteVideoFromFavoriteVideos(videoAsset)}>
+      return (<Button style={[GlobalStyles.buttonDanger, GlobalStyles.button]} icon="delete" mode="contained" onPress={() => deleteVideoFromFavoriteVideos(videoAsset)}>
         Delete from Favorites
       </Button>)
     }
     else {
-      return (<Button style={styles.button} icon="content-save" mode="contained" onPress={() => saveVideoToSavedVideoIds(videoAsset)}>
+      return (<Button style={[GlobalStyles.buttonSuccess, GlobalStyles.button]} icon="heart" mode="contained" onPress={() => saveVideoToSavedVideoIds(videoAsset)}>
         Add to Favorites
       </Button>)
     }
@@ -213,18 +214,18 @@ export default function VideoPickerScreen({ navigation }) {
 
       return (
         <View>
-          <Button style={styles.button} icon="filter" mode="contained" onPress={() => resetVideoList()} > Reset </Button>
-          <Button style={styles.button} icon="filter" mode="outlined" onPress={() => sortByLengthASC()} >Short to Long</Button>
-          <Button style={styles.button} icon="filter" mode="outlined" onPress={() => sortByLengthDSC()} >Long to Short</Button>
-          <Button style={styles.button} icon="filter" mode="outlined" onPress={() => sortByTimeASC()} >Oldest to Recent</Button>
-          <Button style={styles.button} icon="filter" mode="outlined" onPress={() => sortByTimeDSC()} >Recent to Oldest</Button>
+          {/* <Button style={GlobalStyles.button} icon="filter" mode="contained" onPress={() => resetVideoList()} > Reset </Button>
+          <Button style={GlobalStyles.button} icon="filter" mode="outlined" onPress={() => sortByLengthASC()} >Short to Long</Button>
+          <Button style={GlobalStyles.button} icon="filter" mode="outlined" onPress={() => sortByLengthDSC()} >Long to Short</Button>
+          <Button style={GlobalStyles.button} icon="filter" mode="outlined" onPress={() => sortByTimeASC()} >Oldest to Recent</Button>
+          <Button style={GlobalStyles.button} icon="filter" mode="outlined" onPress={() => sortByTimeDSC()} >Recent to Oldest</Button> */}
 
 
-          <ScrollView style={styles.bottomMargin}>
+          <ScrollView style={GlobalStyles.bottomMargin}>
             {
               videos.map((videoAsset) =>
 
-                <Card key={videoAsset.id} mode="elevated" style={styles.card}>
+                <Card key={videoAsset.id} mode="elevated" style={GlobalStyles.card}>
                   <Card.Cover source={{ uri: videoAsset.uri }} />
                   <Card.Content>
                     <Title>{videoAsset.id}</Title>
@@ -243,18 +244,18 @@ export default function VideoPickerScreen({ navigation }) {
                       Media Type: {videoAsset.mediaType}
                     </Text>
 
-                    <Text style={styles.bottomMargin} variant='labelSmall'>
+                    <Text style={GlobalStyles.bottomMargin} variant='labelSmall'>
                       Size: {videoAsset.height} x {videoAsset.width}
                     </Text>
 
-                    <Button style={styles.button} icon="eye" mode="contained" onPress={() => getInfo(videoAsset, (assetInfo) => navigation.navigate('VideoPlayer', { assetInfo: assetInfo }))}>
-                      Preview
+                    <Button style={GlobalStyles.button} icon="eye" mode="contained" onPress={() => getInfo(videoAsset)}>
+                      View
                     </Button>
 
                     {getSaveOrDeleteFromFavoritesButton(videoAsset)}
 
 
-                    <Button style={styles.button} icon="delete" mode="outlined" onPress={() => deleteVideo(videoAsset)} > Delete</Button>
+                    <Button style={GlobalStyles.button} icon="delete" mode="outlined" onPress={() => deleteVideo(videoAsset)} > Delete</Button>
 
                   </Card.Content>
                 </Card>
@@ -281,38 +282,32 @@ export default function VideoPickerScreen({ navigation }) {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={GlobalStyles.container}>
 
-      {accessTokenContextValue &&
-        <Button style={styles.button} icon="filter" mode="outlined" onPress={() => selectedMenu === 0 ? setSelectedMenu(1) : setSelectedMenu(0)} >{selectedMenu === 0 ? 'Cloud Videos' : 'Local Videos'}</Button>
+     
+
+
+    <View style={[GlobalStyles.header, GlobalStyles.flex2]}>
+        <Title style={GlobalStyles.whiteText}>{selectedMenu === 0 ? 'Local Videos' : 'Cloud Videos'}</Title>
+
+        <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant='labelLarge'>
+          The application is currently in development. If something breaks, just contact the development team.
+        </Text>
+
+        {accessTokenContextValue &&
+        <Button style={GlobalStyles.button} icon="filter" mode="elevated" onPress={() => selectedMenu === 0 ? setSelectedMenu(1) : setSelectedMenu(0)} >{selectedMenu === 0 ? 'Cloud Videos' : 'Local Videos'}</Button>
       }
+      </View>
+     
+      
+
+      <View  style={GlobalStyles.flex5}>  
 
       {videoWidgets()}
+
+      </View>
+
 
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    margin: 10,
-  },
-  card: {
-    marginBottom: 10,
-  },
-  buttonGroup: {
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  },
-  buttonContainer: {
-    flex: 1,
-
-  },
-  button: {
-    marginBottom: 5,
-  },
-  bottomMargin: {
-    marginBottom: 10,
-  }
-});

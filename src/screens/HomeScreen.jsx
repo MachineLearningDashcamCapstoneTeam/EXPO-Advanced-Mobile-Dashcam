@@ -8,7 +8,8 @@ import * as WebBrowser from 'expo-web-browser';
 import { GOOGLE_CONFIG } from '../constants';
 import { getGoogleUserInfo } from '../services/googleService';
 
-import { AccessContext  } from '../context/accessTokenContext';
+import { AccessContext } from '../context/accessTokenContext';
+import GlobalStyles from '../styles/global-styles';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -19,7 +20,7 @@ function HomeScreen({ navigation }) {
   const [accessToken, setAccessToken] = useState();
   const [request, response, promptAsync] = Google.useAuthRequest(GOOGLE_CONFIG);
 
-  
+
   useEffect(() => {
     checkIfUserLoggedIn();
   }, [response]);
@@ -46,129 +47,92 @@ function HomeScreen({ navigation }) {
     setUser(data)
   };
 
- 
+
   //* Show the user details only if the user exists. If not, show the default menu
   const showUserInfo = () => {
     if (user) {
       return (
-        <View style={styles.attention}>
-          <Title style={styles.whiteText}>
+        <View style={[GlobalStyles.attention, GlobalStyles.flex3]}>
+          <Text variant='titleLarge' style={GlobalStyles.whiteText}>
             {user.name}
-          </Title>
-          <Text variant='labelSmall' style={styles.whiteText}>
+          </Text>
+          <Text variant='labelLarge' style={GlobalStyles.whiteText}>
             {user.email}
           </Text>
-          <Avatar.Image style={{ marginVertical: 10 }} size={64} source={{ uri: user.picture }} />
-          <Text variant='labelSmall' style={{ color: 'white', marginVertical: 10 }}>
+          <Avatar.Image style={{ marginVertical: 10 }} size={96} source={{ uri: user.picture }} />
+          <Text variant='labelLarge' style={{ color: 'white', marginVertical: 10 }}>
             With Google, you'll be able to share your data to Google Drive with one click on the preview screen.
           </Text>
 
-          {/* <Button style={styles.button} icon="camera" mode="elevated" onPress={uploadDriveFiles}>
-              Upload To drive
-            </Button> */}
         </View>
       );
     }
     else {
       return (
-        <View style={styles.attention}>
-          <Title style={styles.whiteText}>
+        <View style={[GlobalStyles.attention, GlobalStyles.flex3]}>
+          <Title style={GlobalStyles.whiteText}>
             Uploading to the Cloud
           </Title>
-          <Text variant='labelSmall' style={styles.whiteText}>
+          <Text variant='labelLarge' style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]}>
             Want to upload your videos to the cloud? Use the share button in the preview screen or if you signed in, use the upload to Google Drive button instead.
           </Text>
-          <Text variant='labelSmall' style={{ color: 'white', marginVertical: 10 }}>
-            - Advanced Mobile Dashcam
-          </Text>
+
+
+          <Button
+            style={GlobalStyles.button} icon="google" mode="elevated"
+            onPress={() => fetchGoogle()}>
+            Login to Google Drive
+          </Button>
         </View>
       );
     }
   }
 
-  const showLoginButton = () => {
-    if (user) {
-     return null
-    }
-    else {
-      return <Button
-        style={styles.button} icon="google" mode="outlined"
-        onPress={() => fetchGoogle()}>
-        Login to Google Drive
-      </Button>
-    }
-  }
 
 
   return (
-   
-      <View style={styles.container}>
-        <Card mode="elevated" style={styles.card}>
-          <Card.Cover source={{ uri: 'https://www.vancouverplanner.com/wp-content/uploads/2019/07/sea-to-sky-highway.jpeg' }} />
-          <Card.Content>
-            <Title>Attention Drivers!</Title>
-            <Text style={styles.bottomMargin} variant='labelSmall'>
-              The application is currently in development. If something breaks, just contact the development team.
-            </Text>
 
-            <Button style={styles.button} icon="camera" mode="contained" onPress={() => navigation.navigate('Camera')}>
-              Camera
-            </Button>
+    <View style={GlobalStyles.container}>
 
-            <Button style={styles.button} icon="format-list-bulleted" mode="contained" onPress={() => navigation.navigate('VideoPicker')}>
-              Videos
-            </Button>
 
-            <Button style={styles.button} icon="cog" mode="outlined" onPress={() => navigation.navigate('Settings')}>
-              Settings
-            </Button>
+      <View style={[GlobalStyles.header, GlobalStyles.flex1]}>
+        <Title style={GlobalStyles.whiteText}>Attention Drivers!</Title>
 
-            <Button style={styles.button} icon="help-circle-outline" mode="outlined" onPress={() => navigation.navigate('Help')}>
-              App Help
-            </Button>
+        <Text style={GlobalStyles.whiteText} variant='labelLarge'>
+          The application is currently in development. If something breaks, just contact the development team.
+        </Text>
+      </View>
 
-            {showLoginButton()}
 
-          </Card.Content>
-        </Card>
+      <View style={[GlobalStyles.divWhite, GlobalStyles.paddingYsm, GlobalStyles.divSpaceBetween, GlobalStyles.flex3]}>
 
-        {showUserInfo()}
+
+        <Button style={GlobalStyles.button} icon="camera" mode="contained" onPress={() => navigation.navigate('Camera')}>
+          Camera
+        </Button>
+
+        <Button style={GlobalStyles.button} icon="format-list-bulleted" mode="outlined" onPress={() => navigation.navigate('VideoPicker')}>
+          Videos
+        </Button>
+
+        <Button style={GlobalStyles.button} icon="cog" mode="outlined" onPress={() => navigation.navigate('Settings')}>
+          Settings
+        </Button>
+
+        <Button style={GlobalStyles.button} icon="help-circle-outline" mode="outlined" onPress={() => navigation.navigate('Help')}>
+          App Help
+        </Button>
+
 
       </View>
-  
+
+
+      {showUserInfo()}
+
+    </View>
+
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#244c98'
-  },
-  mainContainer: {
-    //flex: 1,
-  },
-  button: {
-    marginBottom: 5,
-  },
-  bottomMargin: {
-    marginBottom: 10,
-  },
-  card: {
-
-    //flex: 2,
-  },
-  attention: {
-    //flex: 1, 
-    margin: 10,
-    backgroundColor: "#244c98",
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: 'white',
-
-  },
-  whiteText: {
-    color: 'white'
-  }
-});
 
 export default HomeScreen;

@@ -6,10 +6,10 @@ import { Video } from 'expo-av';
 import { timeStampToDate } from '../utils/fetch-time';
 import { shareAsync } from 'expo-sharing';
 import * as FileSystem from 'expo-file-system';
+import GlobalStyles from '../styles/global-styles';
 
 export default function VideoPlayerScreen({ route, navigation }) {
   const { assetInfo } = route.params;
-
   const video = useRef(null);
   const [status, setStatus] = useState({});
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
@@ -57,20 +57,20 @@ export default function VideoPlayerScreen({ route, navigation }) {
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={GlobalStyles.container}>
 
-      <View style={styles.header}>
+      <View style={GlobalStyles.header}>
         <Title style={{ color: 'white' }}>
           {assetInfo.id}
         </Title>
       </View>
 
-      <Card key={assetInfo.id} mode="elevated" style={styles.card}>
+      <Card key={assetInfo.id} mode="elevated" style={GlobalStyles.card}>
         <Card.Content>
 
           <Video
             ref={video}
-            style={styles.video}
+            style={GlobalStyles.video}
             source={{ uri: (Platform.OS === "android") ? assetInfo.uri : assetInfo.localUri }}
             useNativeControls
             resizeMode='contain'
@@ -100,21 +100,21 @@ export default function VideoPlayerScreen({ route, navigation }) {
             Size: {assetInfo.height} x {assetInfo.width}
           </Text>
 
-          <Text style={styles.bottomMargin} variant='labelSmall'>
+          <Text style={GlobalStyles.bottomMargin} variant='labelSmall'>
             Path: {assetInfo.uri}
           </Text>
 
 
-          <Button style={styles.button} mode="contained" onPress={() =>
+          <Button style={GlobalStyles.button} mode="contained" onPress={() =>
             status.isPlaying ? video.current.pauseAsync() : video.current.playAsync()
           }
 
             icon={status.isPlaying ? 'pause' : 'play'}
           >{status.isPlaying ? 'Pause' : 'Play'}</Button>
 
-          <Button style={styles.button} icon="share" mode="outlined" onPress={shareVideo} > Share</Button>
-          <Button style={styles.button} icon="delete" mode="outlined" onPress={deleteVideo} > Delete</Button>
-          <Button style={styles.button} icon="map" mode="outlined" onPress={() => navigation.navigate('Map', { assetInfo: assetInfo })} > Map</Button>
+          <Button style={GlobalStyles.button} icon="share" mode="outlined" onPress={shareVideo} > Share</Button>
+          <Button style={GlobalStyles.button} icon="delete" mode="outlined" onPress={deleteVideo} > Delete</Button>
+          <Button style={GlobalStyles.button} icon="map" mode="outlined" onPress={() => navigation.navigate('Map', { assetInfo: assetInfo })} > Map</Button>
 
         </Card.Content>
 
@@ -126,32 +126,3 @@ export default function VideoPlayerScreen({ route, navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    //flex: 1,
-    backgroundColor: '#244c98'
-  },
-  video: {
-    alignSelf: "stretch",
-    width: window.full,
-    height: 350,
-    marginBottom: 10,
-  },
-  bottomMargin: {
-    marginBottom: 10,
-  },
-  button: {
-    marginBottom: 5,
-  },
-  card: {
-    //flex: 1,
-  },
-  header: {
-    padding: 10,
-    backgroundColor: "#244c98",
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: 'white',
-  }
-
-});
