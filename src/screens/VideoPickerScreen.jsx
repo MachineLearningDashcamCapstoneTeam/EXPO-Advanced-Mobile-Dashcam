@@ -1,5 +1,5 @@
-import { Card, Button, Title, Text, Snackbar, Searchbar } from 'react-native-paper';
-import { StyleSheet, View, ScrollView } from 'react-native';
+import { Card, Button, Title, Text, Searchbar } from 'react-native-paper';
+import { StyleSheet, View, ScrollView , Alert} from 'react-native';
 import { useEffect, useState, useContext } from 'react';
 import * as MediaLibrary from 'expo-media-library';
 import { ALBUM_NAME } from '../constants';
@@ -9,7 +9,6 @@ import { sortByLengthShortToLong, sortByLengthLongToShort, sortByTimeRecentToOld
 
 import { UserContext } from "./HomeScreen";
 export default function VideoPickerScreen({ navigation }) {
-  const [snackBarVisible, setSnackBarVisible] = useState(false);
   const [videos, setVideos] = useState([]);
   const [savedFavoriteVideosIds, setSavedFavoriteVideosIds] = useState([]);
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
@@ -76,6 +75,8 @@ export default function VideoPickerScreen({ navigation }) {
 
       console.log(tempSavedFavoriteVideosIdsString)
       setSavedFavoriteVideosIds([...tempSavedFavoriteVideosIds]);
+
+      Alert.alert("Added video to Favorites");
     }
   }
 
@@ -91,6 +92,8 @@ export default function VideoPickerScreen({ navigation }) {
 
       console.log(tempSavedFavoriteVideosIdsString)
       setSavedFavoriteVideosIds([...tempSavedFavoriteVideosIds]);
+
+      Alert.alert("Deleted video from Favorites");
     }
   }
 
@@ -101,12 +104,18 @@ export default function VideoPickerScreen({ navigation }) {
           let tempList = videos;
           tempList = tempList.filter(item => item.id !== videoAsset.id)
           setVideos(tempList);
-          setSnackBarVisible(true);
+
+          //* Also delete the video from favorites
+          deleteVideoFromFavoriteVideos(videoAsset);
+
+          Alert.alert("Video successfully deleted");
 
         } else {
-          console.log("Failed to delete video");
+          Alert.alert("Failed to delete video");
         }
       })
+
+   
   }
 
   //* Sort the videos and reset the initial video list
@@ -215,15 +224,6 @@ export default function VideoPickerScreen({ navigation }) {
         }
 
 
-        <Snackbar
-          visible={snackBarVisible}
-          onDismiss={() => setSnackBarVisible(false)}
-          duration={3000}
-          action={{
-            label: 'Close',
-          }}>
-          Video Deleted
-        </Snackbar>
 
       </ScrollView>
     </View>

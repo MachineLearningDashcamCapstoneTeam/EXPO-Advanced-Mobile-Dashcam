@@ -1,13 +1,10 @@
 
-import { StyleSheet, View, ScrollView } from 'react-native';
+import { StyleSheet, View, ScrollView , Alert} from 'react-native';
 import { useEffect, useState, useRef } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Card, Button, Title, Text, Snackbar, SegmentedButtons, Divider } from 'react-native-paper';
 
 export default function SettingsScreen({ navigation }) {
-
-  const [snackBarVisible, setSnackBarVisible] = useState(false);
-  const onDismissSnackBar = () => setSnackBarVisible(false);
 
   const [selectedResolution, setSelectedResolution] = useState('480p');
   const [resolutions, setResolutions] = useState([
@@ -65,7 +62,7 @@ export default function SettingsScreen({ navigation }) {
       await AsyncStorage.setItem('RecordingLength', selectedRecordingLength);
       await AsyncStorage.setItem('MaxVideoFileSize', selectedMaxVideoFileSize);
       await AsyncStorage.setItem('AutomaticRecording', selectedAutomaticRecording);
-      setSnackBarVisible(true);
+      Alert.alert("Saved all Settings");
 
     } catch (e) {
 
@@ -213,18 +210,6 @@ export default function SettingsScreen({ navigation }) {
         </Card>
 
 
-
-
-
-        <Snackbar
-          visible={snackBarVisible}
-          onDismiss={onDismissSnackBar}
-          duration={3000}
-          action={{
-            label: 'Close',
-          }}>
-          Saved Settings to Local Storage
-        </Snackbar>
       </ScrollView>
       
     </View>
