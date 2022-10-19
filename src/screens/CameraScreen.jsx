@@ -38,12 +38,13 @@ const CameraScreen = () => {
     if (!cameraRef) return;
 
     setSnackBarVisible(true);
-    // Clear Locations and Video
+    //* Clear Locations and Video
     setLocations([]);
     setVideo(null);
     setAlreadySaved(false);
-    // Set Location subscription
-    // Get location every second (1000 milliseconds)
+    
+    //* Set Location subscription
+    //* Get location every second (1000 milliseconds)
     const tempLocations = [];
     let locSub = await Location.watchPositionAsync({
       accuracy: Location.Accuracy.High,
@@ -55,7 +56,7 @@ const CameraScreen = () => {
       }
     );
 
-    // Set the camera options
+    //* Set the camera options and made sure exif data is set
     let cameraOptions = {
       quality: selectedResolution,
       maxDuration: parseInt(selectedRecordingLength) * 60,

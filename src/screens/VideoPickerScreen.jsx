@@ -18,11 +18,9 @@ export default function VideoPickerScreen({ navigation }) {
     const mediaLibraryPermission = await MediaLibrary.requestPermissionsAsync();
     setHasMediaLibraryPermission(mediaLibraryPermission.status === "granted");
 
+    //* If the user has permission, load the video data
     if (mediaLibraryPermission.status === 'granted') {
       getAlbumData();
-    }
-    else {
-      console.log('Does not have Media Granted');
     }
   }
 
@@ -31,7 +29,6 @@ export default function VideoPickerScreen({ navigation }) {
       return selectedAlbum;
     }).then((selectedAlbum) => {
       MediaLibrary.getAssetsAsync({ album: selectedAlbum.id, mediaType: 'video' }).then((assets) => {
-
         const tempList = assets['assets'];
         const sortedArray = sortByTimeRecentToOldest(tempList)
         setVideos([...sortedArray])
@@ -49,7 +46,6 @@ export default function VideoPickerScreen({ navigation }) {
       callback(info);
     });
   }
-
 
   useEffect(() => {
     setPermissions();
@@ -74,19 +70,21 @@ export default function VideoPickerScreen({ navigation }) {
       })
   }
 
+  //* Sort the videos and reset the initial video list
   const sortByLengthASC = () => {
     const tempList = videos;
     const sortedArray = sortByLengthShortToLong(tempList)
     setVideos([...sortedArray])
   }
 
+  //* Sort the videos and reset the initial video list
   const sortByLengthDSC = () => {
     const tempList = videos;
     const sortedArray = sortByLengthLongToShort(tempList)
     setVideos([...sortedArray])
   }
 
-  // Todo Add the sort by ascending time here (sortByTimeOldestToRecent)
+  //* Sort the videos and reset the initial video list
   const sortByTimeASC = () => {
     const tempList = videos;
     const sortedArray = sortByTimeOldestToRecent(tempList)
@@ -94,7 +92,7 @@ export default function VideoPickerScreen({ navigation }) {
 
   }
 
-  // Todo Add the sort by descending time here (sortByTimeRecentToOldest)
+  //* Sort the videos and reset the initial video list
   const sortByTimeDSC = () => {
     const tempList = videos;
     const sortedArray = sortByTimeRecentToOldest(tempList)
@@ -103,7 +101,7 @@ export default function VideoPickerScreen({ navigation }) {
   }
 
 
-  //! To reset the video list, use the sortByTimeRecentToOldest function
+  //* To reset the video list, use the sortByTimeRecentToOldest function
   const resetVideoList = () => {
     const tempList = videos;
     const sortedArray = sortByTimeRecentToOldest(tempList)
@@ -115,28 +113,11 @@ export default function VideoPickerScreen({ navigation }) {
     <View style={styles.container}>
 
       <Button style={styles.button} icon="filter" mode="contained" onPress={() => resetVideoList()} > Reset </Button>
-      <View style={styles.buttonGroup}>
-        <View style={styles.buttonContainer}>
-          <Button style={styles.button} icon="filter" mode="outlined" onPress={() => sortByLengthASC()} >Short to Long</Button>
-        </View>
-        <View style={styles.buttonContainer}>
-          <Button style={styles.button} icon="filter" mode="outlined" onPress={() => sortByLengthDSC()} >Long to Short</Button>
-        </View>
-      </View>
-
-      <View style={styles.buttonGroup}>
-        <View style={styles.buttonContainer}>
-         
+      <Button style={styles.button} icon="filter" mode="outlined" onPress={() => sortByLengthASC()} >Short to Long</Button>
+      <Button style={styles.button} icon="filter" mode="outlined" onPress={() => sortByLengthDSC()} >Long to Short</Button>
       <Button style={styles.button} icon="filter" mode="outlined" onPress={() => sortByTimeASC()} >Oldest to Recent</Button>
-      
-        </View>
-        <View style={styles.buttonContainer}>
-        <Button style={styles.button} icon="filter" mode="outlined" onPress={() => sortByTimeDSC()} >Recent to Oldest</Button>
-
-        </View>
-      </View>
-
-
+      <Button style={styles.button} icon="filter" mode="outlined" onPress={() => sortByTimeDSC()} >Recent to Oldest</Button>
+     
 
       <ScrollView >
         {
@@ -204,7 +185,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flex: 1,
-    
+
   },
   button: {
     marginBottom: 5,

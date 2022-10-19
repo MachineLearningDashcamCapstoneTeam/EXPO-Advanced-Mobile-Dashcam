@@ -117,7 +117,6 @@ export const uploadDashcamVideos = async (accessToken) => {
     export const getDashcamVideos = async (accessToken) => {
         try {
             const response = await getGoogleDriveFolders(accessToken);
-            console.log(response);
             if (response.status === 200) {
                 const cameraFolder = getObjectsWhereKeyEqualsValue(response.data.files, 'name', 'Dashcam')[0];
                 const documentsResponse = await getGoogleDriveFiles(accessToken, cameraFolder.id);

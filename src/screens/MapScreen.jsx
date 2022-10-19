@@ -19,13 +19,13 @@ const MapScreen = ({ route, navigation }) => {
 
     let loadGPSData = async () => {
 
-        // Get the file from the documents directory
+        //* Get the file from the documents directory
         const filename = `${FileSystem.documentDirectory}${assetInfo.filename}.txt`;
         const result = await FileSystem.readAsStringAsync(filename, {
             encoding: FileSystem.EncodingType.UTF8
         });
 
-        // Get the gps data from json and set the initial map location
+        //* Get the gps data from json and set the initial map location
         const gpsData = JSON.parse(result);
         setMapRegion({
             latitude: gpsData.features[0].geometry.coordinates[1],
@@ -34,7 +34,7 @@ const MapScreen = ({ route, navigation }) => {
             longitudeDelta: 0.0421,
         })
 
-        // Create the google gps markers using the gps data
+        //* Create the google gps markers using the gps data
         const gpsMarkers = gpsJsonToGoogleMarkers(gpsData);
         setMarkers(gpsMarkers);
     };
@@ -59,8 +59,14 @@ const MapScreen = ({ route, navigation }) => {
 
     return (
         <View style={styles.container}>
-            <MapView style={styles.map} region={mapRegion} showsBuildings={true} showsTraffic={true} showsMyLocationButton={true} mapType={'terrain'} showsCompass={true} toolbarEnabled={true}>
-
+            <MapView style={styles.map}
+                region={mapRegion}
+                showsBuildings={true}
+                showsTraffic={true}
+                showsMyLocationButton={true}
+                mapType={'terrain'}
+                showsCompass={true}
+                toolbarEnabled={true}>
 
                 {markers &&
                     markers.map((marker, index) => (

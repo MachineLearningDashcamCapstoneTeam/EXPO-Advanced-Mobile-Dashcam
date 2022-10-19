@@ -11,6 +11,8 @@ import MapScreen from '../screens/MapScreen';
 import HelpScreen from '../screens/HelpScreen';
 const Stack = createNativeStackNavigator();
 
+//* The user stack contains all the screen that users can access
+//* An authentication stack can be added if we need to setup a login and sign up system
 export default function UserStack() {
   return (
     <NavigationContainer>

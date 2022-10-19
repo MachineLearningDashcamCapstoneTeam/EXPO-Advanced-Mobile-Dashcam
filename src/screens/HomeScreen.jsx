@@ -53,7 +53,7 @@ function HomeScreen({ navigation }) {
   };
 
 
-
+  //* Show the user details only if the user exists. If not, show the default menu
   const showUserInfo = () => {
     if (user) {
       return (
@@ -88,6 +88,19 @@ function HomeScreen({ navigation }) {
     }
   }
 
+  const showLoginButton = () => {
+    if (user) {
+     return null
+    }
+    else {
+      return <Button
+        style={styles.button} icon="google" mode="outlined"
+        onPress={() => fetchGoogle()}>
+        Login to Google Drive
+      </Button>
+    }
+  }
+
 
   return (
     <UserContext.Provider value={accessToken}>
@@ -116,15 +129,7 @@ function HomeScreen({ navigation }) {
               App Help
             </Button>
 
-            {user === undefined &&
-              <Button
-                style={styles.button} icon="google" mode="outlined"
-                onPress={() => fetchGoogle()}>
-                Login to Google Drive
-              </Button>
-            }
-
-          
+            {showLoginButton()}
 
           </Card.Content>
         </Card>

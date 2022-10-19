@@ -1,11 +1,10 @@
 
-//! Use the property (creationTime)
+
 export const sortByTimeRecentToOldest = (video_array) => {
     const sortedArray = video_array.sort(
         (objA, objB) => objB.creationTime - objA.creationTime,
     );
     return sortedArray
-
 }
 
 export const sortByTimeOldestToRecent = (video_array) => {
