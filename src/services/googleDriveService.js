@@ -104,10 +104,13 @@ export const uploadDashcamVideos = async (accessToken) => {
                 'mimeType': 'text/plain', // mimeType at Google Drive
                 'parents': [`${cameraFolder.id}`], // Folder ID at Google Drive
             };
+
+            console.log(metadata)
             let form = new FormData();
             form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
             form.append('file', file);
    
+            console.log(file)
             const uploadResponse = await uploadGoogleDriveFile(accessToken, form);
             return uploadResponse;
 

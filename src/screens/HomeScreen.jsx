@@ -52,6 +52,16 @@ function HomeScreen({ navigation }) {
 
   };
 
+  const uploadDriveFiles = async () => {
+
+   
+    const response = await uploadDashcamVideos(accessToken);
+    if (response.status === 200) {
+      console.log('Succ');
+    }
+
+  };
+
 
   //* Show the user details only if the user exists. If not, show the default menu
   const showUserInfo = () => {
@@ -68,6 +78,10 @@ function HomeScreen({ navigation }) {
           <Text variant='labelSmall' style={{ color: 'white', marginVertical: 10 }}>
             With Google, you'll be able to share your data to Google Drive with one click on the preview screen.
           </Text>
+
+          <Button style={styles.button} icon="camera" mode="elevated" onPress={uploadDriveFiles}>
+              Upload To drive
+            </Button>
         </View>
       );
     }
