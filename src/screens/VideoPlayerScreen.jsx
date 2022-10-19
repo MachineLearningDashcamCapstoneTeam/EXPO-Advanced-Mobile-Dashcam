@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useContext  } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import * as MediaLibrary from 'expo-media-library'
 import { View, StyleSheet, Alert, ScrollView, Platform } from 'react-native';
 import { Card, Button, Title, Text } from 'react-native-paper';
@@ -7,18 +7,22 @@ import { timeStampToDate } from '../utils/fetch-time';
 import { shareAsync } from 'expo-sharing';
 import * as FileSystem from 'expo-file-system';
 
-import { UserContext } from "./HomeScreen";
-
 export default function VideoPlayerScreen({ route, navigation }) {
-  const accessToken = useContext(UserContext);
   const { assetInfo } = route.params;
-  
+
   const video = useRef(null);
   const [status, setStatus] = useState({});
+  const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
+
+
+  const setPermissions = async () => {
+
+    const mediaLibraryPermission = await MediaLibrary.requestPermissionsAsync();
+    setHasMediaLibraryPermission(mediaLibraryPermission.status === "granted");
+  }
 
   useEffect(() => {
-    console.log(assetInfo);
-    console.log(accessToken);
+    setPermissions();
   }, []);
 
   let shareVideo = async () => {
@@ -37,15 +41,19 @@ export default function VideoPlayerScreen({ route, navigation }) {
   };
 
   let deleteVideo = () => {
-    MediaLibrary.deleteAssetsAsync([assetInfo.id])
-      .then((success) => {
-        if (success) {
-          Alert.alert("Video successfully deleted");
-          navigation.goBack();
-        } else {
-          Alert.alert("Failed to delete video");
-        }
-      })
+    //* If the user has permission, load the video data
+    if (hasMediaLibraryPermission) {
+      MediaLibrary.deleteAssetsAsync([assetInfo.id])
+        .then((success) => {
+          if (success) {
+            Alert.alert("Video successfully deleted");
+            navigation.goBack();
+          } else {
+            Alert.alert("Failed to delete video");
+          }
+        })
+    }
+
   }
 
   return (
@@ -63,7 +71,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
           <Video
             ref={video}
             style={styles.video}
-            source={{ uri: (Platform.OS === "android") ? assetInfo.uri : assetInfo.localUri}}
+            source={{ uri: (Platform.OS === "android") ? assetInfo.uri : assetInfo.localUri }}
             useNativeControls
             resizeMode='contain'
             isLooping
@@ -135,7 +143,7 @@ const styles = StyleSheet.create({
   button: {
     marginBottom: 5,
   },
-  card:{
+  card: {
     //flex: 1,
   },
   header: {

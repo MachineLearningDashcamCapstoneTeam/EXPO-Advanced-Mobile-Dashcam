@@ -21,6 +21,7 @@ export default function VideoPickerScreen({ navigation }) {
   const [files, setFiles] = useState([]);
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
 
+  //
   const setPermissions = async () => {
 
     const mediaLibraryPermission = await MediaLibrary.requestPermissionsAsync();
