@@ -23,8 +23,6 @@ const CameraScreen = () => {
 
   const [isRecording, setIsRecording] = useState(false);
   const [video, setVideo] = useState();
-  const [alreadySaved, setAlreadySaved] = useState(false);
-  const [locations, setLocations] = useState([]);
 
   const [selectedResolution, setSelectedResolution] = useState('480p');
   const [selectedCameraType, setSelectedCameraType] = useState('Back');
@@ -33,22 +31,48 @@ const CameraScreen = () => {
   const [selectedMaxVideoFileSize, setSelectedMaxVideoFileSize] = useState('0');
   const [selectedAutomaticRecording, setSelectedAutomaticRecording] = useState('false');
 
+  const saveVideoData = async (recordedVideo, gpsLocations) => {
+
+
+    const expoAlbum = await MediaLibrary.getAlbumAsync(ALBUM_NAME)
+    const video_asset = await MediaLibrary.createAssetAsync(recordedVideo.uri);
+    const filename = `${FileSystem.documentDirectory}${video_asset.filename}.txt`;
+
+    const gpsData = gpsJsonToGeojson(gpsLocations)
+    await FileSystem.writeAsStringAsync(filename, JSON.stringify(gpsData), {
+      encoding: FileSystem.EncodingType.UTF8
+    });
+
+    if (expoAlbum) {
+      await MediaLibrary.addAssetsToAlbumAsync([video_asset], expoAlbum.id).then((result) => {
+        console.log(result)
+      });
+
+    } else {
+      await MediaLibrary.createAlbumAsync(ALBUM_NAME, video_asset).then((result) => {
+        console.log(result)
+      });
+    }
+
+
+    setVideo(null);
+
+
+  };
+
   let recordVideo = async () => {
 
     if (!cameraRef) return;
 
-    setSnackBarVisible(true);
     //* Clear Locations and Video
-    setLocations([]);
     setVideo(null);
-    setAlreadySaved(false);
-    
+
     //* Set Location subscription
     //* Get location every second (1000 milliseconds)
     const tempLocations = [];
     let locSub = await Location.watchPositionAsync({
       accuracy: Location.Accuracy.High,
-      timeInterval: 100,
+      timeInterval: 1000,
       distanceInterval: 0
     },
       (location) => {
@@ -69,7 +93,8 @@ const CameraScreen = () => {
       setVideo(recordedVideo);
       setIsRecording(false);
       locSub.remove();
-      setLocations(tempLocations);
+      saveVideoData(recordedVideo, tempLocations)
+
     }).catch((error) => {
       console.error(error);
     });
@@ -165,8 +190,6 @@ const CameraScreen = () => {
 
       setIsRecording(false);
       setVideo(null);
-      setLocations([]);
-      setAlreadySaved(false);
 
     };
   }, []);
@@ -185,68 +208,11 @@ const CameraScreen = () => {
     setIsRecording(false);
   };
 
-
-  if (video) {
-
-    const saveData = async () => {
-
-      if (alreadySaved === false) {
-        const expoAlbum = await MediaLibrary.getAlbumAsync(ALBUM_NAME)
-        const video_asset = await MediaLibrary.createAssetAsync(video.uri);
-        const filename = `${FileSystem.documentDirectory}${video_asset.filename}.txt`;
-
-        await FileSystem.writeAsStringAsync(filename, JSON.stringify(gpsJsonToGeojson(locations)), {
-          encoding: FileSystem.EncodingType.UTF8
-        });
-
-        if (expoAlbum) {
-          await MediaLibrary.addAssetsToAlbumAsync([video_asset], expoAlbum.id).then((result) => {
-            console.log(result)
-          });
-
-        } else {
-          await MediaLibrary.createAlbumAsync(ALBUM_NAME, video_asset).then((result) => {
-            console.log(result)
-          });
-        }
-
-        
-        setVideo(null);
-        setAlreadySaved(true);
-      }
-      else {
-        console.log('Already Saved')
-      }
-
-    };
-
-
-
-    return (
-      <SafeAreaView style={styles.container}>
-        <Video
-          style={styles.video}
-          source={{ uri: video.uri }}
-          useNativeControls
-          resizeMode='contain'
-          isLooping
-        />
-
-        {hasMediaLibraryPermission ?
-          <Button style={styles.button} icon="content-save" mode="contained" onPress={saveData} >Save </Button>
-          : undefined}
-
-        <Button style={styles.button} icon="camera" mode="outlined" onPress={() => setVideo(undefined)} >Discard </Button>
-      </SafeAreaView>
-    );
-  }
-
   return (
     <View style={styles.camera}>
 
       <Camera style={styles.camera} ref={cameraRef} onCameraReady={selectedAutomaticRecording === 'true' ? recordVideo : null} quality={selectedResolution} type={selectedCameraType === 'Back' ? CameraType.back : CameraType.front} >
         <View style={styles.buttonContainer}>
-         
           <Button style={styles.button} icon="camera" mode="contained" onPress={isRecording ? stopRecording : recordVideo} >{isRecording ? "Stop Recording" : "Record Video"} </Button>
         </View>
       </Camera>
@@ -266,7 +232,7 @@ const CameraScreen = () => {
 }
 
 const styles = StyleSheet.create({
-  camera:{
+  camera: {
     flex: 1,
   },
   container: {

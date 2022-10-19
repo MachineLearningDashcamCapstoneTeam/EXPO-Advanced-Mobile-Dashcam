@@ -27,6 +27,8 @@ const MapScreen = ({ route, navigation }) => {
 
         //* Get the gps data from json and set the initial map location
         const gpsData = JSON.parse(result);
+
+        console.log(gpsData)
         setMapRegion({
             latitude: gpsData.features[0].geometry.coordinates[1],
             longitude: gpsData.features[0].geometry.coordinates[0],

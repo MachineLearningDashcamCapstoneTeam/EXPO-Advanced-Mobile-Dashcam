@@ -5,8 +5,10 @@
 import { timeStampToDate } from '../utils/fetch-time';
 
 export const gpsJsonToGeojson = (data) => {
+
   const geojson = { type: 'FeatureCollection', features: [] };
-  for (const point of data) {
+
+  data.forEach(function (point) {
     const coordinate = [point.coords.longitude, point.coords.latitude];
     const properties = {
       "accuracy": point.coords.accuracy,
@@ -21,7 +23,8 @@ export const gpsJsonToGeojson = (data) => {
     };
     const feature = { type: 'Feature', geometry: { type: 'Point', coordinates: coordinate }, properties };
     geojson.features.push(feature);
-  }
+  });
+
   return geojson;
 };
 
