@@ -1,19 +1,28 @@
 import { Card, Button, Title, Text, Searchbar } from 'react-native-paper';
-import { StyleSheet, View, ScrollView , Alert} from 'react-native';
+import { StyleSheet, View, ScrollView, Alert } from 'react-native';
 import { useEffect, useState, useContext } from 'react';
 import * as MediaLibrary from 'expo-media-library';
 import { ALBUM_NAME } from '../constants';
 import { timeStampToDate } from '../utils/fetch-time';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { sortByLengthShortToLong, sortByLengthLongToShort, sortByTimeRecentToOldest, sortByTimeOldestToRecent } from '../utils/sorting-video-assets';
+import { getDashcamVideos, uploadDashcamVideos , deleteGoogleDriveFile} from '../services/googleDriveService';
+import { AccessContext } from '../context/accessTokenContext';
 
-import { UserContext } from "./HomeScreen";
+import GoogleVideoCard from '../widget/googleVideoCard';
+
 export default function VideoPickerScreen({ navigation }) {
+
+  const { accessTokenContextValue, setAccessTokenContextValue } = useContext(AccessContext);
+
+  const [selectedMenu, setSelectedMenu] = useState(0);
   const [videos, setVideos] = useState([]);
   const [savedFavoriteVideosIds, setSavedFavoriteVideosIds] = useState([]);
+  const [files, setFiles] = useState([]);
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
 
   const setPermissions = async () => {
+
     const mediaLibraryPermission = await MediaLibrary.requestPermissionsAsync();
     setHasMediaLibraryPermission(mediaLibraryPermission.status === "granted");
 
@@ -44,6 +53,10 @@ export default function VideoPickerScreen({ navigation }) {
     if (tempSavedFavoriteVideosIds && tempSavedFavoriteVideosIds !== null) {
       const tempSavedFavoriteVideosIdsArray = JSON.parse(tempSavedFavoriteVideosIds)
       setSavedFavoriteVideosIds([...tempSavedFavoriteVideosIdsArray]);
+    }
+
+    if (accessTokenContextValue) {
+      getDriveFiles();
     }
 
   }
@@ -115,7 +128,7 @@ export default function VideoPickerScreen({ navigation }) {
         }
       })
 
-   
+
   }
 
   //* Sort the videos and reset the initial video list
@@ -157,6 +170,27 @@ export default function VideoPickerScreen({ navigation }) {
 
   }
 
+
+  //* Google drive conditions
+  const getDriveFiles = async () => {
+    const response = await getDashcamVideos(accessTokenContextValue);
+    if (response.status === 200) {
+      console.log("App.js | files", response.data.files);
+      setFiles(response.data.files)
+    }
+  };
+
+  
+  const deleteDriveFile = async (file) => {
+		const response = await deleteGoogleDriveFile(accessTokenContextValue, file.id);
+		if(response.status === 204){
+			let tempList = files;
+			tempList = tempList.filter(item => item.id !== file.id);
+			setFiles([...tempList])
+      Alert.alert("Deleted video from Google Drive");
+		}
+	}
+
   const getSaveOrDeleteFromFavoritesButton = (videoAsset) => {
     const result = savedFavoriteVideosIds.includes(videoAsset.id);
 
@@ -173,59 +207,87 @@ export default function VideoPickerScreen({ navigation }) {
 
   }
 
+  const videoWidgets = () => {
+    if (selectedMenu === 0) {
+
+      return (
+        <View>
+          <Button style={styles.button} icon="filter" mode="contained" onPress={() => resetVideoList()} > Reset </Button>
+          <Button style={styles.button} icon="filter" mode="outlined" onPress={() => sortByLengthASC()} >Short to Long</Button>
+          <Button style={styles.button} icon="filter" mode="outlined" onPress={() => sortByLengthDSC()} >Long to Short</Button>
+          <Button style={styles.button} icon="filter" mode="outlined" onPress={() => sortByTimeASC()} >Oldest to Recent</Button>
+          <Button style={styles.button} icon="filter" mode="outlined" onPress={() => sortByTimeDSC()} >Recent to Oldest</Button>
+
+
+          <ScrollView style={styles.bottomMargin}>
+            {
+              videos.map((videoAsset) =>
+
+                <Card key={videoAsset.id} mode="elevated" style={styles.card}>
+                  <Card.Cover source={{ uri: videoAsset.uri }} />
+                  <Card.Content>
+                    <Title>{videoAsset.id}</Title>
+
+
+                    <Text variant='labelSmall'>
+                      Created: {timeStampToDate(videoAsset.creationTime)}
+                    </Text>
+
+
+                    <Text variant='labelSmall'>
+                      Duration: {videoAsset.duration}s
+                    </Text>
+
+                    <Text variant='labelSmall'>
+                      Media Type: {videoAsset.mediaType}
+                    </Text>
+
+                    <Text style={styles.bottomMargin} variant='labelSmall'>
+                      Size: {videoAsset.height} x {videoAsset.width}
+                    </Text>
+
+                    <Button style={styles.button} icon="eye" mode="contained" onPress={() => getInfo(videoAsset, (assetInfo) => navigation.navigate('VideoPlayer', { assetInfo: assetInfo }))}>
+                      Preview
+                    </Button>
+
+                    {getSaveOrDeleteFromFavoritesButton(videoAsset)}
+
+
+                    <Button style={styles.button} icon="delete" mode="outlined" onPress={() => deleteVideo(videoAsset)} > Delete</Button>
+
+                  </Card.Content>
+                </Card>
+              )
+            }
+
+          </ScrollView>
+        </View>
+      )
+    }
+    else {
+      return (
+
+        <ScrollView>
+          {files.map((file) =>
+          ((file.fileExtension === "MP4" || file.fileExtension === "mp4" || file.fileExtension === 'jpg') &&
+            <GoogleVideoCard file={file} deleteDriveFile={deleteDriveFile} />
+          )
+          )}
+        </ScrollView>
+
+      )
+    }
+  }
+
   return (
     <View style={styles.container}>
 
-      <Button style={styles.button} icon="filter" mode="contained" onPress={() => resetVideoList()} > Reset </Button>
-      <Button style={styles.button} icon="filter" mode="outlined" onPress={() => sortByLengthASC()} >Short to Long</Button>
-      <Button style={styles.button} icon="filter" mode="outlined" onPress={() => sortByLengthDSC()} >Long to Short</Button>
-      <Button style={styles.button} icon="filter" mode="outlined" onPress={() => sortByTimeASC()} >Oldest to Recent</Button>
-      <Button style={styles.button} icon="filter" mode="outlined" onPress={() => sortByTimeDSC()} >Recent to Oldest</Button>
+      {accessTokenContextValue &&
+        <Button style={styles.button} icon="filter" mode="outlined" onPress={() => selectedMenu === 0 ? setSelectedMenu(1) : setSelectedMenu(0)} >{selectedMenu === 0 ? 'Cloud Videos' : 'Local Videos'}</Button>
+      }
 
+      {videoWidgets()}
 
-      <ScrollView >
-        {
-          videos.map((videoAsset) =>
-            <Card key={videoAsset.id} mode="elevated" style={styles.card}>
-              <Card.Cover source={{ uri: videoAsset.uri }} />
-              <Card.Content>
-                <Title>{videoAsset.id}</Title>
-
-
-                <Text variant='labelSmall'>
-                  Created: {timeStampToDate(videoAsset.creationTime)}
-                </Text>
-
-
-                <Text variant='labelSmall'>
-                  Duration: {videoAsset.duration}s
-                </Text>
-
-                <Text variant='labelSmall'>
-                  Media Type: {videoAsset.mediaType}
-                </Text>
-
-                <Text style={styles.bottomMargin} variant='labelSmall'>
-                  Size: {videoAsset.height} x {videoAsset.width}
-                </Text>
-
-                <Button style={styles.button} icon="eye" mode="contained" onPress={() => getInfo(videoAsset, (assetInfo) => navigation.navigate('VideoPlayer', { assetInfo: assetInfo }))}>
-                  Preview
-                </Button>
-
-                {getSaveOrDeleteFromFavoritesButton(videoAsset)}
-
-
-                <Button style={styles.button} icon="delete" mode="outlined" onPress={() => deleteVideo(videoAsset)} > Delete</Button>
-
-              </Card.Content>
-            </Card>
-          )
-        }
-
-
-
-      </ScrollView>
     </View>
   );
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useEffect, useState, createContext } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Card, Title, Button, Text, Avatar } from 'react-native-paper';
 
@@ -7,24 +7,28 @@ import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
 import { GOOGLE_CONFIG } from '../constants';
 import { getGoogleUserInfo } from '../services/googleService';
-import { getDashcamVideos, uploadDashcamVideos } from '../services/googleDriveService';
+
+import { AccessContext  } from '../context/accessTokenContext';
 
 WebBrowser.maybeCompleteAuthSession();
-export const UserContext = createContext();
+
 
 function HomeScreen({ navigation }) {
+  const { accessTokenContextValue, setAccessTokenContextValue } = useContext(AccessContext);
   const [user, setUser] = useState();
   const [accessToken, setAccessToken] = useState();
   const [request, response, promptAsync] = Google.useAuthRequest(GOOGLE_CONFIG);
 
+  
   useEffect(() => {
     checkIfUserLoggedIn();
   }, [response]);
 
-  // Check if the user already logged in with google
+  //* Check if the user already logged in with google
   const checkIfUserLoggedIn = () => {
     if (response?.type === "success") {
       setAccessToken(response.authentication.accessToken);
+      setAccessTokenContextValue(response.authentication.accessToken);
       if (user === undefined) {
         getUserData(response.authentication.accessToken);
       }
@@ -42,27 +46,7 @@ function HomeScreen({ navigation }) {
     setUser(data)
   };
 
-  const getDriveFiles = async () => {
-
-    const response = await getDashcamVideos(accessToken);
-    if (response.status === 200) {
-      const files = response.data.files;
-      console.log("App.js | files", response.data.files);
-    }
-
-  };
-
-  const uploadDriveFiles = async () => {
-
-   
-    const response = await uploadDashcamVideos(accessToken);
-    if (response.status === 200) {
-      console.log('Succ');
-    }
-
-  };
-
-
+ 
   //* Show the user details only if the user exists. If not, show the default menu
   const showUserInfo = () => {
     if (user) {
@@ -79,9 +63,9 @@ function HomeScreen({ navigation }) {
             With Google, you'll be able to share your data to Google Drive with one click on the preview screen.
           </Text>
 
-          <Button style={styles.button} icon="camera" mode="elevated" onPress={uploadDriveFiles}>
+          {/* <Button style={styles.button} icon="camera" mode="elevated" onPress={uploadDriveFiles}>
               Upload To drive
-            </Button>
+            </Button> */}
         </View>
       );
     }
@@ -117,7 +101,7 @@ function HomeScreen({ navigation }) {
 
 
   return (
-    <UserContext.Provider value={accessToken}>
+   
       <View style={styles.container}>
         <Card mode="elevated" style={styles.card}>
           <Card.Cover source={{ uri: 'https://www.vancouverplanner.com/wp-content/uploads/2019/07/sea-to-sky-highway.jpeg' }} />
@@ -151,7 +135,7 @@ function HomeScreen({ navigation }) {
         {showUserInfo()}
 
       </View>
-    </UserContext.Provider >
+  
   );
 }
 
