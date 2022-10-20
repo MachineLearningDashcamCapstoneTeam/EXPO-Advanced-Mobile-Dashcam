@@ -10,7 +10,7 @@ const GoogleVideoCard = ({ file, deleteDriveFile }) => {
 
     const openBrowser = async () => {
         await WebBrowser.openBrowserAsync(file.webViewLink);
-      };
+    };
 
     return (
         <Card key={file.id} mode="elevated" style={GlobalStyles.card}>

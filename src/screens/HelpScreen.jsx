@@ -8,7 +8,6 @@ const HelpScreen = () => {
     return (
         <View style={GlobalStyles.container}>
 
-
             <View style={[GlobalStyles.divDark, GlobalStyles.header, GlobalStyles.flex1]}>
                 <Title style={GlobalStyles.whiteText}>Need Help?</Title>
 
@@ -27,18 +26,14 @@ const HelpScreen = () => {
 
 
             <View style={[GlobalStyles.divDark, GlobalStyles.attention, GlobalStyles.flex1]}>
-            <Title style={GlobalStyles.whiteText}>
-               Need more Help?
-            </Title>
-            <Text variant='labelLarge' style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]}>
-                Contact us at: XYZ
-            </Text>
-
+                <Title style={GlobalStyles.whiteText}>
+                    Need more Help?
+                </Title>
+                <Text variant='labelLarge' style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]}>
+                    Contact us at: XYZ
+                </Text>
 
             </View>
-
-
-
         </View>
     )
 }

@@ -12,6 +12,7 @@ import { Button, Text, Snackbar, SegmentedButtons, Divider } from 'react-native-
 import {useKeepAwake} from 'expo-keep-awake';
 import {activateKeepAwake, deactivateKeepAwake} from 'expo-keep-awake';
 import GlobalStyles from '../styles/global-styles';
+import ErrorCameraCard from '../widget/errorCameraCard';
 
 const CameraScreen = () => {
 
@@ -191,15 +192,11 @@ useKeepAwake();
 
 
   useEffect(() => {
+
+    //* Activate keep awake so the screen never turns off
+    activateKeepAwake();
     setPermissions();
   
-   
-    
-
-    
-      activateKeepAwake();
-      alert('Activated')
-    
     return () => {
       setHasCameraPermission(null);
       setHasMicrophonePermission(null);
@@ -209,24 +206,23 @@ useKeepAwake();
       setIsRecording(false);
       setVideo(null);
 
+    //* Deactivate keep awake so the system never keeps running
+    deactivateKeepAwake();
       
-    
-        deactivateKeepAwake();
-        alert('Deactivated');
-      
-
     };
   }, []);
 
 
 
+  //* If the application does not have permission, show an error
   if (hasCameraPermission === undefined || hasMicrophonePermission === undefined || hasLocationPermission === undefined) {
     return <Text>Request permissions...</Text>
-  } else if (!hasCameraPermission) {
-    return <Text>Permission for camera not granted.</Text>
+  } else if (!hasCameraPermission || !hasMicrophonePermission || !hasLocationPermission) {
+    return <ErrorCameraCard />
   }
 
 
+  //* Stop the camera from recording.
   let stopRecording = () => {
     setIsRecording(false);
     cameraRef.current.stopRecording();
