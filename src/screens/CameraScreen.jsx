@@ -187,6 +187,9 @@ const CameraScreen = () => {
 
   useEffect(() => {
     setPermissions();
+
+    //todo Activate keep awake here (Delete comment when done)
+
     return () => {
       setHasCameraPermission(null);
       setHasMicrophonePermission(null);
@@ -195,6 +198,8 @@ const CameraScreen = () => {
 
       setIsRecording(false);
       setVideo(null);
+
+      //todo deactivate keep awake here (delete comment when done)
 
     };
   }, []);
