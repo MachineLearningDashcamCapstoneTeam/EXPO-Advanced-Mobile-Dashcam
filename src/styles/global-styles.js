@@ -1,11 +1,13 @@
 import { StyleSheet, Dimensions } from 'react-native';
 
-const main = '#0e5ef7';
+const main = '#1E49E1';
 const smoke = '#EFF8E2';
 const white = '#ffffff';
 const dark = '#26272e';
 const error = "#DF2935";
 const success = "#679436";
+const warning = "#FC9E4F";
+const secondary = '#141B41';
 
 const GlobalStyles = StyleSheet.create({
     container: {
@@ -80,6 +82,12 @@ const GlobalStyles = StyleSheet.create({
     buttonSuccess: {
         backgroundColor: success,
     },
+    buttonWarning:{
+        backgroundColor: warning,
+    },
+    buttonSecondary:{
+        backgroundColor: secondary,
+    },
 
     divCenter: {
         justifyContent: 'center',
@@ -96,7 +104,7 @@ const GlobalStyles = StyleSheet.create({
         paddingVertical: 20,
         backgroundColor: dark,
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         color: 'white',
     },
     whiteText: {

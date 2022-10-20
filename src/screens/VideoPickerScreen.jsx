@@ -49,18 +49,21 @@ export default function VideoPickerScreen({ navigation }) {
       console.error(error);
     });
 
+    if (accessTokenContextValue) {
+      getDriveFiles();
+    }
 
+  }
+
+
+  
+  const loadFavorites = async () => {
     //* Load Favorite videos
     const tempSavedFavoriteVideosIds = await AsyncStorage.getItem('FavoriteVideosIds');
     if (tempSavedFavoriteVideosIds && tempSavedFavoriteVideosIds !== null) {
       const tempSavedFavoriteVideosIdsArray = JSON.parse(tempSavedFavoriteVideosIds)
       setSavedFavoriteVideosIds([...tempSavedFavoriteVideosIdsArray]);
     }
-
-    if (accessTokenContextValue) {
-      getDriveFiles();
-    }
-
   }
 
 
@@ -71,12 +74,17 @@ export default function VideoPickerScreen({ navigation }) {
   }
 
   useEffect(() => {
+    
     setPermissions();
+    const unsubscribe = navigation.addListener('focus', () => {
+      loadFavorites();
+    });
     return () => {
       setHasMediaLibraryPermission(null);
       setVideos([]);
+      unsubscribe;
     };
-  }, []);
+  }, [navigation]);
 
   const saveVideoToSavedVideoIds = async (videoAsset) => {
     const result = savedFavoriteVideosIds.includes(videoAsset.id);
@@ -240,13 +248,11 @@ export default function VideoPickerScreen({ navigation }) {
                       Duration: {videoAsset.duration}s
                     </Text>
 
-                    <Text variant='labelSmall'>
-                      Media Type: {videoAsset.mediaType}
+                    <Text style={GlobalStyles.bottomMargin} variant='labelSmall'>
+                      Video Id: {videoAsset.id}
                     </Text>
 
-                    <Text style={GlobalStyles.bottomMargin} variant='labelSmall'>
-                      Size: {videoAsset.height} x {videoAsset.width}
-                    </Text>
+            
 
                     <Button style={GlobalStyles.button} icon="eye" mode="contained" onPress={() => getInfo(videoAsset)}>
                       View
@@ -272,7 +278,7 @@ export default function VideoPickerScreen({ navigation }) {
         <ScrollView>
           {files.map((file) =>
           ((file.fileExtension === "MP4" || file.fileExtension === "mp4" || file.fileExtension === 'jpg') &&
-            <GoogleVideoCard file={file} deleteDriveFile={deleteDriveFile} />
+            <GoogleVideoCard key={file.id} file={file} deleteDriveFile={deleteDriveFile} />
           )
           )}
         </ScrollView>

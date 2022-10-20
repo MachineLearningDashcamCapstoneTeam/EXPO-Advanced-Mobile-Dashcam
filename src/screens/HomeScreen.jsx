@@ -69,7 +69,7 @@ function HomeScreen({ navigation }) {
     }
     else {
       return (
-        <View style={[GlobalStyles.attention, GlobalStyles.flex3]}>
+        <View style={[GlobalStyles.attention, GlobalStyles.flex2]}>
           <Title style={GlobalStyles.whiteText}>
             Uploading to the Cloud
           </Title>
