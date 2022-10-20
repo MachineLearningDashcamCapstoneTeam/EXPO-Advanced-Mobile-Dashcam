@@ -15,13 +15,9 @@ import GlobalStyles from '../styles/global-styles';
 
 const CameraScreen = () => {
 
-<<<<<<< HEAD
-  useKeepAwake();
-=======
   //todo call usekeep awake hook here
+useKeepAwake();
 
-
->>>>>>> 5a09a3aa7807b75adfaa2caedca99fdd5171e3ff
   let cameraRef = useRef();
 
   const [snackBarVisible, setSnackBarVisible] = useState(false);
