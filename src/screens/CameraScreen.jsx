@@ -13,6 +13,10 @@ import { Button, Text, Snackbar, SegmentedButtons, Divider } from 'react-native-
 import GlobalStyles from '../styles/global-styles';
 
 const CameraScreen = () => {
+
+  //todo call usekeep awake hook here
+
+
   let cameraRef = useRef();
 
   const [snackBarVisible, setSnackBarVisible] = useState(false);
