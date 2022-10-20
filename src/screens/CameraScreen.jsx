@@ -9,10 +9,13 @@ import * as FileSystem from 'expo-file-system';
 import { ALBUM_NAME } from '../constants';
 import { gpsJsonToGeojson } from '../utils/geojson-utils';
 import { Button, Text, Snackbar, SegmentedButtons, Divider } from 'react-native-paper';
-
+import {useKeepAwake} from 'expo-keep-awake';
+import {activateKeepAwake, deactivateKeepAwake} from 'expo-keep-awake';
 import GlobalStyles from '../styles/global-styles';
 
 const CameraScreen = () => {
+
+  useKeepAwake();
   let cameraRef = useRef();
 
   const [snackBarVisible, setSnackBarVisible] = useState(false);
@@ -182,14 +185,19 @@ const CameraScreen = () => {
     }
 
   }
-
+  
 
 
   useEffect(() => {
     setPermissions();
-
+  
     //todo Activate keep awake here (Delete comment when done)
+    
 
+    
+      activateKeepAwake();
+      alert('Activated')
+    
     return () => {
       setHasCameraPermission(null);
       setHasMicrophonePermission(null);
@@ -200,6 +208,10 @@ const CameraScreen = () => {
       setVideo(null);
 
       //todo deactivate keep awake here (delete comment when done)
+    
+        deactivateKeepAwake();
+        alert('Deactivated');
+      
 
     };
   }, []);
