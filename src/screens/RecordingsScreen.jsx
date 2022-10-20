@@ -300,9 +300,6 @@ export default function RecordingsScreen({ navigation }) {
   return (
     <View style={GlobalStyles.container}>
 
-
-
-
       <View style={[GlobalStyles.divDark, GlobalStyles.header, GlobalStyles.flex2]}>
         <Title style={GlobalStyles.whiteText}>{selectedMenu === 0 ? 'Local Videos' : 'Cloud Videos'}</Title>
 

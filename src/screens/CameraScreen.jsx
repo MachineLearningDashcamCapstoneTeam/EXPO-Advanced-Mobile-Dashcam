@@ -1,5 +1,6 @@
 import { StyleSheet, View, SafeAreaView } from 'react-native';
-import { useEffect, useState, useRef } from 'react'; import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useEffect, useState, useRef } from 'react'; 
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Camera, CameraType } from 'expo-camera';
 import { Video } from 'expo-av';
 import { shareAsync } from 'expo-sharing';
@@ -9,20 +10,18 @@ import * as FileSystem from 'expo-file-system';
 import { ALBUM_NAME } from '../constants';
 import { gpsJsonToGeojson } from '../utils/geojson-utils';
 import { Button, Text, Snackbar, SegmentedButtons, Divider } from 'react-native-paper';
-import {useKeepAwake} from 'expo-keep-awake';
-import {activateKeepAwake, deactivateKeepAwake} from 'expo-keep-awake';
+import {useKeepAwake, activateKeepAwake, deactivateKeepAwake} from 'expo-keep-awake';
 import GlobalStyles from '../styles/global-styles';
 import ErrorCameraCard from '../widget/errorCameraCard';
 
 const CameraScreen = () => {
 
   
-useKeepAwake();
+  useKeepAwake();
 
   let cameraRef = useRef();
 
   const [snackBarVisible, setSnackBarVisible] = useState(false);
-
   const [hasCameraPermission, setHasCameraPermission] = useState();
   const [hasMicrophonePermission, setHasMicrophonePermission] = useState();
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
@@ -63,7 +62,6 @@ useKeepAwake();
 
 
     setVideo(null);
-    console.log(`selectedAutomaticRecording ${selectedAutomaticRecording}`)
     if(selectedAutomaticRecording === 'true'){   
       recordVideo();
     } 
@@ -178,24 +176,16 @@ useKeepAwake();
       setSelectedAutomaticRecording('false');
     }
 
-
-
-    if (cameraPermission && cameraRef !== undefined) {
-     console.log('Camera Set')
-    }
-    else {
-      console.log('Does not have Camera Granted');
-    }
-
   }
   
 
 
   useEffect(() => {
 
-    //* Activate keep awake so the screen never turns off
-    activateKeepAwake();
     setPermissions();
+
+     //* Activate keep awake so the screen never turns off
+     activateKeepAwake();
   
     return () => {
       setHasCameraPermission(null);
@@ -206,8 +196,8 @@ useKeepAwake();
       setIsRecording(false);
       setVideo(null);
 
-    //* Deactivate keep awake so the system never keeps running
-    deactivateKeepAwake();
+      //* Deactivate keep awake so the system never keeps running
+      deactivateKeepAwake();
       
     };
   }, []);
