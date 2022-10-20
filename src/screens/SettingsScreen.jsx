@@ -130,14 +130,14 @@ export default function SettingsScreen({ navigation }) {
 
   return (
     <View style={GlobalStyles.container}>
-      <ScrollView >
-        <Card mode="elevated" style={GlobalStyles.card}>
-        <Card.Cover source={{ uri: 'https://cdn.hswstatic.com/gif/car-engine-new1.jpg' }} />
-          <Card.Content>
-            <Title>Camera</Title>
 
 
-            <Text variant='labelSmall'>
+      <ScrollView style={GlobalStyles.flex1}>
+
+      
+
+
+        <Text variant='labelSmall'>
               Resolution
             </Text>
             <SegmentedButtons
@@ -206,9 +206,8 @@ export default function SettingsScreen({ navigation }) {
             <Button style={GlobalStyles.button} icon="restart" mode="outlined" >
               Reset to Default
             </Button>
-          </Card.Content>
 
-        </Card>
+      
 
 
       </ScrollView>

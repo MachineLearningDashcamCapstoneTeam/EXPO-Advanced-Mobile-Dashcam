@@ -6,7 +6,7 @@ import { ALBUM_NAME } from '../constants';
 import { timeStampToDate } from '../utils/fetch-time';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { sortByLengthShortToLong, sortByLengthLongToShort, sortByTimeRecentToOldest, sortByTimeOldestToRecent } from '../utils/sorting-video-assets';
-import { getDashcamVideos, uploadDashcamVideos , deleteGoogleDriveFile} from '../services/googleDriveService';
+import { getDashcamVideos, uploadDashcamVideos, deleteGoogleDriveFile } from '../services/googleDriveService';
 import { AccessContext } from '../context/accessTokenContext';
 
 import GoogleVideoCard from '../widget/googleVideoCard';
@@ -56,7 +56,7 @@ export default function VideoPickerScreen({ navigation }) {
   }
 
 
-  
+
   const loadFavorites = async () => {
     //* Load Favorite videos
     const tempSavedFavoriteVideosIds = await AsyncStorage.getItem('FavoriteVideosIds');
@@ -74,7 +74,7 @@ export default function VideoPickerScreen({ navigation }) {
   }
 
   useEffect(() => {
-    
+
     setPermissions();
     const unsubscribe = navigation.addListener('focus', () => {
       loadFavorites();
@@ -190,28 +190,30 @@ export default function VideoPickerScreen({ navigation }) {
     }
   };
 
-  
+
   const deleteDriveFile = async (file) => {
-		const response = await deleteGoogleDriveFile(accessTokenContextValue, file.id);
-		if(response.status === 204){
-			let tempList = files;
-			tempList = tempList.filter(item => item.id !== file.id);
-			setFiles([...tempList])
+    const response = await deleteGoogleDriveFile(accessTokenContextValue, file.id);
+    if (response.status === 204) {
+      let tempList = files;
+      tempList = tempList.filter(item => item.id !== file.id);
+      setFiles([...tempList])
       Alert.alert("Deleted video from Google Drive");
-		}
-	}
+    }
+  }
+
+
 
   const getSaveOrDeleteFromFavoritesButton = (videoAsset) => {
     const result = savedFavoriteVideosIds.includes(videoAsset.id);
 
     if (result) {
-      return (<Button style={[GlobalStyles.buttonDanger, GlobalStyles.button]} icon="delete" mode="contained" onPress={() => deleteVideoFromFavoriteVideos(videoAsset)}>
-        Delete from Favorites
+      return (<Button style={[GlobalStyles.buttonDanger, GlobalStyles.button]} icon="lock-open-variant" mode="contained" onPress={() => deleteVideoFromFavoriteVideos(videoAsset)}>
+        Unlock
       </Button>)
     }
     else {
-      return (<Button style={[GlobalStyles.buttonSuccess, GlobalStyles.button]} icon="heart" mode="contained" onPress={() => saveVideoToSavedVideoIds(videoAsset)}>
-        Add to Favorites
+      return (<Button style={[GlobalStyles.buttonSuccess, GlobalStyles.button]} icon="lock" mode="contained" onPress={() => saveVideoToSavedVideoIds(videoAsset)}>
+        Lock
       </Button>)
     }
 
@@ -236,7 +238,7 @@ export default function VideoPickerScreen({ navigation }) {
                 <Card key={videoAsset.id} mode="elevated" style={GlobalStyles.card}>
                   <Card.Cover source={{ uri: videoAsset.uri }} />
                   <Card.Content>
-                    <Title>{videoAsset.id}</Title>
+                  <Text variant='titleMedium'>{videoAsset.id}</Text>
 
 
                     <Text variant='labelSmall'>
@@ -248,19 +250,27 @@ export default function VideoPickerScreen({ navigation }) {
                       Duration: {videoAsset.duration}s
                     </Text>
 
-                    <Text style={GlobalStyles.bottomMargin} variant='labelSmall'>
+                    <Text  variant='labelSmall'>
                       Video Id: {videoAsset.id}
                     </Text>
 
-            
+                    <Text style={[GlobalStyles.paddingYsm]} variant='labelLarge'>
+                    Options:
+                    </Text>
+                    <View style={[GlobalStyles.divSpaceBetween, GlobalStyles.rowContainer]}>
 
-                    <Button style={GlobalStyles.button} icon="eye" mode="contained" onPress={() => getInfo(videoAsset)}>
-                      View
-                    </Button>
+                      <Button style={GlobalStyles.button} icon="eye" mode="contained" onPress={() => getInfo(videoAsset)}>
+                        View
+                      </Button>
 
-                    {getSaveOrDeleteFromFavoritesButton(videoAsset)}
+                      {getSaveOrDeleteFromFavoritesButton(videoAsset)}
 
+                      <Button style={[GlobalStyles.buttonWarning, GlobalStyles.button]} icon="map" mode="contained" onPress={() => navigation.navigate('Map', { assetInfo: videoAsset })} >Map</Button>
+                    </View>
 
+                    <Text style={[GlobalStyles.paddingYsm]} variant='labelLarge'>
+                      Warning! Point of no return:
+                    </Text>
                     <Button style={GlobalStyles.button} icon="delete" mode="outlined" onPress={() => deleteVideo(videoAsset)} > Delete</Button>
 
                   </Card.Content>
@@ -290,26 +300,26 @@ export default function VideoPickerScreen({ navigation }) {
   return (
     <View style={GlobalStyles.container}>
 
-     
 
 
-    <View style={[GlobalStyles.header, GlobalStyles.flex2]}>
+
+      <View style={[GlobalStyles.divDark, GlobalStyles.header, GlobalStyles.flex2]}>
         <Title style={GlobalStyles.whiteText}>{selectedMenu === 0 ? 'Local Videos' : 'Cloud Videos'}</Title>
 
         <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant='labelLarge'>
-          The application is currently in development. If something breaks, just contact the development team.
+        {selectedMenu === 0 ? 'Local Videos are recordings and GPS Data saved on the phone. Use filters to swift through the recordings.' : 'Cloud Videos are recordings and GPS Data saved on Google Drive.'}
         </Text>
 
         {accessTokenContextValue &&
-        <Button style={GlobalStyles.button} icon="filter" mode="elevated" onPress={() => selectedMenu === 0 ? setSelectedMenu(1) : setSelectedMenu(0)} >{selectedMenu === 0 ? 'Cloud Videos' : 'Local Videos'}</Button>
-      }
+          <Button style={GlobalStyles.button} icon="filter" mode="elevated" onPress={() => selectedMenu === 0 ? setSelectedMenu(1) : setSelectedMenu(0)} >{selectedMenu === 0 ? 'Cloud Videos' : 'Local Videos'}</Button>
+        }
       </View>
-     
-      
 
-      <View  style={GlobalStyles.flex5}>  
 
-      {videoWidgets()}
+
+      <View style={GlobalStyles.flex5}>
+
+        {videoWidgets()}
 
       </View>
 

@@ -113,13 +113,13 @@ export default function VideoPlayerScreen({ route, navigation }) {
     const result = savedFavoriteVideosIds.includes(videoAsset.id);
 
     if (result) {
-      return (<Button style={[GlobalStyles.buttonDanger, GlobalStyles.button]} icon="delete" mode="contained" onPress={() => deleteVideoFromFavoriteVideos(assetInfo)}>
-        Delete from Favorites
+      return (<Button style={[GlobalStyles.buttonDanger, GlobalStyles.button]} icon="lock-open-variant" mode="contained" onPress={() => deleteVideoFromFavoriteVideos(videoAsset)}>
+        Unlock
       </Button>)
     }
     else {
-      return (<Button style={[GlobalStyles.buttonSuccess, GlobalStyles.button]} icon="heart" mode="contained" onPress={() => saveVideoToSavedVideoIds(assetInfo)}>
-        Add to Favorites
+      return (<Button style={[GlobalStyles.buttonSuccess, GlobalStyles.button]} icon="lock" mode="contained" onPress={() => saveVideoToSavedVideoIds(videoAsset)}>
+        Lock
       </Button>)
     }
 
@@ -128,69 +128,78 @@ export default function VideoPlayerScreen({ route, navigation }) {
   return (
     <ScrollView style={GlobalStyles.container}>
 
-      <View style={GlobalStyles.header}>
-        <Title style={{ color: 'white' }}>
+      <View style={[GlobalStyles.divDark, GlobalStyles.header]}>
+        <Text variant='titleLarge' style={GlobalStyles.whiteText}>
           {assetInfo.id}
-        </Title>
+        </Text>
+
+        <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant='labelSmall'>
+          Path: {assetInfo.uri}
+        </Text>
+
+        <Button style={GlobalStyles.button} mode="contained" onPress={() =>
+          status.isPlaying ? video.current.pauseAsync() : video.current.playAsync()
+        }
+          icon={status.isPlaying ? 'pause' : 'play'}
+        >{status.isPlaying ? 'Pause' : 'Play'}</Button>
+
+
+
       </View>
 
-      <Card key={assetInfo.id} mode="elevated" style={GlobalStyles.card}>
-        <Card.Content>
+      <View style={[GlobalStyles.flex3]}>
+        <Video
+          ref={video}
+          style={GlobalStyles.video}
+          source={{ uri: (Platform.OS === "android") ? assetInfo.uri : assetInfo.localUri }}
+          useNativeControls
+          resizeMode='contain'
+          isLooping
+          onPlaybackStatusUpdate={status => setStatus(() => status)}
+        />
 
-          <Video
-            ref={video}
-            style={GlobalStyles.video}
-            source={{ uri: (Platform.OS === "android") ? assetInfo.uri : assetInfo.localUri }}
-            useNativeControls
-            resizeMode='contain'
-            isLooping
-            onPlaybackStatusUpdate={status => setStatus(() => status)}
-          />
+        <Text variant='labelSmall'>
+          Created: {timeStampToDate(assetInfo.creationTime)}
+        </Text>
+
+        <Text variant='labelSmall'>
+          Duration: {assetInfo.duration}s
+        </Text>
+
+        <Text variant='labelSmall'>
+          Size: {assetInfo.height} x {assetInfo.width}
+        </Text>
+
+      </View>
 
 
-
-          <Text variant='labelSmall'>
-            Created: {timeStampToDate(assetInfo.creationTime)}
-          </Text>
-
-          <Text variant='labelSmall'>
-            Modified: {timeStampToDate(assetInfo.modificationTime)}
-          </Text>
-
-          <Text variant='labelSmall'>
-            Duration: {assetInfo.duration}s
-          </Text>
-
-          <Text variant='labelSmall'>
-            Media Type: {assetInfo.mediaType}
-          </Text>
-
-          <Text variant='labelSmall'>
-            Size: {assetInfo.height} x {assetInfo.width}
-          </Text>
-
-          <Text style={GlobalStyles.bottomMargin} variant='labelSmall'>
-            Path: {assetInfo.uri}
+      <View style={[GlobalStyles.divDark, GlobalStyles.attention, GlobalStyles.flex3]}>
+        <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant='labelLarge'>
+           Options:
           </Text>
 
 
-          <Button style={GlobalStyles.button} mode="contained" onPress={() =>
-            status.isPlaying ? video.current.pauseAsync() : video.current.playAsync()
-          }
-          icon={status.isPlaying ? 'pause' : 'play'}
-          >{status.isPlaying ? 'Pause' : 'Play'}</Button>
+        <View style={[GlobalStyles.divSpaceBetween, GlobalStyles.rowContainer]}>
           {getSaveOrDeleteFromFavoritesButton(assetInfo)}
 
-          <Button style={[GlobalStyles.buttonSecondary, GlobalStyles.button]} icon="share" mode="contained" onPress={shareVideo} > Share</Button>
-
-          
-          <Button style={GlobalStyles.button} icon="delete" mode="outlined" onPress={deleteVideo} > Delete</Button>
-          <Button style={[GlobalStyles.buttonWarning, GlobalStyles.button]} icon="map" mode="contained" onPress={() => navigation.navigate('Map', { assetInfo: assetInfo })} > Map</Button>
-
-        </Card.Content>
+          <Button style={[GlobalStyles.buttonSecondary, GlobalStyles.button]} icon="share" mode="contained" onPress={shareVideo} >Share</Button>
 
 
-      </Card>
+
+          <Button style={[GlobalStyles.buttonWarning, GlobalStyles.button]} icon="map" mode="contained" onPress={() => navigation.navigate('Map', { assetInfo: assetInfo })} >Map</Button>
+
+        </View>
+
+
+
+        <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant='labelLarge'>
+          Warning! Point of no return:
+        </Text>
+        <Button style={[GlobalStyles.buttonDanger, GlobalStyles.button]} icon="delete" mode="contained" onPress={deleteVideo} >Delete </Button>
+
+
+
+      </View>
 
 
     </ScrollView>

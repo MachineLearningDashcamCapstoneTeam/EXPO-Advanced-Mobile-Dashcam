@@ -52,14 +52,14 @@ function HomeScreen({ navigation }) {
   const showUserInfo = () => {
     if (user) {
       return (
-        <View style={[GlobalStyles.attention, GlobalStyles.flex3]}>
+        <View style={[GlobalStyles.divDark, GlobalStyles.attention, GlobalStyles.flex3]}>
           <Text variant='titleLarge' style={GlobalStyles.whiteText}>
             {user.name}
           </Text>
           <Text variant='labelLarge' style={GlobalStyles.whiteText}>
             {user.email}
           </Text>
-          <Avatar.Image style={{ marginVertical: 10 }} size={96} source={{ uri: user.picture }} />
+          <Avatar.Image style={{ marginVertical: 10 }} size={64} source={{ uri: user.picture }} />
           <Text variant='labelLarge' style={{ color: 'white', marginVertical: 10 }}>
             With Google, you'll be able to share your data to Google Drive with one click on the preview screen.
           </Text>
@@ -69,11 +69,11 @@ function HomeScreen({ navigation }) {
     }
     else {
       return (
-        <View style={[GlobalStyles.attention, GlobalStyles.flex2]}>
-          <Title style={GlobalStyles.whiteText}>
+        <View style={[GlobalStyles.divDark, GlobalStyles.attention, GlobalStyles.flex3]}>
+          <Text variant='titleLarge' style={GlobalStyles.whiteText}>
             Uploading to the Cloud
-          </Title>
-          <Text variant='labelLarge' style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]}>
+          </Text>
+          <Text variant='labelLarge' style={[GlobalStyles.paddingYmd, GlobalStyles.whiteText]}>
             Want to upload your videos to the cloud? Use the share button in the preview screen or if you signed in, use the upload to Google Drive button instead.
           </Text>
 
@@ -95,16 +95,16 @@ function HomeScreen({ navigation }) {
     <View style={GlobalStyles.container}>
 
 
-      <View style={[GlobalStyles.header, GlobalStyles.flex1]}>
-        <Title style={GlobalStyles.whiteText}>Attention Drivers!</Title>
+      <View style={[GlobalStyles.divDark, GlobalStyles.header, GlobalStyles.flex2]}>
+      <Text style={GlobalStyles.whiteText} variant='titleLarge'>Attention Drivers!</Text>
 
-        <Text style={GlobalStyles.whiteText} variant='labelLarge'>
+        <Text style={[GlobalStyles.paddingYmd, GlobalStyles.whiteText]} variant='labelLarge'>
           The application is currently in development. If something breaks, just contact the development team.
         </Text>
       </View>
 
 
-      <View style={[GlobalStyles.divWhite, GlobalStyles.paddingYsm, GlobalStyles.divSpaceBetween, GlobalStyles.flex3]}>
+      <View style={[ GlobalStyles.divWhite, GlobalStyles.paddingYsm, GlobalStyles.divSpaceBetween, GlobalStyles.flex3]}>
 
 
         <Button style={GlobalStyles.button} icon="camera" mode="contained" onPress={() => navigation.navigate('Camera')}>
@@ -125,6 +125,7 @@ function HomeScreen({ navigation }) {
 
 
       </View>
+
 
 
       {showUserInfo()}

@@ -6,11 +6,11 @@ import RootNavigation from './src/routes/index';
 
 const theme = {
   ...DefaultTheme,
-  roundness: 3,
+  roundness: 4,
   version: 3,
   colors: {
     ...DefaultTheme.colors,
-    primary: '#1E49E1',
+    primary: '#507cea',
     secondary: '#fe1615',
     tertiary: '#a1b2c3'
   },

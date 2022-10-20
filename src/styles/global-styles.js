@@ -1,18 +1,18 @@
 import { StyleSheet, Dimensions } from 'react-native';
 
-const main = '#1E49E1';
-const smoke = '#EFF8E2';
+const main = '#456de4';
+const smoke = '#f8f9fd';
 const white = '#ffffff';
-const dark = '#26272e';
+const dark = '#181d3d';
 const error = "#DF2935";
 const success = "#679436";
 const warning = "#FC9E4F";
-const secondary = '#141B41';
+const secondary = '#6233f5';
 
 const GlobalStyles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: white,
+       
     },
 
     flex1: {
@@ -47,6 +47,13 @@ const GlobalStyles = StyleSheet.create({
     bottomMargin: {
         marginBottom: 10,
     },
+
+    divDark:{
+        backgroundColor: dark,
+    },
+    divMain:{
+        backgroundColor: main,
+    },
     divSmoke: {
         backgroundColor: smoke,
     },
@@ -61,19 +68,19 @@ const GlobalStyles = StyleSheet.create({
         justifyContent: 'space-between',
     },
 
-    header: {
-
-        borderBottomRightRadius: 25,
-        borderBottomLeftRadius: 25,
+    header: {    
         padding: 20,
         paddingVertical: 20,
-        backgroundColor: main,
         justifyContent: 'center',
         color: 'white',
-
-   
-
+        borderBottomLeftRadius: 30,
     },
+    rowContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        marginHorizontal: "auto",
+        
+      },
 
     buttonDanger:{
         backgroundColor: error,
@@ -96,15 +103,17 @@ const GlobalStyles = StyleSheet.create({
     paddingYsm: {
         paddingVertical: 10,
     },
+    paddingYmd: {
+        paddingVertical: 20,
+    },
 
     attention: {
-        borderTopRightRadius: 25,
-        borderTopLeftRadius: 25,
+        borderTopRightRadius: 30,
+       
         padding: 20,
         paddingVertical: 20,
-        backgroundColor: dark,
-        alignItems: 'center',
-        justifyContent: 'space-between',
+    
+        justifyContent: 'center',
         color: 'white',
     },
     whiteText: {
@@ -113,7 +122,7 @@ const GlobalStyles = StyleSheet.create({
     video: {
         alignSelf: "stretch",
         width: window.full,
-        height: 350,
+        height: 300,
         marginBottom: 10,
     },
 
