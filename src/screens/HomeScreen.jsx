@@ -111,7 +111,7 @@ function HomeScreen({ navigation }) {
           Camera
         </Button>
 
-        <Button style={GlobalStyles.button} icon="format-list-bulleted" mode="outlined" onPress={() => navigation.navigate('VideoPicker')}>
+        <Button style={GlobalStyles.button} icon="format-list-bulleted" mode="outlined" onPress={() => navigation.navigate('Recordings')}>
           Videos
         </Button>
 

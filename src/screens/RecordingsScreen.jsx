@@ -12,7 +12,7 @@ import { AccessContext } from '../context/accessTokenContext';
 import GoogleVideoCard from '../widget/googleVideoCard';
 import GlobalStyles from '../styles/global-styles';
 
-export default function VideoPickerScreen({ navigation }) {
+export default function RecordingsScreen({ navigation }) {
 
   const { accessTokenContextValue, setAccessTokenContextValue } = useContext(AccessContext);
 
@@ -69,7 +69,7 @@ export default function VideoPickerScreen({ navigation }) {
 
   const getInfo = async (asset) => {
     await MediaLibrary.getAssetInfoAsync(asset).then((info) => {
-      navigation.navigate('VideoPlayer', { assetInfo: info });
+      navigation.navigate('Video Player', { assetInfo: info });
     });
   }
 
@@ -238,7 +238,7 @@ export default function VideoPickerScreen({ navigation }) {
                 <Card key={videoAsset.id} mode="elevated" style={GlobalStyles.card}>
                   <Card.Cover source={{ uri: videoAsset.uri }} />
                   <Card.Content>
-                  <Text variant='titleMedium'>{videoAsset.id}</Text>
+                  <Text  style={[GlobalStyles.paddingYsm]} variant='titleMedium'>{videoAsset.id}</Text>
 
 
                     <Text variant='labelSmall'>

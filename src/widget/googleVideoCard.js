@@ -4,13 +4,19 @@ import React from 'react'
 import { Card, Button, Title, Text, Searchbar } from 'react-native-paper';
 import { StyleSheet, View, ScrollView, Alert } from 'react-native';
 import GlobalStyles from '../styles/global-styles';
+import * as WebBrowser from 'expo-web-browser';
 
 const GoogleVideoCard = ({ file, deleteDriveFile }) => {
+
+    const openBrowser = async () => {
+        await WebBrowser.openBrowserAsync(file.webViewLink);
+      };
+
     return (
         <Card key={file.id} mode="elevated" style={GlobalStyles.card}>
             <Card.Cover source={{ uri: file.thumbnailLink }} />
             <Card.Content>
-            <Text variant='titleMedium'>{file.id}</Text>
+                <Text style={[GlobalStyles.paddingYsm]} variant='titleMedium'>{file.id}</Text>
 
 
                 <Text variant='labelSmall'>
@@ -25,26 +31,26 @@ const GoogleVideoCard = ({ file, deleteDriveFile }) => {
                     Size: {file.size}
                 </Text>
 
-               
+
                 <Text style={[GlobalStyles.paddingYsm]} variant='labelLarge'>
                     Options:
-                    </Text>
+                </Text>
                 <View style={[GlobalStyles.divSpaceBetween, GlobalStyles.rowContainer]}>
 
-                         <Button style={[GlobalStyles.button]} icon="eye" mode="contained" onPress={()=>console.log('View Test')} >View</Button>
+                    <Button style={[GlobalStyles.button]} icon="eye" mode="contained" onPress={openBrowser} >View</Button>
 
-                   
-                    <Button style={[GlobalStyles.buttonSecondary, GlobalStyles.button]} icon="share" mode="contained" onPress={()=>console.log('Share Test')} >Share</Button>
 
-                    
+                    <Button style={[GlobalStyles.buttonSecondary, GlobalStyles.button]} icon="share" mode="contained" onPress={() => console.log('Share Test')} >Share</Button>
+
+
                     <Button style={[GlobalStyles.buttonWarning, GlobalStyles.button]} icon="robot" mode="contained" onPress={() => console.log('AI Test')} >A.I</Button>
 
                 </View>
 
                 <Text style={[GlobalStyles.paddingYsm]} variant='labelLarge'>
-                      Warning! Point of no return:
-                    </Text>
-                    <Button style={GlobalStyles.button} icon="delete" mode="outlined" onPress={() => deleteDriveFile(file)} > Delete</Button>
+                    Warning! Point of no return:
+                </Text>
+                <Button style={GlobalStyles.button} icon="delete" mode="outlined" onPress={() => deleteDriveFile(file)} > Delete</Button>
 
 
             </Card.Content>

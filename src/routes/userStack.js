@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import HomeScreen from '../screens/HomeScreen';
 import CameraScreen from '../screens/CameraScreen';
-import VideoPickerScreen from '../screens/VideoPickerScreen';
+import RecordingsScreen from '../screens/RecordingsScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import VideoPlayerScreen from '../screens/VideoPlayerScreen';
 import MapScreen from '../screens/MapScreen';
@@ -25,9 +25,9 @@ export default function UserStack() {
         <Stack.Navigator>
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="Camera" component={CameraScreen} />
-          <Stack.Screen name='VideoPicker' component={VideoPickerScreen} />
+          <Stack.Screen name='Recordings' component={RecordingsScreen} />
           <Stack.Screen name='Settings' component={SettingsScreen} />
-          <Stack.Screen name='VideoPlayer' component={VideoPlayerScreen} />
+          <Stack.Screen name='Video Player' component={VideoPlayerScreen} />
           <Stack.Screen name='Map' component={MapScreen} />
           <Stack.Screen name='Help' component={HelpScreen} />
         </Stack.Navigator>
