@@ -15,7 +15,7 @@ import GlobalStyles from '../styles/global-styles';
 
 const CameraScreen = () => {
 
-  //todo call usekeep awake hook here
+  
 useKeepAwake();
 
   let cameraRef = useRef();
@@ -193,7 +193,7 @@ useKeepAwake();
   useEffect(() => {
     setPermissions();
   
-    //todo Activate keep awake here (Delete comment when done)
+   
     
 
     
@@ -209,7 +209,7 @@ useKeepAwake();
       setIsRecording(false);
       setVideo(null);
 
-      //todo deactivate keep awake here (delete comment when done)
+      
     
         deactivateKeepAwake();
         alert('Deactivated');
