@@ -68,6 +68,15 @@ const GlobalStyles = StyleSheet.create({
         justifyContent: 'space-between',
     },
 
+    specialHeader:{
+
+        padding: 20,
+        paddingVertical: 20,
+        justifyContent: 'center',
+        color: 'white',
+        borderBottomRightRadius: 30,
+    },
+
     header: {    
         padding: 20,
         paddingVertical: 20,

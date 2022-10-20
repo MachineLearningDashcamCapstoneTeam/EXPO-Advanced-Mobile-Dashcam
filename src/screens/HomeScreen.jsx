@@ -1,6 +1,6 @@
 import React from 'react';
 import { useEffect, useState, useContext } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Image } from 'react-native';
 import { Card, Title, Button, Text, Avatar } from 'react-native-paper';
 
 import * as Google from 'expo-auth-session/providers/google';
@@ -61,7 +61,7 @@ function HomeScreen({ navigation }) {
           </Text>
           <Avatar.Image style={{ marginVertical: 10 }} size={64} source={{ uri: user.picture }} />
           <Text variant='labelLarge' style={{ color: 'white', marginVertical: 10 }}>
-            With Google, you'll be able to share your data to Google Drive with one click on the preview screen.
+          Want to upload your videos to the cloud? Use the share button in the preview screen or if you're signed in, use the upload to Google Drive button instead.
           </Text>
 
         </View>
@@ -74,7 +74,7 @@ function HomeScreen({ navigation }) {
             Uploading to the Cloud
           </Text>
           <Text variant='labelLarge' style={[GlobalStyles.paddingYmd, GlobalStyles.whiteText]}>
-            Want to upload your videos to the cloud? Use the share button in the preview screen or if you signed in, use the upload to Google Drive button instead.
+            Want to upload your videos to the cloud? Use the share button in the preview screen or if you're signed in, use the upload to Google Drive button instead.
           </Text>
 
 
@@ -95,16 +95,12 @@ function HomeScreen({ navigation }) {
     <View style={GlobalStyles.container}>
 
 
-      <View style={[GlobalStyles.divDark, GlobalStyles.header, GlobalStyles.flex2]}>
-      <Text style={GlobalStyles.whiteText} variant='titleLarge'>Attention Drivers!</Text>
 
-        <Text style={[GlobalStyles.paddingYmd, GlobalStyles.whiteText]} variant='labelLarge'>
-          The application is currently in development. If something breaks, just contact the development team.
-        </Text>
-      </View>
+      <Image blurRadius={1} source={{ uri: 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/45c07385-25d8-421a-88b0-b65922935bc7/depx2i2-46f9f9b4-adcf-49ef-a32b-46fa2dc63b41.jpg/v1/fill/w_600,h_600,q_75,strp/healing_path_by_chaohood_depx2i2-fullview.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9NjAwIiwicGF0aCI6IlwvZlwvNDVjMDczODUtMjVkOC00MjFhLTg4YjAtYjY1OTIyOTM1YmM3XC9kZXB4MmkyLTQ2ZjlmOWI0LWFkY2YtNDllZi1hMzJiLTQ2ZmEyZGM2M2I0MS5qcGciLCJ3aWR0aCI6Ijw9NjAwIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmltYWdlLm9wZXJhdGlvbnMiXX0.UCyrmGCVQOYd7rgS2PJ6GowGrcIvrRE1YGff5iaP7to' }} style={[GlobalStyles.specialHeader, GlobalStyles.flex2]} />
 
 
-      <View style={[ GlobalStyles.divWhite, GlobalStyles.paddingYsm, GlobalStyles.divSpaceBetween, GlobalStyles.flex3]}>
+
+      <View style={[GlobalStyles.divWhite, GlobalStyles.paddingYsm, GlobalStyles.divSpaceBetween, GlobalStyles.flex3]}>
 
 
         <Button style={GlobalStyles.button} icon="camera" mode="contained" onPress={() => navigation.navigate('Camera')}>

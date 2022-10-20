@@ -9,7 +9,7 @@ const HelpScreen = () => {
         <View style={GlobalStyles.container}>
 
 
-            <View style={[GlobalStyles.header, GlobalStyles.flex1]}>
+            <View style={[GlobalStyles.divDark, GlobalStyles.header, GlobalStyles.flex1]}>
                 <Title style={GlobalStyles.whiteText}>Need Help?</Title>
 
                 <Text style={GlobalStyles.whiteText} variant='labelLarge'>
@@ -26,7 +26,7 @@ const HelpScreen = () => {
             </View>
 
 
-            <View style={[GlobalStyles.attention, GlobalStyles.flex1]}>
+            <View style={[GlobalStyles.divDark, GlobalStyles.attention, GlobalStyles.flex1]}>
             <Title style={GlobalStyles.whiteText}>
                Need more Help?
             </Title>

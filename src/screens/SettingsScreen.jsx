@@ -132,6 +132,15 @@ export default function SettingsScreen({ navigation }) {
     <View style={GlobalStyles.container}>
 
 
+<View style={[GlobalStyles.divDark, GlobalStyles.header, GlobalStyles.flex1]}>
+                <Title style={GlobalStyles.whiteText}>Setting?</Title>
+
+                <Text style={GlobalStyles.whiteText} variant='labelLarge'>
+                    Change your settings and then click save to apply.
+                </Text>
+            </View>
+
+      <View style={GlobalStyles.flex5}>
       <ScrollView style={GlobalStyles.flex1}>
 
       
@@ -211,7 +220,7 @@ export default function SettingsScreen({ navigation }) {
 
 
       </ScrollView>
-      
+      </View>
     </View>
   );
 }
