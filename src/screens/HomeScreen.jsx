@@ -36,12 +36,12 @@ function HomeScreen({ navigation }) {
     }
   }
 
-  // Start google Sign In and then get the user data
+  //* Start google Sign In and then get the user data
   const fetchGoogle = async () => {
     await promptAsync({ useProxy: true, showInRecents: true })
   }
 
-  // Fetch the user data from googles APIs and set the data
+  //* Fetch the user data from googles APIs and set the data
   const getUserData = async (accessTokenValue) => {
     const data = await getGoogleUserInfo(accessTokenValue);
     setUser(data)
@@ -96,7 +96,7 @@ function HomeScreen({ navigation }) {
 
 
 
-      <Image blurRadius={1} source={{ uri: 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/45c07385-25d8-421a-88b0-b65922935bc7/depx2i2-46f9f9b4-adcf-49ef-a32b-46fa2dc63b41.jpg/v1/fill/w_600,h_600,q_75,strp/healing_path_by_chaohood_depx2i2-fullview.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9NjAwIiwicGF0aCI6IlwvZlwvNDVjMDczODUtMjVkOC00MjFhLTg4YjAtYjY1OTIyOTM1YmM3XC9kZXB4MmkyLTQ2ZjlmOWI0LWFkY2YtNDllZi1hMzJiLTQ2ZmEyZGM2M2I0MS5qcGciLCJ3aWR0aCI6Ijw9NjAwIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmltYWdlLm9wZXJhdGlvbnMiXX0.UCyrmGCVQOYd7rgS2PJ6GowGrcIvrRE1YGff5iaP7to' }} style={[GlobalStyles.specialHeader, GlobalStyles.flex2]} />
+      <Image blurRadius={1} source={{ uri: 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/45c07385-25d8-421a-88b0-b65922935bc7/depx2i2-46f9f9b4-adcf-49ef-a32b-46fa2dc63b41.jpg/v1/fill/w_600,h_600,q_75,strp/healing_path_by_chaohood_depx2i2-fullview.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9NjAwIiwicGF0aCI6IlwvZlwvNDVjMDczODUtMjVkOC00MjFhLTg4YjAtYjY1OTIyOTM1YmM3XC9kZXB4MmkyLTQ2ZjlmOWI0LWFkY2YtNDllZi1hMzJiLTQ2ZmEyZGM2M2I0MS5qcGciLCJ3aWR0aCI6Ijw9NjAwIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmltYWdlLm9wZXJhdGlvbnMiXX0.UCyrmGCVQOYd7rgS2PJ6GowGrcIvrRE1YGff5iaP7to' }} style={[GlobalStyles.header, GlobalStyles.flex2]} />
 
 
 

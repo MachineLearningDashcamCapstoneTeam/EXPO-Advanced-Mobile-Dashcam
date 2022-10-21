@@ -1,5 +1,5 @@
 
-import { StyleSheet, View, ScrollView , Alert} from 'react-native';
+import { StyleSheet, View, ScrollView, Alert } from 'react-native';
 import { useEffect, useState, useRef } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Card, Button, Title, Text, Snackbar, SegmentedButtons, Divider } from 'react-native-paper';
@@ -66,7 +66,7 @@ export default function SettingsScreen({ navigation }) {
       Alert.alert("Saved all Settings");
 
     } catch (e) {
-
+      Alert.alert("Unable to save Settings");
     }
   }
 
@@ -132,94 +132,94 @@ export default function SettingsScreen({ navigation }) {
     <View style={GlobalStyles.container}>
 
 
-<View style={[GlobalStyles.divDark, GlobalStyles.header, GlobalStyles.flex1]}>
-                <Title style={GlobalStyles.whiteText}>Setting?</Title>
+      <View style={[GlobalStyles.divDark, GlobalStyles.header, GlobalStyles.flex1]}>
+        <Title style={GlobalStyles.whiteText}>Setting?</Title>
 
-                <Text style={GlobalStyles.whiteText} variant='labelLarge'>
-                    Change your settings and then click save to apply.
-                </Text>
-            </View>
+        <Text style={GlobalStyles.whiteText} variant='labelLarge'>
+          Change your settings and then click save to apply.
+        </Text>
+      </View>
 
       <View style={GlobalStyles.flex5}>
-      <ScrollView style={GlobalStyles.flex1}>
-
-      
+        <ScrollView style={GlobalStyles.flex1}>
 
 
-        <Text variant='labelSmall'>
-              Resolution
-            </Text>
-            <SegmentedButtons
-              value={selectedResolution}
-              onValueChange={setSelectedResolution}
-              buttons={resolutions}
-              style={GlobalStyles.bottomMargin}
-            />
 
 
-            <Text variant='labelSmall'>
-              Camera Type
-            </Text>
-            <SegmentedButtons
-              value={selectedCameraType}
-              onValueChange={setSelectedCameraType}
-              buttons={cameraTypes}
-              style={GlobalStyles.bottomMargin}
-            />
-
-            <Text variant='labelSmall'>
-              Camera Zoom
-            </Text>
-            <SegmentedButtons
-              value={selectedZoom}
-              onValueChange={setSelectedZoom}
-              buttons={zooms}
-              style={GlobalStyles.bottomMargin}
-            />
-
-            <Text variant='labelSmall'>
-              Start Automatic Recording
-            </Text>
-            <SegmentedButtons
-              value={selectedAutomaticRecording}
-              onValueChange={setSelectedAutomaticRecording}
-              buttons={automaticRecordings}
-              style={GlobalStyles.bottomMargin}
-            />
-
-            <Text variant='labelSmall'>
-              Max Video Duration
-            </Text>
-            <SegmentedButtons
-              value={selectedRecordingLength}
-              onValueChange={setSelectedRecordingLength}
-              buttons={recordingLengths}
-              style={GlobalStyles.bottomMargin}
-            />
-
-            <Text variant='labelSmall'>
-              Max Video File Size
-            </Text>
-            <SegmentedButtons
-              value={selectedMaxVideoFileSize}
-              onValueChange={setSelectedMaxVideoFileSize}
-              buttons={maxVideoFileSizes}
-              style={GlobalStyles.bottomMargin}
-            />
-
-            <Button style={GlobalStyles.button} icon="content-save" mode="contained" onPress={() => saveSetting()}>
-              Save
-            </Button>
+          <Text variant='labelSmall'>
+            Resolution
+          </Text>
+          <SegmentedButtons
+            value={selectedResolution}
+            onValueChange={setSelectedResolution}
+            buttons={resolutions}
+            style={GlobalStyles.bottomMargin}
+          />
 
 
-            <Button style={GlobalStyles.button} icon="restart" mode="outlined" >
-              Reset to Default
-            </Button>
+          <Text variant='labelSmall'>
+            Camera Type
+          </Text>
+          <SegmentedButtons
+            value={selectedCameraType}
+            onValueChange={setSelectedCameraType}
+            buttons={cameraTypes}
+            style={GlobalStyles.bottomMargin}
+          />
 
-      
+          <Text variant='labelSmall'>
+            Camera Zoom
+          </Text>
+          <SegmentedButtons
+            value={selectedZoom}
+            onValueChange={setSelectedZoom}
+            buttons={zooms}
+            style={GlobalStyles.bottomMargin}
+          />
+
+          <Text variant='labelSmall'>
+            Start Automatic Recording
+          </Text>
+          <SegmentedButtons
+            value={selectedAutomaticRecording}
+            onValueChange={setSelectedAutomaticRecording}
+            buttons={automaticRecordings}
+            style={GlobalStyles.bottomMargin}
+          />
+
+          <Text variant='labelSmall'>
+            Max Video Duration
+          </Text>
+          <SegmentedButtons
+            value={selectedRecordingLength}
+            onValueChange={setSelectedRecordingLength}
+            buttons={recordingLengths}
+            style={GlobalStyles.bottomMargin}
+          />
+
+          <Text variant='labelSmall'>
+            Max Video File Size
+          </Text>
+          <SegmentedButtons
+            value={selectedMaxVideoFileSize}
+            onValueChange={setSelectedMaxVideoFileSize}
+            buttons={maxVideoFileSizes}
+            style={GlobalStyles.bottomMargin}
+          />
+
+          <Button style={GlobalStyles.button} icon="content-save" mode="contained" onPress={() => saveSetting()}>
+            Save
+          </Button>
 
 
-      </ScrollView>
+          <Button style={GlobalStyles.button} icon="restart" mode="outlined" >
+            Reset to Default
+          </Button>
+
+
+
+
+        </ScrollView>
       </View>
     </View>
   );

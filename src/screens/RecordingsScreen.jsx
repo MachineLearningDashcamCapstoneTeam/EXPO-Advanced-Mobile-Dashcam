@@ -22,7 +22,7 @@ export default function RecordingsScreen({ navigation }) {
   const [files, setFiles] = useState([]);
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
 
-  //
+
   const setPermissions = async () => {
 
     const mediaLibraryPermission = await MediaLibrary.requestPermissionsAsync();
@@ -265,6 +265,7 @@ export default function RecordingsScreen({ navigation }) {
 
                       {getSaveOrDeleteFromFavoritesButton(videoAsset)}
 
+                   
                       <Button style={[GlobalStyles.buttonWarning, GlobalStyles.button]} icon="map" mode="contained" onPress={() => navigation.navigate('Map', { assetInfo: videoAsset })} >Map</Button>
                     </View>
 

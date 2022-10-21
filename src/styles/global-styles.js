@@ -12,9 +12,7 @@ const secondary = '#6233f5';
 const GlobalStyles = StyleSheet.create({
     container: {
         flex: 1,
-       
     },
-
     flex1: {
         flex: 1,
         padding: 20,
@@ -39,7 +37,6 @@ const GlobalStyles = StyleSheet.create({
         flex: 6,
         padding: 20,
     },
-
     button: {
         padding: 5,
         marginBottom: 5,
@@ -47,11 +44,10 @@ const GlobalStyles = StyleSheet.create({
     bottomMargin: {
         marginBottom: 10,
     },
-
-    divDark:{
+    divDark: {
         backgroundColor: dark,
     },
-    divMain:{
+    divMain: {
         backgroundColor: main,
     },
     divSmoke: {
@@ -63,68 +59,57 @@ const GlobalStyles = StyleSheet.create({
     divDanger: {
         backgroundColor: error,
     },
-
-    divSpaceBetween:{
+    divSpaceBetween: {
         justifyContent: 'space-between',
     },
-
-    specialHeader:{
-
+    header: {
         padding: 20,
         paddingVertical: 20,
         justifyContent: 'center',
-        color: 'white',
-        borderBottomRightRadius: 30,
-    },
-
-    header: {    
-        padding: 20,
-        paddingVertical: 20,
-        justifyContent: 'center',
-        color: 'white',
+        color: white,
         borderBottomLeftRadius: 30,
+    },
+    attention: {
+        borderTopRightRadius: 30,
+        padding: 20,
+        paddingVertical: 20,
+        justifyContent: 'center',
+        color: 'white',
     },
     rowContainer: {
         display: 'flex',
         flexDirection: 'row',
         marginHorizontal: "auto",
-        
-      },
-
-    buttonDanger:{
-        backgroundColor: error,
     },
 
+    buttonMain: {
+        backgroundColor: main,
+    },
+    buttonDanger: {
+        backgroundColor: error,
+    },
     buttonSuccess: {
         backgroundColor: success,
     },
-    buttonWarning:{
+    buttonWarning: {
         backgroundColor: warning,
     },
-    buttonSecondary:{
+    buttonSecondary: {
         backgroundColor: secondary,
     },
-
     divCenter: {
         justifyContent: 'center',
     },
-
     paddingYsm: {
         paddingVertical: 10,
     },
     paddingYmd: {
         paddingVertical: 20,
     },
-
-    attention: {
-        borderTopRightRadius: 30,
-       
-        padding: 20,
-        paddingVertical: 20,
-    
-        justifyContent: 'center',
-        color: 'white',
+    paddingYlg: {
+        paddingVertical: 30,
     },
+
     whiteText: {
         color: 'white'
     },
@@ -134,15 +119,12 @@ const GlobalStyles = StyleSheet.create({
         height: 300,
         marginBottom: 10,
     },
-
     camera: {
         flex: 1,
     },
-
     card: {
         marginBottom: 0,
     },
-
 
     mapContainer: {
         flex: 1,
@@ -154,7 +136,6 @@ const GlobalStyles = StyleSheet.create({
         width: Dimensions.get('window').width,
         height: Dimensions.get('window').height,
     },
-
 
 });
 

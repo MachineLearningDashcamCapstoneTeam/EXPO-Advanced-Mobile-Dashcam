@@ -16,21 +16,16 @@ export default function VideoPlayerScreen({ route, navigation }) {
   const [status, setStatus] = useState({});
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
 
-
   const setPermissions = async () => {
-
     const mediaLibraryPermission = await MediaLibrary.requestPermissionsAsync();
     setHasMediaLibraryPermission(mediaLibraryPermission.status === "granted");
-
     if (mediaLibraryPermission.status === 'granted') {
       loadFavorites();
     }
   }
-
   useEffect(() => {
     setPermissions();
   }, []);
-
 
   const loadFavorites = async () => {
     //* Load Favorite videos
@@ -40,58 +35,45 @@ export default function VideoPlayerScreen({ route, navigation }) {
       setSavedFavoriteVideosIds([...tempSavedFavoriteVideosIdsArray]);
     }
   }
-
-  let shareVideo = async () => {
-
+  const shareVideo = async () => {
     const filename = `${FileSystem.documentDirectory}${assetInfo.filename}.txt`;
     const result = await FileSystem.readAsStringAsync(filename, {
       encoding: FileSystem.EncodingType.UTF8
     });
-
     //! Somehow share video and coordinates together
     console.log(result);
     shareAsync(filename).then(() => {
-
     });
-
   };
-
 
   const saveVideoToSavedVideoIds = async (videoAsset) => {
     const result = savedFavoriteVideosIds.includes(videoAsset.id);
     if (result === false) {
-
       //* Video does not exist is saved videos list
-      const tempSavedFavoriteVideosIds = savedFavoriteVideosIds;
+      let tempSavedFavoriteVideosIds = savedFavoriteVideosIds;
       tempSavedFavoriteVideosIds.push(videoAsset.id);
       const tempSavedFavoriteVideosIdsString = JSON.stringify(tempSavedFavoriteVideosIds);
       await AsyncStorage.setItem('FavoriteVideosIds', tempSavedFavoriteVideosIdsString);
-
       console.log(tempSavedFavoriteVideosIdsString)
       setSavedFavoriteVideosIds([...tempSavedFavoriteVideosIds]);
-
       Alert.alert("Added video to Favorites");
     }
   }
-
   const deleteVideoFromFavoriteVideos = async (videoAsset) => {
     const result = savedFavoriteVideosIds.includes(videoAsset.id);
     if (result) {
-
       //* Video exists, delete from the favorites list
       let tempSavedFavoriteVideosIds = savedFavoriteVideosIds;
       tempSavedFavoriteVideosIds = tempSavedFavoriteVideosIds.filter(id => id !== videoAsset.id)
       const tempSavedFavoriteVideosIdsString = JSON.stringify(tempSavedFavoriteVideosIds);
       await AsyncStorage.setItem('FavoriteVideosIds', tempSavedFavoriteVideosIdsString);
-
       console.log(tempSavedFavoriteVideosIdsString)
       setSavedFavoriteVideosIds([...tempSavedFavoriteVideosIds]);
-
       Alert.alert("Deleted video from Favorites");
     }
   }
 
-  let deleteVideo = () => {
+  const deleteVideo = () => {
     //* If the user has permission, load the video data
     if (hasMediaLibraryPermission) {
       MediaLibrary.deleteAssetsAsync([assetInfo.id])
@@ -104,14 +86,11 @@ export default function VideoPlayerScreen({ route, navigation }) {
           }
         })
     }
-
   }
 
-
-
+  //* Create the favorites button
   const getSaveOrDeleteFromFavoritesButton = (videoAsset) => {
     const result = savedFavoriteVideosIds.includes(videoAsset.id);
-
     if (result) {
       return (<Button style={[GlobalStyles.buttonDanger, GlobalStyles.button]} icon="lock-open-variant" mode="contained" onPress={() => deleteVideoFromFavoriteVideos(videoAsset)}>
         Unlock
@@ -122,31 +101,24 @@ export default function VideoPlayerScreen({ route, navigation }) {
         Lock
       </Button>)
     }
-
   }
 
   return (
     <ScrollView style={GlobalStyles.container}>
-
       <View style={[GlobalStyles.divDark, GlobalStyles.header]}>
         <Text variant='titleLarge' style={GlobalStyles.whiteText}>
           {assetInfo.id}
         </Text>
-
         <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant='labelSmall'>
           Path: {assetInfo.uri}
         </Text>
-
         <Button style={GlobalStyles.button} mode="contained" onPress={() =>
           status.isPlaying ? video.current.pauseAsync() : video.current.playAsync()
         }
           icon={status.isPlaying ? 'pause' : 'play'}
         >{status.isPlaying ? 'Pause' : 'Play'}</Button>
 
-
-
       </View>
-
       <View style={[GlobalStyles.flex3]}>
         <Video
           ref={video}
@@ -157,52 +129,36 @@ export default function VideoPlayerScreen({ route, navigation }) {
           isLooping
           onPlaybackStatusUpdate={status => setStatus(() => status)}
         />
-
         <Text variant='labelSmall'>
           Created: {timeStampToDate(assetInfo.creationTime)}
         </Text>
-
         <Text variant='labelSmall'>
           Duration: {assetInfo.duration}s
         </Text>
-
         <Text variant='labelSmall'>
           Size: {assetInfo.height} x {assetInfo.width}
         </Text>
-
       </View>
-
 
       <View style={[GlobalStyles.divDark, GlobalStyles.attention, GlobalStyles.flex3]}>
         <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant='labelLarge'>
            Options:
           </Text>
 
-
         <View style={[GlobalStyles.divSpaceBetween, GlobalStyles.rowContainer]}>
           {getSaveOrDeleteFromFavoritesButton(assetInfo)}
-
           <Button style={[GlobalStyles.buttonSecondary, GlobalStyles.button]} icon="share" mode="contained" onPress={shareVideo} >Share</Button>
 
-
-
           <Button style={[GlobalStyles.buttonWarning, GlobalStyles.button]} icon="map" mode="contained" onPress={() => navigation.navigate('Map', { assetInfo: assetInfo })} >Map</Button>
-
         </View>
-
-
 
         <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant='labelLarge'>
           Warning! Point of no return:
         </Text>
         <Button style={[GlobalStyles.buttonDanger, GlobalStyles.button]} icon="delete" mode="contained" onPress={deleteVideo} >Delete </Button>
 
-
-
       </View>
-
 
     </ScrollView>
   );
 }
-
