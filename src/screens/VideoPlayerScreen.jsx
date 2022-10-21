@@ -54,7 +54,6 @@ export default function VideoPlayerScreen({ route, navigation }) {
       tempSavedFavoriteVideosIds.push(videoAsset.id);
       const tempSavedFavoriteVideosIdsString = JSON.stringify(tempSavedFavoriteVideosIds);
       await AsyncStorage.setItem('FavoriteVideosIds', tempSavedFavoriteVideosIdsString);
-      console.log(tempSavedFavoriteVideosIdsString)
       setSavedFavoriteVideosIds([...tempSavedFavoriteVideosIds]);
       Alert.alert("Added video to Favorites");
     }
@@ -67,7 +66,6 @@ export default function VideoPlayerScreen({ route, navigation }) {
       tempSavedFavoriteVideosIds = tempSavedFavoriteVideosIds.filter(id => id !== videoAsset.id)
       const tempSavedFavoriteVideosIdsString = JSON.stringify(tempSavedFavoriteVideosIds);
       await AsyncStorage.setItem('FavoriteVideosIds', tempSavedFavoriteVideosIdsString);
-      console.log(tempSavedFavoriteVideosIdsString)
       setSavedFavoriteVideosIds([...tempSavedFavoriteVideosIds]);
       Alert.alert("Deleted video from Favorites");
     }

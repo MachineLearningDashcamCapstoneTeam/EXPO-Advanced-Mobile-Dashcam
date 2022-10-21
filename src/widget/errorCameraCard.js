@@ -1,6 +1,6 @@
 import React from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
-import { Appbar, Card, Title, Button, Text, Divider } from 'react-native-paper';
+import { View } from 'react-native';
+import { Title, Text } from 'react-native-paper';
 
 import GlobalStyles from '../styles/global-styles';
 const ErrorCameraCard = ({}) => {
