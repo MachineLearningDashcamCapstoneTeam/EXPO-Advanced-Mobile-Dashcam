@@ -32,18 +32,15 @@ export const getGoogleDriveFiles = async (accessToken, folderId) => {
         return promise;
     } catch (error) {
         if (error.response) {
-            console.log(error)
             return error.response.status;
         } if (error.request) {
-            console.log(error)
             return error.request;
         }
-        console.log(error)
         return error.message;
     }
 };
 
-// Using the access token and file url, delete the file
+//* Using the access token and file url, delete the file
 export const deleteGoogleDriveFile = async (accessToken, fileId) => {
     try {
         const customUrl = `${GOOGLE_FILE_URL}${fileId}`;
@@ -55,13 +52,10 @@ export const deleteGoogleDriveFile = async (accessToken, fileId) => {
         return promise;
     } catch (error) {
         if (error.response) {
-            console.log(error)
             return error.response.status;
         } if (error.request) {
-            console.log(error)
             return error.request;
         }
-        console.log(error)
         return error.message;
     }
 };
@@ -79,58 +73,61 @@ export const uploadGoogleDriveFile = async (accessToken, file) => {
             },
         });
         return promise;
-        } catch (error) {
-            if (error.response) {
-                console.log(error)
-                return error.response.status;
-            } if (error.request) {
-                console.log(error)
-                return error.request;
-            }
+    } catch (error) {
+        if (error.response) {
             console.log(error)
-            return error.message;
+            return error.response.status;
+        } if (error.request) {
+            console.log(error)
+            return error.request;
         }
+        console.log(error)
+        return error.message;
     }
+}
 
 export const uploadDashcamVideos = async (accessToken) => {
 
+    const response = await getGoogleDriveFolders(accessToken);
+    if (response.status === 200) {
+        const cameraFolder = getObjectsWhereKeyEqualsValue(response.data.files, 'name', 'Dashcam')[0];
+        let fileContent = 'sample text';
+        let file = new Blob([fileContent], { type: 'text/plain' });
+        let metadata = {
+            'name': 'sampleName', // Filename at Google Drive
+            'mimeType': 'text/plain', // mimeType at Google Drive
+            'parents': [`${cameraFolder.id}`], // Folder ID at Google Drive
+        };
+
+        console.log(metadata)
+        let form = new FormData();
+        form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+        form.append('file', file);
+
+        console.log(file)
+        const uploadResponse = await uploadGoogleDriveFile(accessToken, form);
+        return uploadResponse;
+
+    }
+}
+
+export const getDashcamVideos = async (accessToken) => {
+    try {
         const response = await getGoogleDriveFolders(accessToken);
         if (response.status === 200) {
-            const cameraFolder = getObjectsWhereKeyEqualsValue(response.data.files, 'name', 'Dashcam')[0];
-            let fileContent = 'sample text';
-            let file = new Blob([fileContent], { type: 'text/plain' });
-            let metadata = {
-                'name': 'sampleName', // Filename at Google Drive
-                'mimeType': 'text/plain', // mimeType at Google Drive
-                'parents': [`${cameraFolder.id}`], // Folder ID at Google Drive
-            };
-
-            console.log(metadata)
-            let form = new FormData();
-            form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
-            form.append('file', file);
-   
-            console.log(file)
-            const uploadResponse = await uploadGoogleDriveFile(accessToken, form);
-            return uploadResponse;
-
-        }
-    }
-
-    export const getDashcamVideos = async (accessToken) => {
-        try {
-            const response = await getGoogleDriveFolders(accessToken);
-            if (response.status === 200) {
-                const cameraFolder = getObjectsWhereKeyEqualsValue(response.data.files, 'name', 'Dashcam')[0];
-                const documentsResponse = await getGoogleDriveFiles(accessToken, cameraFolder.id);
+            const cameraFolders = getObjectsWhereKeyEqualsValue(response.data.files, 'name', 'Dashcam');
+            if(cameraFolders && cameraFolders.length >= 1){
+                const documentsResponse = await getGoogleDriveFiles(accessToken, cameraFolders[0].id);
                 return documentsResponse;
             }
-
-            return response;
-        } catch (error) {
-            console.log(error);
-            return error;
+            else{
+                throw 'Dashcam folder not found in Google Drive'
+            }
         }
-    };
+        return response;
+    } catch (error) {
+        return error;
+    }
+};
 
-    export default getGoogleDriveFiles;
+export default getGoogleDriveFiles;

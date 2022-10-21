@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useMemo } from 'react';
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -10,15 +10,13 @@ import VideoPlayerScreen from '../screens/VideoPlayerScreen';
 import MapScreen from '../screens/MapScreen';
 import HelpScreen from '../screens/HelpScreen';
 
-import { AccessContext, AccessTokenContextProvider  } from '../context/accessTokenContext';
+import { AccessTokenContextProvider  } from '../context/accessTokenContext';
 
 const Stack = createNativeStackNavigator();
-
 
 //* The user stack contains all the screen that users can access
 //* An authentication stack can be added if we need to setup a login and sign up system
 export default function UserStack() {
-
   return (
     <AccessTokenContextProvider>
       <NavigationContainer>

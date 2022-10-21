@@ -1,5 +1,4 @@
 import React, { createContext, useState, useMemo } from 'react';
-
 //* Context for access token
 const AccessContext = createContext({
     accessTokenContextValue: '',
@@ -14,7 +13,6 @@ const AccessTokenContextProvider = ({ children }) => {
         () => ({ accessTokenContextValue, setAccessTokenContextValue }),
         [accessTokenContextValue]
     );
-
     return (
         //* the Provider gives access to the context to its children
         <AccessContext.Provider value={value}>

@@ -25,9 +25,15 @@ export const getCurrentTime = () => {
 };
 
 export const timeStampToDate = (timeStamp) =>{
-  const dateStamp =  new Date(timeStamp);
-  const dd = String(dateStamp.getDate()).padStart(2, '0');
-  const mm = String(dateStamp.getMonth() + 1).padStart(2, '0'); // January is 0!
-  const yyyy = dateStamp.getFullYear();
-  return `${yyyy}-${mm}-${dd}`;
+  if(isNaN(timeStamp)){
+    const dateStamp =  new Date(timeStamp);
+    const dd = String(dateStamp.getDate()).padStart(2, '0');
+    const mm = String(dateStamp.getMonth() + 1).padStart(2, '0'); // January is 0!
+    const yyyy = dateStamp.getFullYear();
+    return `${yyyy}-${mm}-${dd}`;
+  }
+  else{
+    return 'Unable to format Timestamp';
+  }
+ 
 }

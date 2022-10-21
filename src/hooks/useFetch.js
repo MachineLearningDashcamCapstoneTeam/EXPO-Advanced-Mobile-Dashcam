@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react"
 import axios from "axios"
-
 //* Custom use fetch hook for loading data on initial screen load
 export default function useFetch(url){
-
     const [data,setData] = useState(null)
     const [error,setError] = useState(null)
     const [loading,setLoading] = useState(false)
-
     useEffect(() => {
         (
             async function(){
@@ -23,7 +20,5 @@ export default function useFetch(url){
             }
         )()
     }, [url])
-
     return { data, error, loading }
-
 }
