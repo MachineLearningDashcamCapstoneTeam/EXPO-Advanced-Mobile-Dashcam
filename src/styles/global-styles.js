@@ -5,6 +5,7 @@ const smoke = '#f8f9fd';
 const gray = '#b5b5b5';
 const white = '#ffffff';
 const dark = '#181d3d';
+const navbarBlack = '#000000';
 const error = "#DF2935";
 const success = "#679436";
 const warning = "#FC9E4F";
@@ -110,6 +111,7 @@ const GlobalStyles = StyleSheet.create({
     rowContainer: {
         display: 'flex',
         flexDirection: 'row',
+        justifyContent: 'space-evenly',
         marginHorizontal: "auto",
     },
     buttonMain: {
@@ -128,6 +130,7 @@ const GlobalStyles = StyleSheet.create({
         backgroundColor: secondary,
     },
     divCenter: {
+        alignItems: 'center',
         justifyContent: 'center',
     },
     
@@ -151,7 +154,17 @@ const GlobalStyles = StyleSheet.create({
     },
     camera: {
         flex: 1,
+        justifyContent: 'flex-end',
     },
+    cameraNavbar:{
+     
+        backgroundColor: navbarBlack,
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
+        display: 'flex',
+        flexDirection: 'row',
+    },
+ 
     card: {
         marginBottom: 0,
     },

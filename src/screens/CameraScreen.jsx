@@ -1,5 +1,5 @@
-import { StyleSheet, View, SafeAreaView } from 'react-native';
-import { useEffect, useState, useRef } from 'react'; 
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
+import { useEffect, useState, useRef } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Camera, CameraType } from 'expo-camera';
 import { Video } from 'expo-av';
@@ -7,70 +7,56 @@ import { shareAsync } from 'expo-sharing';
 import * as MediaLibrary from 'expo-media-library';
 import * as Location from 'expo-location';
 import * as FileSystem from 'expo-file-system';
-import { ALBUM_NAME } from '../constants';
+import { ALBUM_NAME, CAMERA_IMG } from '../constants';
 import { gpsJsonToGeojson } from '../utils/geojson-utils';
-import { Button, Text, Snackbar, SegmentedButtons, Divider } from 'react-native-paper';
-import {useKeepAwake, activateKeepAwake, deactivateKeepAwake} from 'expo-keep-awake';
+import { Button, Text, Snackbar, IconButton, MD3Colors, Avatar } from 'react-native-paper';
+import { useKeepAwake, activateKeepAwake, deactivateKeepAwake } from 'expo-keep-awake';
 import GlobalStyles from '../styles/global-styles';
 import ErrorCameraCard from '../widget/errorCameraCard';
 
-const CameraScreen = () => {
+const CameraScreen = ({navigation}) => {
 
-  
   useKeepAwake();
-
   let cameraRef = useRef();
-
   const [snackBarVisible, setSnackBarVisible] = useState(false);
   const [hasCameraPermission, setHasCameraPermission] = useState();
   const [hasMicrophonePermission, setHasMicrophonePermission] = useState();
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
   const [hasLocationPermission, setHasLocationPermission] = useState();
-
   const [isRecording, setIsRecording] = useState(false);
   const [video, setVideo] = useState();
-
   const [selectedResolution, setSelectedResolution] = useState('480p');
   const [selectedCameraType, setSelectedCameraType] = useState('Back');
   const [selectedZoom, setSelectedZoom] = useState('0');
   const [selectedRecordingLength, setSelectedRecordingLength] = useState('1');
   const [selectedMaxVideoFileSize, setSelectedMaxVideoFileSize] = useState('0');
   const [selectedAutomaticRecording, setSelectedAutomaticRecording] = useState('false');
-
   const saveVideoData = async (recordedVideo, gpsLocations) => {
-
 
     const expoAlbum = await MediaLibrary.getAlbumAsync(ALBUM_NAME)
     const video_asset = await MediaLibrary.createAssetAsync(recordedVideo.uri);
     const filename = `${FileSystem.documentDirectory}${video_asset.filename}.txt`;
-
     const gpsData = gpsJsonToGeojson(gpsLocations)
     await FileSystem.writeAsStringAsync(filename, JSON.stringify(gpsData), {
       encoding: FileSystem.EncodingType.UTF8
     });
-
     if (expoAlbum) {
       await MediaLibrary.addAssetsToAlbumAsync([video_asset], expoAlbum.id).then((result) => {
         console.log(result)
       });
-
     } else {
       await MediaLibrary.createAlbumAsync(ALBUM_NAME, video_asset).then((result) => {
         console.log(result)
       });
     }
 
-
     setVideo(null);
-    if(selectedAutomaticRecording === 'true'){   
+    if (selectedAutomaticRecording === 'true') {
       recordVideo();
-    } 
+    }
   };
-
   let recordVideo = async () => {
-
     if (!cameraRef) return;
-
     console.log('Camera Granted');
     console.log(`Resolution ${selectedResolution}`)
     console.log(`cam type ${selectedCameraType}`)
@@ -78,10 +64,8 @@ const CameraScreen = () => {
     console.log(`record length ${selectedRecordingLength}`)
     console.log(`max size ${selectedMaxVideoFileSize}`)
     console.log(`auto record ${selectedAutomaticRecording}`)
-
     //* Clear Locations and Video
     setVideo(null);
-
     //* Set Location subscription
     //* Get location every second (1000 milliseconds)
     const tempLocations = [];
@@ -94,7 +78,6 @@ const CameraScreen = () => {
         tempLocations.push(location);
       }
     );
-
     //* Set the camera options and made sure exif data is set
     let cameraOptions = {
       quality: selectedResolution,
@@ -102,31 +85,26 @@ const CameraScreen = () => {
       mute: false,
       exif: true,
     };
-
     setIsRecording(true);
     await cameraRef.current.recordAsync(cameraOptions).then((recordedVideo) => {
       setVideo(recordedVideo);
       setIsRecording(false);
       locSub.remove();
       saveVideoData(recordedVideo, tempLocations)
-
     }).catch((error) => {
       console.error(error);
     });
   };
-
 
   const setPermissions = async () => {
     const cameraPermission = await Camera.requestCameraPermissionsAsync();
     const microphonePermission = await Camera.requestMicrophonePermissionsAsync();
     const mediaLibraryPermission = await MediaLibrary.requestPermissionsAsync();
     const locationPermission = await Location.requestForegroundPermissionsAsync();
-
     setHasCameraPermission(cameraPermission.status === "granted");
     setHasMicrophonePermission(microphonePermission.status === "granted");
     setHasMediaLibraryPermission(mediaLibraryPermission.status === "granted");
     setHasLocationPermission(locationPermission.status === "granted");
-
 
     const tempResolution = await AsyncStorage.getItem('CameraResolution')
     if (tempResolution !== null || tempResolution !== '') {
@@ -135,7 +113,6 @@ const CameraScreen = () => {
     else {
       setSelectedResolution('480p');
     }
-
     const tempCameraType = await AsyncStorage.getItem('CameraType')
     if (tempCameraType !== null || tempCameraType !== '') {
       setSelectedCameraType(tempCameraType);
@@ -143,7 +120,6 @@ const CameraScreen = () => {
     else {
       setSelectedCameraType('Back');
     }
-
     const tempZoom = await AsyncStorage.getItem('CameraZoom')
     if (tempZoom !== null || tempZoom !== '') {
       setSelectedZoom(tempZoom);
@@ -151,7 +127,6 @@ const CameraScreen = () => {
     else {
       setSelectedZoom('0');
     }
-
     const tempRecordingLength = await AsyncStorage.getItem('RecordingLength')
     if (tempRecordingLength !== null || tempRecordingLength !== '') {
       setSelectedRecordingLength(tempRecordingLength);
@@ -159,7 +134,6 @@ const CameraScreen = () => {
     else {
       setSelectedRecordingLength('1')
     }
-
     const tempMaxVideoFileSize = await AsyncStorage.getItem('MaxVideoFileSize')
     if (tempMaxVideoFileSize !== null || tempMaxVideoFileSize !== '') {
       setSelectedMaxVideoFileSize(tempMaxVideoFileSize);
@@ -167,7 +141,6 @@ const CameraScreen = () => {
     else {
       setSelectedMaxVideoFileSize('4294967296');
     }
-
     const tempAutomaticRecording = await AsyncStorage.getItem('AutomaticRecording')
     if (tempAutomaticRecording !== null || tempAutomaticRecording !== '') {
       setSelectedAutomaticRecording(tempAutomaticRecording);
@@ -175,34 +148,24 @@ const CameraScreen = () => {
     else {
       setSelectedAutomaticRecording('false');
     }
-
   }
-  
-
 
   useEffect(() => {
-
     setPermissions();
-
-     //* Activate keep awake so the screen never turns off
-     activateKeepAwake();
-  
+    //* Activate keep awake so the screen never turns off
+    activateKeepAwake();
     return () => {
+      
       setHasCameraPermission(null);
       setHasMicrophonePermission(null);
       setHasMediaLibraryPermission(null);
       setHasLocationPermission(null);
-
       setIsRecording(false);
       setVideo(null);
-
       //* Deactivate keep awake so the system never keeps running
       deactivateKeepAwake();
-      
     };
   }, []);
-
-
 
   //* If the application does not have permission, show an error
   if (hasCameraPermission === undefined || hasMicrophonePermission === undefined || hasLocationPermission === undefined) {
@@ -211,22 +174,48 @@ const CameraScreen = () => {
     return <ErrorCameraCard />
   }
 
-
   //* Stop the camera from recording.
   let stopRecording = () => {
     setIsRecording(false);
     cameraRef.current.stopRecording();
-  
   };
-
   return (
-    <View style={GlobalStyles.camera}>
+    <View style={GlobalStyles.container}>
+      <Camera style={[GlobalStyles.camera]} ref={cameraRef} onCameraReady={selectedAutomaticRecording === 'true' ? recordVideo : null} quality={selectedResolution} type={selectedCameraType === 'Back' ? CameraType.back : CameraType.front} >
 
-      <Camera style={GlobalStyles.camera} ref={cameraRef} onCameraReady={selectedAutomaticRecording === 'true' ? recordVideo : null} quality={selectedResolution} type={selectedCameraType === 'Back' ? CameraType.back : CameraType.front} >
-        <View style={GlobalStyles.buttonContainer}>
-          <Button style={GlobalStyles.button} icon="camera" mode="contained" onPress={isRecording ? stopRecording : recordVideo} >{isRecording ? "Stop Recording" : "Record Video"} </Button>
-        </View>
       </Camera>
+
+
+      <View style={[GlobalStyles.cameraNavbar]}>
+
+        <View style={[GlobalStyles.divCenter, GlobalStyles.container]}>
+          <TouchableOpacity  onPress={() => navigation.navigate('Recordings')}>
+          <Avatar.Image size={50} source={{ uri: CAMERA_IMG}}/>
+          </TouchableOpacity>
+          
+        </View>
+
+        <View style={[GlobalStyles.divCenter, GlobalStyles.container]}>
+          <IconButton
+            icon={isRecording ? 'record' : 'record'}
+            iconColor={isRecording ? MD3Colors.error50 : MD3Colors.neutral100}
+            size={isRecording ? 100 : 100}
+            onPress={isRecording ? stopRecording : recordVideo}
+          />
+        </View>
+
+        <View style={[GlobalStyles.divCenter, GlobalStyles.container]}>
+          <IconButton
+            icon={selectedCameraType === 'Back' ? 'camera-flip' : 'camera-flip-outline'}
+            iconColor={MD3Colors.neutral100}
+            size={50}
+            onPress={() => { selectedCameraType === 'Back' ? setSelectedCameraType('Front') : setSelectedCameraType('Back') }}
+          />
+        </View>
+
+
+      </View>
+
 
       <Snackbar
         visible={snackBarVisible}
@@ -238,7 +227,6 @@ const CameraScreen = () => {
         Recording Started
       </Snackbar>
     </View>
-
   );
 }
 

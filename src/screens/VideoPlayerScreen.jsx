@@ -88,6 +88,11 @@ export default function VideoPlayerScreen({ route, navigation }) {
       MediaLibrary.deleteAssetsAsync([videoAsset.id])
         .then((success) => {
           if (success) {
+            let tempList = videos;
+            tempList = tempList.filter(item => item.id !== videoAsset.id)
+            setVideos(tempList);
+            //* Also delete the video from favorites
+            deleteVideoFromFavoriteVideos(videoAsset);
             Alert.alert("Video successfully deleted");
             navigation.goBack();
           } else {
