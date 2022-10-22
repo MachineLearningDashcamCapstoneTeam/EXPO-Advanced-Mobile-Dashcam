@@ -5,6 +5,7 @@ import { Card, Button, Text } from 'react-native-paper';
 import { View } from 'react-native';
 import GlobalStyles from '../styles/global-styles';
 import * as WebBrowser from 'expo-web-browser';
+import calculateFileSizeString from '../utils/file-size';
 
 const GoogleVideoCard = ({ file, deleteDriveFile }) => {
     //* Redirect users to the preview screen
@@ -16,15 +17,16 @@ const GoogleVideoCard = ({ file, deleteDriveFile }) => {
             <Card.Cover source={{ uri: file.thumbnailLink }} style={[GlobalStyles.borderRounded]} />
             <Card.Content>
                 <View style={[GlobalStyles.marginYsm]}>
-                    <Text variant='titleMedium'>{file.id}</Text>
-                    <Text variant='labelSmall'>
+                    <Text variant='titleMedium'>Trip - {file.createdTime}</Text>
+                    <Text variant='labelMedium'>
                         Created: {file.createdTime}
                     </Text>
-                    <Text variant='labelSmall'>
+                 
+                    <Text variant='labelMedium'>
                         Owner: {file.owners[0].displayName}
                     </Text>
-                    <Text variant='labelSmall'>
-                        Size: {file.size}
+                    <Text variant='labelMedium'>
+                        Size: {calculateFileSizeString( file.size)}
                     </Text>
                 </View>
                 <View style={[GlobalStyles.rowContainer, GlobalStyles.marginYsm]}>
@@ -35,10 +37,8 @@ const GoogleVideoCard = ({ file, deleteDriveFile }) => {
                         <Button style={[GlobalStyles.buttonMain, GlobalStyles.button]} icon="share" mode="contained" onPress={() => console.log('Share Test')} >Share</Button>
                     </View>
                 </View>
+                <View style={[GlobalStyles.divLine, GlobalStyles.marginYsm]} />
                 <View style={[GlobalStyles.marginYsm]}>
-                    <Text variant='labelLarge'>
-                        Warning! Point of no return:
-                    </Text>
                     <Button style={GlobalStyles.button} icon="delete" mode="outlined" onPress={() => deleteDriveFile(file)} > Delete</Button>
                 </View>
             </Card.Content>

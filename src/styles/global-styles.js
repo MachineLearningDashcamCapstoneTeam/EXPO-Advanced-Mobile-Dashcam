@@ -2,6 +2,7 @@ import { StyleSheet, Dimensions } from 'react-native';
 
 const main = '#456de4';
 const smoke = '#f8f9fd';
+const gray = '#b5b5b5';
 const white = '#ffffff';
 const dark = '#181d3d';
 const error = "#DF2935";
@@ -40,7 +41,6 @@ const GlobalStyles = StyleSheet.create({
     button: {
         padding: 1,
     },
-
     borderRounded:{
         borderRadius: 15,
     },
@@ -53,7 +53,6 @@ const GlobalStyles = StyleSheet.create({
         padding: 5,
         marginBottom: 5,
     },
-
     marginYsm:{
         marginVertical: 10,
     },
@@ -63,7 +62,6 @@ const GlobalStyles = StyleSheet.create({
     marginYlg: {
         marginBottom: 30,
     },
-
     divDark: {
         backgroundColor: dark,
     },
@@ -130,7 +128,6 @@ const GlobalStyles = StyleSheet.create({
     paddingYlg: {
         paddingVertical: 30,
     },
-
     whiteText: {
         color: 'white'
     },
@@ -146,7 +143,6 @@ const GlobalStyles = StyleSheet.create({
     card: {
         marginBottom: 0,
     },
-
     mapContainer: {
         flex: 1,
         backgroundColor: '#fff',
@@ -157,7 +153,11 @@ const GlobalStyles = StyleSheet.create({
         width: '100%',
         height: '100%',
     },
-
+    divLine:{
+        borderBottomColor: gray,
+        borderBottomWidth: StyleSheet.hairlineWidth,
+    }
+    
 });
 
 export default GlobalStyles;

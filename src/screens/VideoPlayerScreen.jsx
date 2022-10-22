@@ -16,6 +16,8 @@ export default function VideoPlayerScreen({ route, navigation }) {
   const [savedFavoriteVideosIds, setSavedFavoriteVideosIds] = useState([]);
   const [status, setStatus] = useState({});
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
+
+  //* Set the permissions for the screen
   const setPermissions = async () => {
     const mediaLibraryPermission = await MediaLibrary.requestPermissionsAsync();
     setHasMediaLibraryPermission(mediaLibraryPermission.status === "granted");
@@ -26,6 +28,8 @@ export default function VideoPlayerScreen({ route, navigation }) {
   useEffect(() => {
     setPermissions();
   }, []);
+
+
   const loadFavorites = async () => {
     //* Load Favorite videos
     const tempSavedFavoriteVideosIds = await AsyncStorage.getItem('FavoriteVideosIds');
@@ -34,6 +38,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
       setSavedFavoriteVideosIds([...tempSavedFavoriteVideosIdsArray]);
     }
   }
+
   const shareVideo = async () => {
     const filename = `${FileSystem.documentDirectory}${assetInfo.filename}.txt`;
     const result = await FileSystem.readAsStringAsync(filename, {
@@ -44,11 +49,13 @@ export default function VideoPlayerScreen({ route, navigation }) {
     shareAsync(filename).then(() => {
     });
   };
-  const saveVideoToSavedVideoIds = async (videoAsset) => {
-    const result = savedFavoriteVideosIds.includes(videoAsset.id);
-    if (result === false) {
+  const saveVideoToSavedVideoIds = async (videoAsset, isLocked = null) => {
+    if (isLocked === null) {
+      isLocked = savedFavoriteVideosIds.includes(videoAsset.id);
+    }
+    if (isLocked === false) {
       //* Video does not exist is saved videos list
-      let tempSavedFavoriteVideosIds = savedFavoriteVideosIds;
+      const tempSavedFavoriteVideosIds = savedFavoriteVideosIds;
       tempSavedFavoriteVideosIds.push(videoAsset.id);
       const tempSavedFavoriteVideosIdsString = JSON.stringify(tempSavedFavoriteVideosIds);
       await AsyncStorage.setItem('FavoriteVideosIds', tempSavedFavoriteVideosIdsString);
@@ -56,9 +63,13 @@ export default function VideoPlayerScreen({ route, navigation }) {
       Alert.alert("Added video to Favorites");
     }
   }
-  const deleteVideoFromFavoriteVideos = async (videoAsset) => {
-    const result = savedFavoriteVideosIds.includes(videoAsset.id);
-    if (result) {
+
+  
+  const deleteVideoFromFavoriteVideos = async (videoAsset, isLocked = null) => {
+    if (isLocked === null) {
+      isLocked = savedFavoriteVideosIds.includes(videoAsset.id);
+    }
+    if (isLocked) {
       //* Video exists, delete from the favorites list
       let tempSavedFavoriteVideosIds = savedFavoriteVideosIds;
       tempSavedFavoriteVideosIds = tempSavedFavoriteVideosIds.filter(id => id !== videoAsset.id)
@@ -82,14 +93,13 @@ export default function VideoPlayerScreen({ route, navigation }) {
         })
     }
   }
-
   return (
     <ScrollView style={GlobalStyles.container}>
       <View style={[GlobalStyles.divDark, GlobalStyles.header]}>
         <Text variant='titleLarge' style={GlobalStyles.whiteText}>
           {assetInfo.id}
         </Text>
-        <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant='labelSmall'>
+        <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant='labelMedium'>
           Path: {assetInfo.uri}
         </Text>
         <Button style={GlobalStyles.button} mode="contained" onPress={() =>
@@ -98,13 +108,10 @@ export default function VideoPlayerScreen({ route, navigation }) {
           icon={status.isPlaying ? 'pause' : 'play'}
         >{status.isPlaying ? 'Pause' : 'Play'}</Button>
       </View>
-
       <View style={GlobalStyles.flex5}>
-
 
         <Card key={assetInfo.id} mode="elevated" style={[GlobalStyles.borderRounded, GlobalStyles.marginYsm]}>
           <Card.Content>
-
             <Video
               ref={video}
               style={GlobalStyles.video}
@@ -115,32 +122,28 @@ export default function VideoPlayerScreen({ route, navigation }) {
               onPlaybackStatusUpdate={status => setStatus(() => status)}
             />
 
-
             <View style={[GlobalStyles.marginYsm]}>
               <Text variant='titleMedium'>{assetInfo.id}</Text>
-              <Text variant='labelSmall'>
+              <Text variant='labelMedium'>
                 Created: {timeStampToDate(assetInfo.creationTime)}
               </Text>
-              <Text variant='labelSmall'>
+              <Text variant='labelMedium'>
                 Duration: {assetInfo.duration}s
               </Text>
-              <Text variant='labelSmall'>
+              <Text variant='labelMedium'>
                 Video Id: {assetInfo.id}
               </Text>
-              <Text variant='labelSmall'>
+              <Text variant='labelMedium'>
                 Size: {assetInfo.height} x {assetInfo.width}
               </Text>
             </View>
 
-
-
-            <View style={[GlobalStyles.rowContainer]}>
+            <View style={[GlobalStyles.rowContainer, GlobalStyles.marginYsm]}>
               <View style={GlobalStyles.buttonContainer}>
               
                 <LockButton savedFavoriteVideosIds={savedFavoriteVideosIds} videoAsset={assetInfo} deleteVideoFromFavoriteVideos={deleteVideoFromFavoriteVideos} saveVideoToSavedVideoIds={saveVideoToSavedVideoIds} />
               
               </View>
-
               <View style={GlobalStyles.buttonContainer}>
                 <Button style={[GlobalStyles.buttonMain, GlobalStyles.button]} icon="share" mode="contained" onPress={shareVideo} >Share</Button>
               </View>
@@ -148,10 +151,10 @@ export default function VideoPlayerScreen({ route, navigation }) {
                 <Button style={[GlobalStyles.buttonMain, GlobalStyles.button]} icon="map" mode="contained" onPress={() => navigation.navigate('Map', { assetInfo: assetInfo })} >Map</Button>
               </View>
             </View>
+
+            <View style={[GlobalStyles.divLine, GlobalStyles.marginYsm]} />
+            
             <View style={[GlobalStyles.marginYsm]}>
-              <Text style={[GlobalStyles.paddingYsm]} variant='labelLarge'>
-                Warning! Point of no return:
-              </Text>
               <Button style={[GlobalStyles.button]} icon="delete" mode="elevated" onPress={deleteVideo} >Delete </Button>
             </View>
           </Card.Content>

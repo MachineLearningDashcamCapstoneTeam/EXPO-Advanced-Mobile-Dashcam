@@ -121,7 +121,7 @@ export default function SettingsScreen({ navigation }) {
         
 
 
-          <Text variant='labelSmall'>
+          <Text variant='labelMedium'>
             Resolution
           </Text>
           <SegmentedButtons
@@ -131,7 +131,7 @@ export default function SettingsScreen({ navigation }) {
             style={GlobalStyles.bottomMargin}
           />
 
-          <Text variant='labelSmall'>
+          <Text variant='labelMedium'>
             Camera Type
           </Text>
           <SegmentedButtons
@@ -140,7 +140,7 @@ export default function SettingsScreen({ navigation }) {
             buttons={cameraTypes}
             style={GlobalStyles.bottomMargin}
           />
-          <Text variant='labelSmall'>
+          <Text variant='labelMedium'>
             Camera Zoom
           </Text>
           <SegmentedButtons
@@ -149,7 +149,7 @@ export default function SettingsScreen({ navigation }) {
             buttons={zooms}
             style={GlobalStyles.bottomMargin}
           />
-          <Text variant='labelSmall'>
+          <Text variant='labelMedium'>
             Start Automatic Recording
           </Text>
           <SegmentedButtons
@@ -158,7 +158,7 @@ export default function SettingsScreen({ navigation }) {
             buttons={automaticRecordings}
             style={GlobalStyles.bottomMargin}
           />
-          <Text variant='labelSmall'>
+          <Text variant='labelMedium'>
             Max Video Duration
           </Text>
           <SegmentedButtons
@@ -167,7 +167,7 @@ export default function SettingsScreen({ navigation }) {
             buttons={recordingLengths}
             style={GlobalStyles.bottomMargin}
           />
-          <Text variant='labelSmall'>
+          <Text variant='labelMedium'>
             Max Video File Size
           </Text>
           <SegmentedButtons

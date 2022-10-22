@@ -3,7 +3,6 @@ import { StyleSheet, View, ScrollView, Alert } from 'react-native';
 import { useEffect, useState, useContext } from 'react';
 import * as MediaLibrary from 'expo-media-library';
 import { ALBUM_NAME } from '../constants';
-import { timeStampToDate } from '../utils/fetch-time';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { sortByLengthShortToLong, sortByLengthLongToShort, sortByTimeRecentToOldest, sortByTimeOldestToRecent } from '../utils/sorting-video-assets';
 import { getDashcamVideos, uploadDashcamVideos, deleteGoogleDriveFile } from '../services/googleDriveService';
@@ -11,7 +10,7 @@ import { AccessContext } from '../context/accessTokenContext';
 
 import GoogleVideoCard from '../widget/googleVideoCard';
 import GlobalStyles from '../styles/global-styles';
-import LockButton from '../widget/lockButton';
+import LocalVideoCard from '../widget/localVideoCard';
 
 export default function RecordingsScreen({ navigation }) {
   const { accessTokenContextValue, setAccessTokenContextValue } = useContext(AccessContext);
@@ -72,9 +71,11 @@ export default function RecordingsScreen({ navigation }) {
       unsubscribe;
     };
   }, [navigation]);
-  const saveVideoToSavedVideoIds = async (videoAsset) => {
-    const result = savedFavoriteVideosIds.includes(videoAsset.id);
-    if (result === false) {
+  const saveVideoToSavedVideoIds = async (videoAsset, isLocked = null) => {
+    if (isLocked === null) {
+      isLocked = savedFavoriteVideosIds.includes(videoAsset.id);
+    }
+    if (isLocked === false) {
       //* Video does not exist is saved videos list
       const tempSavedFavoriteVideosIds = savedFavoriteVideosIds;
       tempSavedFavoriteVideosIds.push(videoAsset.id);
@@ -84,9 +85,11 @@ export default function RecordingsScreen({ navigation }) {
       Alert.alert("Added video to Favorites");
     }
   }
-  const deleteVideoFromFavoriteVideos = async (videoAsset) => {
-    const result = savedFavoriteVideosIds.includes(videoAsset.id);
-    if (result) {
+  const deleteVideoFromFavoriteVideos = async (videoAsset, isLocked = null) => {
+    if (isLocked === null) {
+      isLocked = savedFavoriteVideosIds.includes(videoAsset.id);
+    }
+    if (isLocked) {
       //* Video exists, delete from the favorites list
       let tempSavedFavoriteVideosIds = savedFavoriteVideosIds;
       tempSavedFavoriteVideosIds = tempSavedFavoriteVideosIds.filter(id => id !== videoAsset.id)
@@ -157,7 +160,6 @@ export default function RecordingsScreen({ navigation }) {
       Alert.alert("Deleted video from Google Drive");
     }
   }
-
   const videoWidgets = () => {
     if (selectedMenu === 0) {
       return (
@@ -168,52 +170,16 @@ export default function RecordingsScreen({ navigation }) {
           <Button style={GlobalStyles.button} icon="filter" mode="outlined" onPress={() => sortByTimeASC()} >Oldest to Recent</Button>
           <Button style={GlobalStyles.button} icon="filter" mode="outlined" onPress={() => sortByTimeDSC()} >Recent to Oldest</Button> */}
           {
-            videos.map((videoAsset) =>
-              <Card key={videoAsset.id} mode="elevated" style={[GlobalStyles.borderRounded, GlobalStyles.marginYsm]}>
-                <Card.Cover source={{ uri: videoAsset.uri }} style={[GlobalStyles.borderRounded]} />
-                <Card.Content>
-                  <View style={[GlobalStyles.marginYsm]}>
-                    <Text variant='titleMedium'>{videoAsset.id}</Text>
-                    <Text variant='labelSmall'>
-                      Created: {timeStampToDate(videoAsset.creationTime)}
-                    </Text>
-                    <Text variant='labelSmall'>
-                      Duration: {videoAsset.duration}s
-                    </Text>
-                    <Text variant='labelSmall'>
-                      Video Id: {videoAsset.id}
-                    </Text>
-                  </View>
-                  <View style={[GlobalStyles.rowContainer]}>
-                    <View style={GlobalStyles.buttonContainer}>
-                      <Button style={[GlobalStyles.buttonMain, GlobalStyles.button]} icon="eye" mode="contained" onPress={() => getInfo(videoAsset)}>
-                        View
-                      </Button>
-                    </View>
-                    <View style={GlobalStyles.buttonContainer}>
-                     
-
-                    <LockButton savedFavoriteVideosIds={savedFavoriteVideosIds} videoAsset={videoAsset} deleteVideoFromFavoriteVideos={deleteVideoFromFavoriteVideos} saveVideoToSavedVideoIds={saveVideoToSavedVideoIds} />
-              
-                    </View>
-                  </View>
-                  <View style={[GlobalStyles.marginYsm]}>
-                    <Text variant='labelLarge'>
-                      Warning! Point of no return:
-                    </Text>
-                    <Button style={GlobalStyles.button} icon="delete" mode="outlined" onPress={() => deleteVideo(videoAsset)} > Delete</Button>
-                  </View>
-
-                </Card.Content>
-              </Card>
-            )
+            videos.map((videoAsset) => (
+              <LocalVideoCard key={videoAsset.id} videoAsset={videoAsset} savedFavoriteVideosIds={savedFavoriteVideosIds} getInfo={getInfo} deleteVideo={deleteVideo} deleteVideoFromFavoriteVideos={deleteVideoFromFavoriteVideos} saveVideoToSavedVideoIds={saveVideoToSavedVideoIds} />
+            ))
           }
         </View>
       )
     }
     else {
       return (
-        <View>
+        <View style={GlobalStyles.marginYsm}>
           {files.map((file) =>
           ((file.fileExtension === "MP4" || file.fileExtension === "mp4" || file.fileExtension === 'jpg') &&
             <GoogleVideoCard key={file.id} file={file} deleteDriveFile={deleteDriveFile} />
