@@ -103,7 +103,7 @@ export default function RecordingsScreen({ navigation }) {
       Alert.alert("Successfully Unlocked Video");
     }
   }
-  
+
   const deleteVideo = (videoAsset, isLocked = null) => {
     if (isLocked === null) {
       isLocked = savedFavoriteVideosIds.includes(videoAsset.id);
@@ -202,7 +202,7 @@ export default function RecordingsScreen({ navigation }) {
   return (
     <ScrollView style={GlobalStyles.container}>
       <View style={[GlobalStyles.divDark, GlobalStyles.header, GlobalStyles.flex2]}>
-        <Title style={GlobalStyles.whiteText}>{selectedMenu === 0 ? 'Local Videos' : 'Cloud Videos'}</Title>
+        <Text variant='titleLarge' style={GlobalStyles.whiteText}>{selectedMenu === 0 ? 'Local Videos' : 'Cloud Videos'}</Text>
         <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant='labelLarge'>
           {selectedMenu === 0 ? 'Local Videos are recordings and GPS Data saved on the phone. Use filters to swift through the recordings.' : 'Cloud Videos are recordings and GPS Data saved on Google Drive.'}
         </Text>

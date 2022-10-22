@@ -20,7 +20,7 @@ export default function SettingsScreen({ navigation }) {
   const [selectedZoom, setSelectedZoom] = useState('0');
   const [zooms, setZoom] = useState([
     { label: 'No Zoom', value: '0' },
-    { label: 'Medium Zoom', value: '0.5' },
+    { label: 'Medium', value: '0.5' },
     { label: 'Max Zoom', value: '1' }
   ]);
   const [selectedRecordingLength, setSelectedRecordingLength] = useState('1');
@@ -102,6 +102,24 @@ export default function SettingsScreen({ navigation }) {
   useEffect(() => {
     setInitialValues();
   }, [])
+
+  const saveResetButtons = () => {
+    return (
+      <View style={[GlobalStyles.rowContainer, GlobalStyles.marginYsm]}>
+        <View style={GlobalStyles.buttonContainer}>
+          <Button style={GlobalStyles.button} icon="content-save" mode="contained" onPress={() => saveSetting()}>
+            Save
+          </Button>
+        </View>
+        <View style={GlobalStyles.buttonContainer}>
+          <Button style={GlobalStyles.button} icon="restart" mode="outlined" >
+            Reset
+          </Button>
+        </View>
+      </View>
+    )
+  }
+
   return (
     <ScrollView style={GlobalStyles.container}>
       <View style={[GlobalStyles.divDark, GlobalStyles.header, GlobalStyles.flex1]}>
@@ -111,86 +129,89 @@ export default function SettingsScreen({ navigation }) {
         </Text>
       </View>
       <View style={GlobalStyles.flex5}>
+        <Card mode="elevated" style={[GlobalStyles.borderRounded, GlobalStyles.marginYsm]}>
 
-        <View style={[GlobalStyles.marginYsm]}>
-          <Text variant='labelMedium'>
-            Resolution
-          </Text>
-          <SegmentedButtons
-            value={selectedResolution}
-            onValueChange={setSelectedResolution}
-            buttons={resolutions}
-            style={GlobalStyles.bottomMargin}
-          />
-        </View>
-        <View style={[GlobalStyles.marginYsm]}>
-          <Text variant='labelMedium'>
-            Camera Type
-          </Text>
-          <SegmentedButtons
-            value={selectedCameraType}
-            onValueChange={setSelectedCameraType}
-            buttons={cameraTypes}
-            style={GlobalStyles.bottomMargin}
-          />
-        </View>
-        <View style={[GlobalStyles.marginYsm]}>
-          <Text variant='labelMedium'>
-            Camera Zoom
-          </Text>
-          <SegmentedButtons
-            value={selectedZoom}
-            onValueChange={setSelectedZoom}
-            buttons={zooms}
-            style={GlobalStyles.bottomMargin}
-          />
-        </View>
+          <Card.Content>
+            <Text variant='titleLarge' >
+              Camera Settings
+            </Text>
+            <View style={[GlobalStyles.marginYsm]}>
+              <Text variant='labelMedium'>
+                Resolution
+              </Text>
+              <SegmentedButtons
+                value={selectedResolution}
+                onValueChange={setSelectedResolution}
+                buttons={resolutions}
+              />
+            </View>
+            <View style={[GlobalStyles.marginYsm]}>
+              <Text variant='labelMedium'>
+                Camera Type
+              </Text>
+              <SegmentedButtons
+                value={selectedCameraType}
+                onValueChange={setSelectedCameraType}
+                buttons={cameraTypes}
+              />
+            </View>
+            <View style={[GlobalStyles.marginYsm]}>
+              <Text variant='labelMedium' >
+                Camera Zoom
+              </Text>
+              <SegmentedButtons
+                value={selectedZoom}
+                onValueChange={setSelectedZoom}
+                buttons={zooms}
+              />
+            </View>
 
-        <View style={[GlobalStyles.marginYsm]}>
-          <Text variant='labelMedium'>
-            Start Automatic Recording
-          </Text>
-          <SegmentedButtons
-            value={selectedAutomaticRecording}
-            onValueChange={setSelectedAutomaticRecording}
-            buttons={automaticRecordings}
-            style={GlobalStyles.bottomMargin}
-          />
-        </View>
-        <View style={[GlobalStyles.marginYsm]}>
-          <Text variant='labelMedium'>
-            Max Video Duration
-          </Text>
-          <SegmentedButtons
-            value={selectedRecordingLength}
-            onValueChange={setSelectedRecordingLength}
-            buttons={recordingLengths}
-            style={GlobalStyles.bottomMargin}
-          />
-        </View>
-        <View style={[GlobalStyles.marginYsm]}>
-          <Text variant='labelMedium'>
-            Max Video File Size
-          </Text>
-          <SegmentedButtons
-            value={selectedMaxVideoFileSize}
-            onValueChange={setSelectedMaxVideoFileSize}
-            buttons={maxVideoFileSizes}
-            style={GlobalStyles.bottomMargin}
-          />
-        </View>
-        <View style={[GlobalStyles.rowContainer, GlobalStyles.marginYsm]}>
-          <View style={GlobalStyles.buttonContainer}>
-            <Button style={GlobalStyles.button} icon="content-save" mode="contained" onPress={() => saveSetting()}>
-              Save
-            </Button>
-          </View>
-          <View style={GlobalStyles.buttonContainer}>
-            <Button style={GlobalStyles.button} icon="restart" mode="outlined" >
-              Reset to Default
-            </Button>
-          </View>
-        </View>
+            <View style={[GlobalStyles.divLine, GlobalStyles.marginYsm]} />
+
+            <Text variant='titleLarge' >
+              Recording Settings
+            </Text>
+            <View style={[GlobalStyles.marginYsm]}>
+              <Text variant='labelMedium'>
+                Start Automatic Recording
+              </Text>
+              <SegmentedButtons
+                value={selectedAutomaticRecording}
+                onValueChange={setSelectedAutomaticRecording}
+                buttons={automaticRecordings}
+                style={GlobalStyles.bottomMargin}
+              />
+            </View>
+            <View style={[GlobalStyles.marginYsm]}>
+              <Text variant='labelMedium'>
+                Max Video Duration
+              </Text>
+              <SegmentedButtons
+                value={selectedRecordingLength}
+                onValueChange={setSelectedRecordingLength}
+                buttons={recordingLengths}
+                style={GlobalStyles.bottomMargin}
+              />
+            </View>
+            <View style={[GlobalStyles.marginYsm]}>
+              <Text variant='labelMedium'>
+                Max Video File Size
+              </Text>
+              <SegmentedButtons
+
+                value={selectedMaxVideoFileSize}
+                onValueChange={setSelectedMaxVideoFileSize}
+                buttons={maxVideoFileSizes}
+                style={GlobalStyles.bottomMargin}
+              />
+            </View>
+
+            <View style={[GlobalStyles.divLine, GlobalStyles.marginYsm]} />
+
+            {saveResetButtons()}
+          </Card.Content>
+        </Card>
+
       </View>
     </ScrollView>
   );
