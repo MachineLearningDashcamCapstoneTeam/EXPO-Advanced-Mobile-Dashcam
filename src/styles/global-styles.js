@@ -5,6 +5,7 @@ const smoke = '#f8f9fd';
 const gray = '#b5b5b5';
 const white = '#ffffff';
 const dark = '#181d3d';
+const navbarBlackTrans = 'rgba(0,0,0, 0.4)'
 const navbarBlack = '#000000';
 const error = "#DF2935";
 const success = "#679436";
@@ -42,32 +43,32 @@ const GlobalStyles = StyleSheet.create({
     button: {
         padding: 1,
     },
-    borderRounded:{
+    borderRounded: {
         borderRadius: 15,
     },
-    buttonContainer:{
+    buttonContainer: {
         flex: 1,
         marginHorizontal: 2,
     },
 
-    avatarContainer:{
+    avatarContainer: {
         flex: 1,
         marginHorizontal: 2,
     },
-    avatarImg:{
+    avatarImg: {
         flex: 1,
         justifyContent: 'center',
     },
-    avatarText:{
+    avatarText: {
         flex: 3,
         justifyContent: 'center',
     },
-   
+
     buttonLg: {
         padding: 5,
         marginBottom: 5,
     },
-    marginYsm:{
+    marginYsm: {
         marginVertical: 10,
     },
     marginYmd: {
@@ -105,7 +106,7 @@ const GlobalStyles = StyleSheet.create({
         borderTopRightRadius: 30,
         padding: 20,
         paddingVertical: 20,
-        
+
         color: 'white',
     },
     rowContainer: {
@@ -114,6 +115,7 @@ const GlobalStyles = StyleSheet.create({
         justifyContent: 'space-evenly',
         marginHorizontal: "auto",
     },
+
     buttonMain: {
         backgroundColor: main,
     },
@@ -133,7 +135,7 @@ const GlobalStyles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    
+
     paddingYsm: {
         paddingVertical: 10,
     },
@@ -154,17 +156,25 @@ const GlobalStyles = StyleSheet.create({
     },
     camera: {
         flex: 1,
-        justifyContent: 'flex-end',
+        justifyContent: 'space-between',
     },
-    cameraNavbar:{
-     
+
+
+    divBlackTrans: {
+        backgroundColor: navbarBlackTrans,
+    },
+
+    divBlack: {
         backgroundColor: navbarBlack,
+    },
+
+    rowSpaceEven: {
         alignItems: 'center',
         justifyContent: 'space-evenly',
         display: 'flex',
         flexDirection: 'row',
     },
- 
+
     card: {
         marginBottom: 0,
     },
@@ -178,11 +188,11 @@ const GlobalStyles = StyleSheet.create({
         width: '100%',
         height: '100%',
     },
-    divLine:{
+    divLine: {
         borderBottomColor: gray,
         borderBottomWidth: StyleSheet.hairlineWidth,
     }
-    
+
 });
 
 export default GlobalStyles;
