@@ -1,7 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
 import GlobalStyles from '../styles/global-styles';
-
+import { Text, Button } from 'react-native-paper';
 const CloudCard = ({fetchGoogle}) => {
     return (
         <View style={[GlobalStyles.divDark, GlobalStyles.attention, GlobalStyles.flex3]}>

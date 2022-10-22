@@ -60,18 +60,18 @@ function HomeScreen({ navigation }) {
 
       <Image blurRadius={1} source={{ uri: HEADER_IMG }} style={[GlobalStyles.header, GlobalStyles.flex2]} />
 
-      <View style={[GlobalStyles.divWhite, GlobalStyles.paddingYsm, GlobalStyles.divSpaceBetween, GlobalStyles.flex3]}>
+      <View style={[GlobalStyles.divWhite, GlobalStyles.marginYsm, GlobalStyles.divSpaceBetween, GlobalStyles.flex3]}>
 
-        <Button style={GlobalStyles.button} icon="camera" mode="contained" onPress={() => navigation.navigate('Camera')}>
+        <Button style={GlobalStyles.buttonLg} icon="camera" mode="contained" onPress={() => navigation.navigate('Camera')}>
           Camera
         </Button>
-        <Button style={GlobalStyles.button} icon="format-list-bulleted" mode="outlined" onPress={() => navigation.navigate('Recordings')}>
+        <Button style={GlobalStyles.buttonLg} icon="format-list-bulleted" mode="outlined" onPress={() => navigation.navigate('Recordings')}>
           Videos
         </Button>
-        <Button style={GlobalStyles.button} icon="cog" mode="outlined" onPress={() => navigation.navigate('Settings')}>
+        <Button style={GlobalStyles.buttonLg} icon="cog" mode="outlined" onPress={() => navigation.navigate('Settings')}>
           Settings
         </Button>
-        <Button style={GlobalStyles.button} icon="help-circle-outline" mode="outlined" onPress={() => navigation.navigate('Help')}>
+        <Button style={GlobalStyles.buttonLg} icon="help-circle-outline" mode="outlined" onPress={() => navigation.navigate('Help')}>
           App Help
         </Button>
 

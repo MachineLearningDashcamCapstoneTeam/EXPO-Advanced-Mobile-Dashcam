@@ -25,7 +25,7 @@ export const getCurrentTime = () => {
 };
 
 export const timeStampToDate = (timeStamp) =>{
-  if(isNaN(timeStamp)){
+  if(timeStamp){
     const dateStamp =  new Date(timeStamp);
     const dd = String(dateStamp.getDate()).padStart(2, '0');
     const mm = String(dateStamp.getMonth() + 1).padStart(2, '0'); // January is 0!

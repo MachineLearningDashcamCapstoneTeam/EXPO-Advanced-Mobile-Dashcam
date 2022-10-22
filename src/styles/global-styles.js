@@ -38,12 +38,32 @@ const GlobalStyles = StyleSheet.create({
         padding: 20,
     },
     button: {
+        padding: 1,
+    },
+
+    borderRounded:{
+        borderRadius: 15,
+    },
+    buttonContainer:{
+        flex: 1,
+        marginHorizontal: 2,
+    },
+   
+    buttonLg: {
         padding: 5,
         marginBottom: 5,
     },
-    bottomMargin: {
-        marginBottom: 10,
+
+    marginYsm:{
+        marginVertical: 10,
     },
+    marginYmd: {
+        marginBottom: 20,
+    },
+    marginYlg: {
+        marginBottom: 30,
+    },
+
     divDark: {
         backgroundColor: dark,
     },
@@ -80,8 +100,8 @@ const GlobalStyles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         marginHorizontal: "auto",
+        gap: '10',
     },
-
     buttonMain: {
         backgroundColor: main,
     },
@@ -100,6 +120,7 @@ const GlobalStyles = StyleSheet.create({
     divCenter: {
         justifyContent: 'center',
     },
+    
     paddingYsm: {
         paddingVertical: 10,
     },
@@ -133,8 +154,8 @@ const GlobalStyles = StyleSheet.create({
         justifyContent: 'center',
     },
     map: {
-        width: Dimensions.get('window').width,
-        height: Dimensions.get('window').height,
+        width: '100%',
+        height: '100%',
     },
 
 });

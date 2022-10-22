@@ -12,36 +12,35 @@ const GoogleVideoCard = ({ file, deleteDriveFile }) => {
         await WebBrowser.openBrowserAsync(file.webViewLink);
     };
     return (
-        <Card key={file.id} mode="elevated" style={GlobalStyles.card}>
-            <Card.Cover source={{ uri: file.thumbnailLink }} />
+        <Card key={file.id} mode="elevated" style={[GlobalStyles.borderRounded, GlobalStyles.marginYsm]}>
+            <Card.Cover source={{ uri: file.thumbnailLink }} style={[GlobalStyles.borderRounded]} />
             <Card.Content>
-                <Text style={[GlobalStyles.paddingYsm]} variant='titleMedium'>{file.id}</Text>
-
-                <Text variant='labelSmall'>
-                    Created: {file.createdTime}
-                </Text>
-                <Text variant='labelSmall'>
-                    Owner: {file.owners[0].displayName}
-                </Text>
-                <Text variant='labelSmall'>
-                    Size: {file.size}
-                </Text>
-
-                <Text style={[GlobalStyles.paddingYsm]} variant='labelLarge'>
-                    Options:
-                </Text>
-                <View style={[GlobalStyles.divSpaceBetween, GlobalStyles.rowContainer]}>
-                    <Button style={[GlobalStyles.button]} icon="eye" mode="contained" onPress={openBrowser} >View</Button>
-
-                    <Button style={[GlobalStyles.buttonSecondary, GlobalStyles.button]} icon="share" mode="contained" onPress={() => console.log('Share Test')} >Share</Button>
-
-                    <Button style={[GlobalStyles.buttonWarning, GlobalStyles.button]} icon="robot" mode="contained" onPress={() => console.log('AI Test')} >A.I</Button>
+                <View style={[GlobalStyles.marginYsm]}>
+                    <Text variant='titleMedium'>{file.id}</Text>
+                    <Text variant='labelSmall'>
+                        Created: {file.createdTime}
+                    </Text>
+                    <Text variant='labelSmall'>
+                        Owner: {file.owners[0].displayName}
+                    </Text>
+                    <Text variant='labelSmall'>
+                        Size: {file.size}
+                    </Text>
                 </View>
-                <Text style={[GlobalStyles.paddingYsm]} variant='labelLarge'>
-                    Warning! Point of no return:
-                </Text>
-                <Button style={GlobalStyles.button} icon="delete" mode="outlined" onPress={() => deleteDriveFile(file)} > Delete</Button>
-
+                <View style={[GlobalStyles.rowContainer, GlobalStyles.marginYsm]}>
+                    <View style={GlobalStyles.buttonContainer}>
+                        <Button style={[GlobalStyles.buttonMain, GlobalStyles.button]} icon="eye" mode="contained" onPress={openBrowser} >View</Button>
+                    </View>
+                    <View style={GlobalStyles.buttonContainer}>
+                        <Button style={[GlobalStyles.buttonMain, GlobalStyles.button]} icon="share" mode="contained" onPress={() => console.log('Share Test')} >Share</Button>
+                    </View>
+                </View>
+                <View style={[GlobalStyles.marginYsm]}>
+                    <Text variant='labelLarge'>
+                        Warning! Point of no return:
+                    </Text>
+                    <Button style={GlobalStyles.button} icon="delete" mode="outlined" onPress={() => deleteDriveFile(file)} > Delete</Button>
+                </View>
             </Card.Content>
         </Card>
     )
