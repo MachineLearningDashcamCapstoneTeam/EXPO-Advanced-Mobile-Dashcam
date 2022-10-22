@@ -12,13 +12,11 @@ export default function SettingsScreen({ navigation }) {
     { label: '720p', value: '720p' },
     { label: '1080p', value: '1080p' }
   ]);
-
   const [selectedCameraType, setSelectedCameraType] = useState('Back');
   const [cameraTypes, setCameraTypes] = useState([
     { label: 'Front', value: 'Front' },
     { label: 'Back', value: 'Back' }
   ]);
-
   const [selectedZoom, setSelectedZoom] = useState('0');
   const [zooms, setZoom] = useState([
     { label: 'No Zoom', value: '0' },
@@ -32,7 +30,6 @@ export default function SettingsScreen({ navigation }) {
     { label: '6min', value: '6' },
     { label: '10min', value: '10' },
   ]);
-
   const [selectedMaxVideoFileSize, setSelectedMaxVideoFileSize] = useState('4294967296');
   const [maxVideoFileSizes, setMaxVideoFileSizes] = useState([
     { label: 'No Limit', value: '0' },
@@ -45,7 +42,6 @@ export default function SettingsScreen({ navigation }) {
     { label: 'No', value: 'false' },
     { label: 'Yes', value: 'true' },
   ]);
-
   const saveSetting = async () => {
     try {
       await AsyncStorage.setItem('CameraResolution', selectedResolution);
@@ -102,15 +98,12 @@ export default function SettingsScreen({ navigation }) {
     else {
       setSelectedAutomaticRecording('false');
     }
-
   }
   useEffect(() => {
     setInitialValues();
   }, [])
-
   return (
-    <ScrollView  style={GlobalStyles.container}>
-
+    <ScrollView style={GlobalStyles.container}>
       <View style={[GlobalStyles.divDark, GlobalStyles.header, GlobalStyles.flex1]}>
         <Title style={GlobalStyles.whiteText}>Camera and Recording Settings</Title>
         <Text style={GlobalStyles.whiteText} variant='labelLarge'>
@@ -118,9 +111,8 @@ export default function SettingsScreen({ navigation }) {
         </Text>
       </View>
       <View style={GlobalStyles.flex5}>
-        
 
-
+        <View style={[GlobalStyles.marginYsm]}>
           <Text variant='labelMedium'>
             Resolution
           </Text>
@@ -130,7 +122,8 @@ export default function SettingsScreen({ navigation }) {
             buttons={resolutions}
             style={GlobalStyles.bottomMargin}
           />
-
+        </View>
+        <View style={[GlobalStyles.marginYsm]}>
           <Text variant='labelMedium'>
             Camera Type
           </Text>
@@ -140,6 +133,8 @@ export default function SettingsScreen({ navigation }) {
             buttons={cameraTypes}
             style={GlobalStyles.bottomMargin}
           />
+        </View>
+        <View style={[GlobalStyles.marginYsm]}>
           <Text variant='labelMedium'>
             Camera Zoom
           </Text>
@@ -149,6 +144,9 @@ export default function SettingsScreen({ navigation }) {
             buttons={zooms}
             style={GlobalStyles.bottomMargin}
           />
+        </View>
+
+        <View style={[GlobalStyles.marginYsm]}>
           <Text variant='labelMedium'>
             Start Automatic Recording
           </Text>
@@ -158,6 +156,8 @@ export default function SettingsScreen({ navigation }) {
             buttons={automaticRecordings}
             style={GlobalStyles.bottomMargin}
           />
+        </View>
+        <View style={[GlobalStyles.marginYsm]}>
           <Text variant='labelMedium'>
             Max Video Duration
           </Text>
@@ -167,6 +167,8 @@ export default function SettingsScreen({ navigation }) {
             buttons={recordingLengths}
             style={GlobalStyles.bottomMargin}
           />
+        </View>
+        <View style={[GlobalStyles.marginYsm]}>
           <Text variant='labelMedium'>
             Max Video File Size
           </Text>
@@ -176,23 +178,20 @@ export default function SettingsScreen({ navigation }) {
             buttons={maxVideoFileSizes}
             style={GlobalStyles.bottomMargin}
           />
-
-
-          <View style={[GlobalStyles.rowContainer, GlobalStyles.marginYsm]}>
-            <View style={GlobalStyles.buttonContainer}>
-              <Button style={GlobalStyles.button} icon="content-save" mode="contained" onPress={() => saveSetting()}>
-                Save
-              </Button>
-            </View>
-            <View style={GlobalStyles.buttonContainer}>
-              <Button style={GlobalStyles.button} icon="restart" mode="outlined" >
-                Reset to Default
-              </Button>
-            </View>
+        </View>
+        <View style={[GlobalStyles.rowContainer, GlobalStyles.marginYsm]}>
+          <View style={GlobalStyles.buttonContainer}>
+            <Button style={GlobalStyles.button} icon="content-save" mode="contained" onPress={() => saveSetting()}>
+              Save
+            </Button>
           </View>
-        
+          <View style={GlobalStyles.buttonContainer}>
+            <Button style={GlobalStyles.button} icon="restart" mode="outlined" >
+              Reset to Default
+            </Button>
+          </View>
+        </View>
       </View>
-      </ScrollView>
+    </ScrollView>
   );
 }
-

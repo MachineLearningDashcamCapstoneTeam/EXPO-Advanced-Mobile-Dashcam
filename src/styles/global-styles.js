@@ -48,6 +48,19 @@ const GlobalStyles = StyleSheet.create({
         flex: 1,
         marginHorizontal: 2,
     },
+
+    avatarContainer:{
+        flex: 1,
+        marginHorizontal: 2,
+    },
+    avatarImg:{
+        flex: 1,
+        justifyContent: 'center',
+    },
+    avatarText:{
+        flex: 3,
+        justifyContent: 'center',
+    },
    
     buttonLg: {
         padding: 5,
@@ -91,14 +104,13 @@ const GlobalStyles = StyleSheet.create({
         borderTopRightRadius: 30,
         padding: 20,
         paddingVertical: 20,
-        justifyContent: 'center',
+        
         color: 'white',
     },
     rowContainer: {
         display: 'flex',
         flexDirection: 'row',
         marginHorizontal: "auto",
-        gap: '10',
     },
     buttonMain: {
         backgroundColor: main,
