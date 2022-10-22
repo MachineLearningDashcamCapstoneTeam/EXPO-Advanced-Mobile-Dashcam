@@ -108,7 +108,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
         <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant='labelMedium'>
           Path: {videoAsset.uri}
         </Text>
-        <Button style={GlobalStyles.button} mode="contained" onPress={() =>
+        <Button style={GlobalStyles.button} mode="elevated" onPress={() =>
           status.isPlaying ? video.current.pauseAsync() : video.current.playAsync()
         }
           icon={status.isPlaying ? 'pause' : 'play'}
