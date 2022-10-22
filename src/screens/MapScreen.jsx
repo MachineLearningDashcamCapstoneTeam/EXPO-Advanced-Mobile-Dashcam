@@ -9,7 +9,7 @@ import { gpsJsonToGoogleMarkers } from '../utils/geojson-utils';
 import GlobalStyles from '../styles/global-styles';
 
 const MapScreen = ({ route, navigation }) => {
-    const { assetInfo } = route.params;
+    const { videoAsset } = route.params;
     const [mapRegion, setMapRegion] = useState({
         latitude: 0,
         longitude: 0,
@@ -21,7 +21,7 @@ const MapScreen = ({ route, navigation }) => {
     let loadGPSData = async () => {
 
         //* Get the file from the documents directory
-        const filename = `${FileSystem.documentDirectory}${assetInfo.filename}.txt`;
+        const filename = `${FileSystem.documentDirectory}${videoAsset.filename}.txt`;
         const result = await FileSystem.readAsStringAsync(filename, {
             encoding: FileSystem.EncodingType.UTF8
         });

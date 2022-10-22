@@ -11,7 +11,7 @@ import GlobalStyles from '../styles/global-styles';
 import LockButton from '../widget/lockButton';
 
 export default function VideoPlayerScreen({ route, navigation }) {
-  const { assetInfo } = route.params;
+  const { videoAsset } = route.params;
   const video = useRef(null);
   const [savedFavoriteVideosIds, setSavedFavoriteVideosIds] = useState([]);
   const [status, setStatus] = useState({});
@@ -40,7 +40,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
   }
 
   const shareVideo = async () => {
-    const filename = `${FileSystem.documentDirectory}${assetInfo.filename}.txt`;
+    const filename = `${FileSystem.documentDirectory}${videoAsset.filename}.txt`;
     const result = await FileSystem.readAsStringAsync(filename, {
       encoding: FileSystem.EncodingType.UTF8
     });
@@ -60,11 +60,11 @@ export default function VideoPlayerScreen({ route, navigation }) {
       const tempSavedFavoriteVideosIdsString = JSON.stringify(tempSavedFavoriteVideosIds);
       await AsyncStorage.setItem('FavoriteVideosIds', tempSavedFavoriteVideosIdsString);
       setSavedFavoriteVideosIds([...tempSavedFavoriteVideosIds]);
-      Alert.alert("Added video to Favorites");
+      Alert.alert("Successfully Locked Video");
     }
   }
 
-  
+
   const deleteVideoFromFavoriteVideos = async (videoAsset, isLocked = null) => {
     if (isLocked === null) {
       isLocked = savedFavoriteVideosIds.includes(videoAsset.id);
@@ -76,13 +76,16 @@ export default function VideoPlayerScreen({ route, navigation }) {
       const tempSavedFavoriteVideosIdsString = JSON.stringify(tempSavedFavoriteVideosIds);
       await AsyncStorage.setItem('FavoriteVideosIds', tempSavedFavoriteVideosIdsString);
       setSavedFavoriteVideosIds([...tempSavedFavoriteVideosIds]);
-      Alert.alert("Deleted video from Favorites");
+      Alert.alert("Successfully Unlocked Video");
     }
   }
-  const deleteVideo = () => {
+  const deleteVideo = (videoAsset, isLocked = null) => {
+    if (isLocked === null) {
+      isLocked = savedFavoriteVideosIds.includes(videoAsset.id);
+    }
     //* If the user has permission, load the video data
-    if (hasMediaLibraryPermission) {
-      MediaLibrary.deleteAssetsAsync([assetInfo.id])
+    if (hasMediaLibraryPermission && isLocked === false) {
+      MediaLibrary.deleteAssetsAsync([videoAsset.id])
         .then((success) => {
           if (success) {
             Alert.alert("Video successfully deleted");
@@ -92,15 +95,18 @@ export default function VideoPlayerScreen({ route, navigation }) {
           }
         })
     }
+    else {
+      Alert.alert("Video is Locked");
+    }
   }
   return (
     <ScrollView style={GlobalStyles.container}>
       <View style={[GlobalStyles.divDark, GlobalStyles.header]}>
         <Text variant='titleLarge' style={GlobalStyles.whiteText}>
-          {assetInfo.id}
+          {videoAsset.id}
         </Text>
         <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant='labelMedium'>
-          Path: {assetInfo.uri}
+          Path: {videoAsset.uri}
         </Text>
         <Button style={GlobalStyles.button} mode="contained" onPress={() =>
           status.isPlaying ? video.current.pauseAsync() : video.current.playAsync()
@@ -110,52 +116,60 @@ export default function VideoPlayerScreen({ route, navigation }) {
       </View>
       <View style={GlobalStyles.flex5}>
 
-        <Card key={assetInfo.id} mode="elevated" style={[GlobalStyles.borderRounded, GlobalStyles.marginYsm]}>
+        <Card key={videoAsset.id} mode="elevated" style={[GlobalStyles.borderRounded, GlobalStyles.marginYsm]}>
           <Card.Content>
             <Video
               ref={video}
               style={GlobalStyles.video}
-              source={{ uri: (Platform.OS === "android") ? assetInfo.uri : assetInfo.localUri }}
+              source={{ uri: (Platform.OS === "android") ? videoAsset.uri : videoAsset.localUri }}
               useNativeControls
-              resizeMode='contain'
+              resizeMode='cover'
               isLooping
               onPlaybackStatusUpdate={status => setStatus(() => status)}
             />
 
             <View style={[GlobalStyles.marginYsm]}>
-              <Text variant='titleMedium'>{assetInfo.id}</Text>
               <Text variant='labelMedium'>
-                Created: {timeStampToDate(assetInfo.creationTime)}
+                Album Id: {videoAsset.albumId}
+              </Text>
+
+              <Text variant='labelMedium'>
+                Created: {timeStampToDate(videoAsset.creationTime)}
               </Text>
               <Text variant='labelMedium'>
-                Duration: {assetInfo.duration}s
+                Modified: {timeStampToDate(videoAsset.modificationTime)}
               </Text>
               <Text variant='labelMedium'>
-                Video Id: {assetInfo.id}
+                Duration: {videoAsset.duration}s
+              </Text>
+
+              <Text variant='labelMedium'>
+                Media Type: {videoAsset.mediaType}
               </Text>
               <Text variant='labelMedium'>
-                Size: {assetInfo.height} x {assetInfo.width}
+                Size: {videoAsset.height} x {videoAsset.width}
               </Text>
+
             </View>
 
             <View style={[GlobalStyles.rowContainer, GlobalStyles.marginYsm]}>
               <View style={GlobalStyles.buttonContainer}>
-              
-                <LockButton savedFavoriteVideosIds={savedFavoriteVideosIds} videoAsset={assetInfo} deleteVideoFromFavoriteVideos={deleteVideoFromFavoriteVideos} saveVideoToSavedVideoIds={saveVideoToSavedVideoIds} />
-              
+
+                <LockButton savedFavoriteVideosIds={savedFavoriteVideosIds} videoAsset={videoAsset} deleteVideoFromFavoriteVideos={deleteVideoFromFavoriteVideos} saveVideoToSavedVideoIds={saveVideoToSavedVideoIds} />
+
               </View>
               <View style={GlobalStyles.buttonContainer}>
                 <Button style={[GlobalStyles.buttonMain, GlobalStyles.button]} icon="share" mode="contained" onPress={shareVideo} >Share</Button>
               </View>
               <View style={GlobalStyles.buttonContainer}>
-                <Button style={[GlobalStyles.buttonMain, GlobalStyles.button]} icon="map" mode="contained" onPress={() => navigation.navigate('Map', { assetInfo: assetInfo })} >Map</Button>
+                <Button style={[GlobalStyles.buttonMain, GlobalStyles.button]} icon="map" mode="contained" onPress={() => navigation.navigate('Map', { videoAsset: videoAsset })} >Map</Button>
               </View>
             </View>
 
             <View style={[GlobalStyles.divLine, GlobalStyles.marginYsm]} />
-            
+
             <View style={[GlobalStyles.marginYsm]}>
-              <Button style={[GlobalStyles.button]} icon="delete" mode="elevated" onPress={deleteVideo} >Delete </Button>
+              <Button style={[GlobalStyles.button]} icon="delete" mode="elevated" onPress={() => deleteVideo(videoAsset)} >Delete </Button>
             </View>
           </Card.Content>
         </Card>

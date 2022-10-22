@@ -55,7 +55,7 @@ export default function RecordingsScreen({ navigation }) {
   }
   const getInfo = async (asset) => {
     await MediaLibrary.getAssetInfoAsync(asset).then((info) => {
-      navigation.navigate('Video Player', { assetInfo: info });
+      navigation.navigate('Video Player', { videoAsset: info });
     }).catch((error) => {
       Alert.alert("Unable to load Asset Information");
     });
@@ -71,6 +71,8 @@ export default function RecordingsScreen({ navigation }) {
       unsubscribe;
     };
   }, [navigation]);
+  
+
   const saveVideoToSavedVideoIds = async (videoAsset, isLocked = null) => {
     if (isLocked === null) {
       isLocked = savedFavoriteVideosIds.includes(videoAsset.id);
@@ -82,9 +84,11 @@ export default function RecordingsScreen({ navigation }) {
       const tempSavedFavoriteVideosIdsString = JSON.stringify(tempSavedFavoriteVideosIds);
       await AsyncStorage.setItem('FavoriteVideosIds', tempSavedFavoriteVideosIdsString);
       setSavedFavoriteVideosIds([...tempSavedFavoriteVideosIds]);
-      Alert.alert("Added video to Favorites");
+      Alert.alert("Successfully Locked Video");
     }
   }
+
+
   const deleteVideoFromFavoriteVideos = async (videoAsset, isLocked = null) => {
     if (isLocked === null) {
       isLocked = savedFavoriteVideosIds.includes(videoAsset.id);
@@ -96,23 +100,29 @@ export default function RecordingsScreen({ navigation }) {
       const tempSavedFavoriteVideosIdsString = JSON.stringify(tempSavedFavoriteVideosIds);
       await AsyncStorage.setItem('FavoriteVideosIds', tempSavedFavoriteVideosIdsString);
       setSavedFavoriteVideosIds([...tempSavedFavoriteVideosIds]);
-      Alert.alert("Deleted video from Favorites");
+      Alert.alert("Successfully Unlocked Video");
     }
   }
-  const deleteVideo = (videoAsset) => {
-    MediaLibrary.deleteAssetsAsync([videoAsset])
-      .then((success) => {
-        if (success) {
-          let tempList = videos;
-          tempList = tempList.filter(item => item.id !== videoAsset.id)
-          setVideos(tempList);
-          //* Also delete the video from favorites
-          deleteVideoFromFavoriteVideos(videoAsset);
-          Alert.alert("Video successfully deleted");
-        } else {
-          Alert.alert("Failed to delete video");
-        }
-      })
+  
+  const deleteVideo = (videoAsset, isLocked = null) => {
+    if (isLocked === null) {
+      isLocked = savedFavoriteVideosIds.includes(videoAsset.id);
+    }
+    //* If the user has permission, load the video data
+    if (hasMediaLibraryPermission && isLocked === false) {
+      MediaLibrary.deleteAssetsAsync([videoAsset.id])
+        .then((success) => {
+          if (success) {
+            Alert.alert("Video successfully deleted");
+      
+          } else {
+            Alert.alert("Failed to delete video");
+          }
+        })
+    }
+    else {
+      Alert.alert("Video is Locked");
+    }
   }
   //* Sort the videos and reset the initial video list
   const sortByLengthASC = () => {
