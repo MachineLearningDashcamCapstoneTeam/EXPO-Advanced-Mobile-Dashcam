@@ -41,7 +41,7 @@ export default function RecordingsScreen({ navigation }) {
     }).catch((error) => {
       Alert.alert("Unable to load Album");
     });
-    if (accessTokenContextValue) {
+    if (accessTokenContextValue && files.length <= 0) {
       getDriveFiles();
     }
   }
