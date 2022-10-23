@@ -4,115 +4,105 @@ import { useEffect, useState, useRef } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Card, Button, Title, Text, Snackbar, SegmentedButtons, Divider } from 'react-native-paper';
 import GlobalStyles from '../styles/global-styles';
+import { DEFAULT_CAMERA_SETTINGS } from '../constants';
 
 export default function SettingsScreen({ navigation }) {
-  const [selectedResolution, setSelectedResolution] = useState('480p');
+
+
+  const [settings, setSettings] = useState(DEFAULT_CAMERA_SETTINGS)
+
   const [resolutions, setResolutions] = useState([
     { label: '480p', value: '480p' },
     { label: '720p', value: '720p' },
     { label: '1080p', value: '1080p' }
   ]);
-  const [selectedCameraType, setSelectedCameraType] = useState('Back');
+
   const [cameraTypes, setCameraTypes] = useState([
     { label: 'Front', value: 'Front' },
     { label: 'Back', value: 'Back' }
   ]);
-  const [selectedZoom, setSelectedZoom] = useState('0');
+
   const [zooms, setZoom] = useState([
-    { label: 'No Zoom', value: '0' },
-    { label: 'Medium', value: '0.5' },
-    { label: 'Max Zoom', value: '1' }
+    { label: 'No Zoom', value: 0 },
+    { label: 'Medium', value: 0.5 },
+    { label: 'Max Zoom', value: 1 }
   ]);
-  const [selectedRecordingLength, setSelectedRecordingLength] = useState('1');
+
   const [recordingLengths, setRecordingLengths] = useState([
-    { label: '1min', value: '1' },
-    { label: '3min', value: '3' },
-    { label: '6min', value: '6' },
-    { label: '10min', value: '10' },
+    { label: '1min', value: 1 },
+    { label: '3min', value: 3 },
+    { label: '6min', value: 6 },
+    { label: '10min', value: 10 },
   ]);
-  const [selectedMaxVideoFileSize, setSelectedMaxVideoFileSize] = useState('4294967296');
+
   const [maxVideoFileSizes, setMaxVideoFileSizes] = useState([
-    { label: 'No Limit', value: '0' },
-    { label: '1GB', value: '1073741824' },
-    { label: '2GB', value: '2147483648' },
-    { label: '4GB', value: '4294967296' },
+    { label: 'No Limit', value: 0 },
+    { label: '1GB', value: 1073741824 },
+    { label: '2GB', value: 2147483648 },
+    { label: '4GB', value: 4294967296 },
   ]);
-  const [selectedAutomaticRecording, setSelectedAutomaticRecording] = useState('false');
+
   const [automaticRecordings, setAutomaticRecordings] = useState([
-    { label: 'No', value: 'false' },
-    { label: 'Yes', value: 'true' },
+    { label: 'No', value: false },
+    { label: 'Yes', value: true },
   ]);
-  const saveSetting = async () => {
+
+  const [allowUploadWithMobileData, setAllowUploadWithMobileData] = useState([
+    { label: 'No', value: false },
+    { label: 'Yes', value: true },
+  ]);
+
+  const saveSetting = async (tempSettings) => {
     try {
-      await AsyncStorage.setItem('CameraResolution', selectedResolution);
-      await AsyncStorage.setItem('CameraType', selectedCameraType);
-      await AsyncStorage.setItem('CameraZoom', selectedZoom);
-      await AsyncStorage.setItem('RecordingLength', selectedRecordingLength);
-      await AsyncStorage.setItem('MaxVideoFileSize', selectedMaxVideoFileSize);
-      await AsyncStorage.setItem('AutomaticRecording', selectedAutomaticRecording);
-      Alert.alert("Saved all Settings");
+      await AsyncStorage.setItem('AMD_Settings', JSON.stringify(tempSettings))
     } catch (e) {
       Alert.alert("Unable to save Settings");
     }
   }
+
   const setInitialValues = async () => {
-    const tempResolution = await AsyncStorage.getItem('CameraResolution')
-    if (tempResolution !== null || tempResolution !== '') {
-      setSelectedResolution(tempResolution);
+    try {
+      let tempSettings = await AsyncStorage.getItem('AMD_Settings')
+      tempSettings = JSON.parse(tempSettings)
+      if (tempSettings && Object.keys(tempSettings).length >= 1 && Object.getPrototypeOf(tempSettings) === Object.prototype) {
+        setSettings(tempSettings);
+      }
+      else {
+        setSettings(DEFAULT_CAMERA_SETTINGS);
+      }
+    } catch (err) {
+      Alert.alert('Unable to load Settings')
     }
-    else {
-      setSelectedResolution('480p');
-    }
-    const tempCameraType = await AsyncStorage.getItem('CameraType')
-    if (tempCameraType !== null || tempCameraType !== '') {
-      setSelectedCameraType(tempCameraType);
-    }
-    else {
-      setSelectedCameraType('Back');
-    }
-    const tempZoom = await AsyncStorage.getItem('CameraZoom')
-    if (tempZoom !== null || tempZoom !== '') {
-      setSelectedZoom(tempZoom);
-    }
-    else {
-      setSelectedZoom('0');
-    }
-    const tempRecordingLength = await AsyncStorage.getItem('RecordingLength')
-    if (tempRecordingLength !== null || tempRecordingLength !== '') {
-      setSelectedRecordingLength(tempRecordingLength);
-    }
-    else {
-      setSelectedRecordingLength('80')
-    }
-    const tempMaxVideoFileSize = await AsyncStorage.getItem('MaxVideoFileSize')
-    if (tempMaxVideoFileSize !== null || tempMaxVideoFileSize !== '') {
-      setSelectedMaxVideoFileSize(tempMaxVideoFileSize);
-    }
-    else {
-      setSelectedMaxVideoFileSize('4294967296');
-    }
-    const tempAutomaticRecording = await AsyncStorage.getItem('AutomaticRecording')
-    if (tempAutomaticRecording !== null || tempAutomaticRecording !== '') {
-      setSelectedAutomaticRecording(tempAutomaticRecording);
-    }
-    else {
-      setSelectedAutomaticRecording('false');
-    }
-  }
+  };
+
   useEffect(() => {
     setInitialValues();
   }, [])
+
+  const updateSetting = (updatedValue) => {
+    const tempSettings = {
+      ...settings,
+      ...updatedValue
+    }
+    setSettings(tempSettings);
+    saveSetting(tempSettings);
+  }
+
+  const resetSettings = async () => {
+    try {
+      setSettings(DEFAULT_CAMERA_SETTINGS);
+      await AsyncStorage.setItem('AMD_Settings', JSON.stringify(DEFAULT_CAMERA_SETTINGS))
+      Alert.alert('Successfully Reset all Setting')
+    } catch (e) {
+      Alert.alert("Unable to reset Settings");
+    }
+  }
 
   const saveResetButtons = () => {
     return (
       <View style={[GlobalStyles.rowContainer, GlobalStyles.marginYsm]}>
         <View style={GlobalStyles.buttonContainer}>
-          <Button style={GlobalStyles.button} icon="content-save" mode="contained" onPress={() => saveSetting()}>
-            Save
-          </Button>
-        </View>
-        <View style={GlobalStyles.buttonContainer}>
-          <Button style={GlobalStyles.button} icon="restart" mode="outlined" >
+          <Button style={GlobalStyles.button} icon="restart" mode="outlined" onPress={resetSettings}>
             Reset
           </Button>
         </View>
@@ -136,73 +126,86 @@ export default function SettingsScreen({ navigation }) {
               Camera Settings
             </Text>
             <View style={[GlobalStyles.marginYsm]}>
-              <Text variant='labelMedium'>
+              <Text style={[GlobalStyles.paddingBsm]} variant='labelMedium'>
                 Resolution
               </Text>
               <SegmentedButtons
-                value={selectedResolution}
-                onValueChange={setSelectedResolution}
+                value={settings.resolution}
+                onValueChange={(resolution) => updateSetting({ 'resolution': resolution })}
                 buttons={resolutions}
               />
             </View>
             <View style={[GlobalStyles.marginYsm]}>
-              <Text variant='labelMedium'>
+              <Text style={[GlobalStyles.paddingBsm]} variant='labelMedium'>
                 Camera Type
               </Text>
               <SegmentedButtons
-                value={selectedCameraType}
-                onValueChange={setSelectedCameraType}
+                value={settings.cameraType}
+                onValueChange={(cameraType) => updateSetting({ 'cameraType': cameraType })}
                 buttons={cameraTypes}
               />
             </View>
             <View style={[GlobalStyles.marginYsm]}>
-              <Text variant='labelMedium' >
+              <Text style={[GlobalStyles.paddingBsm]} variant='labelMedium'>
                 Camera Zoom
               </Text>
               <SegmentedButtons
-                value={selectedZoom}
-                onValueChange={setSelectedZoom}
+                value={settings.zoomLevel}
+                onValueChange={(zoomLevel) => updateSetting({ 'zoomLevel': zoomLevel })}
                 buttons={zooms}
               />
             </View>
 
-            <View style={[GlobalStyles.divLine, GlobalStyles.marginYsm]} />
 
-            <Text variant='titleLarge' >
-              Recording Settings
-            </Text>
             <View style={[GlobalStyles.marginYsm]}>
-              <Text variant='labelMedium'>
+              <Text style={[GlobalStyles.paddingBsm]} variant='labelMedium'>
                 Start Automatic Recording
               </Text>
               <SegmentedButtons
-                value={selectedAutomaticRecording}
-                onValueChange={setSelectedAutomaticRecording}
+                value={settings.automaticRecording}
+                onValueChange={(automaticRecording) => updateSetting({ 'automaticRecording': automaticRecording })}
                 buttons={automaticRecordings}
-                style={GlobalStyles.bottomMargin}
+
               />
             </View>
             <View style={[GlobalStyles.marginYsm]}>
-              <Text variant='labelMedium'>
+              <Text style={[GlobalStyles.paddingBsm]} variant='labelMedium'>
                 Max Video Duration
               </Text>
               <SegmentedButtons
-                value={selectedRecordingLength}
-                onValueChange={setSelectedRecordingLength}
+                value={settings.recordingLength}
+                onValueChange={(recordingLength) => updateSetting({ 'recordingLength': recordingLength })}
                 buttons={recordingLengths}
-                style={GlobalStyles.bottomMargin}
+
               />
             </View>
             <View style={[GlobalStyles.marginYsm]}>
-              <Text variant='labelMedium'>
+              <Text style={[GlobalStyles.paddingBsm]} variant='labelMedium'>
                 Max Video File Size
               </Text>
               <SegmentedButtons
-
-                value={selectedMaxVideoFileSize}
-                onValueChange={setSelectedMaxVideoFileSize}
+                value={settings.maxVideoFileSize}
+                onValueChange={(maxVideoFileSize) => updateSetting({ 'maxVideoFileSize': maxVideoFileSize })}
                 buttons={maxVideoFileSizes}
-                style={GlobalStyles.bottomMargin}
+              />
+            </View>
+
+
+
+            <View style={[GlobalStyles.divLine, GlobalStyles.marginYsm]} />
+
+
+            <Text variant='titleLarge' >
+              Network Settings
+            </Text>
+            <View style={[GlobalStyles.marginYsm]}>
+              <Text style={[GlobalStyles.paddingBsm]} variant='labelMedium'>
+                Allow sharing and uploading with Mobile Data
+              </Text>
+              <SegmentedButtons
+                value={settings.allowUploadWithMobileData}
+                onValueChange={(allowUploadWithMobileData) => updateSetting({ 'allowUploadWithMobileData': allowUploadWithMobileData })}
+                buttons={allowUploadWithMobileData}
               />
             </View>
 

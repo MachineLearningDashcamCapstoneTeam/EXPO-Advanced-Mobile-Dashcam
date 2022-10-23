@@ -1,4 +1,4 @@
-import { StyleSheet, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Settings } from 'react-native';
 import { useEffect, useState, useRef } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Camera, CameraType } from 'expo-camera';
@@ -7,7 +7,7 @@ import { shareAsync } from 'expo-sharing';
 import * as MediaLibrary from 'expo-media-library';
 import * as Location from 'expo-location';
 import * as FileSystem from 'expo-file-system';
-import { ALBUM_NAME, CAMERA_IMG } from '../constants';
+import { ALBUM_NAME, CAMERA_IMG, DEFAULT_CAMERA_SETTINGS } from '../constants';
 import { gpsJsonToGeojson } from '../utils/geojson-utils';
 import { Button, Text, Snackbar, IconButton, MD3Colors, Avatar } from 'react-native-paper';
 import { useKeepAwake, activateKeepAwake, deactivateKeepAwake } from 'expo-keep-awake';
@@ -15,7 +15,7 @@ import GlobalStyles from '../styles/global-styles';
 import ErrorCameraCard from '../widget/errorCameraCard';
 
 const CameraScreen = ({ navigation }) => {
-  
+
   useKeepAwake();
   let cameraRef = useRef();
   const [snackBarVisible, setSnackBarVisible] = useState(false);
@@ -25,13 +25,9 @@ const CameraScreen = ({ navigation }) => {
   const [hasLocationPermission, setHasLocationPermission] = useState();
   const [isRecording, setIsRecording] = useState(false);
   const [video, setVideo] = useState();
-  const [gpsPosition, setGpsPosition] = useState({});
-  const [selectedResolution, setSelectedResolution] = useState('480p');
-  const [selectedCameraType, setSelectedCameraType] = useState('Back');
-  const [selectedZoom, setSelectedZoom] = useState('0');
-  const [selectedRecordingLength, setSelectedRecordingLength] = useState('1');
-  const [selectedMaxVideoFileSize, setSelectedMaxVideoFileSize] = useState('0');
-  const [selectedAutomaticRecording, setSelectedAutomaticRecording] = useState('false');
+  const [settings, setSettings] = useState(DEFAULT_CAMERA_SETTINGS)
+
+
   const saveVideoData = async (recordedVideo, gpsLocations) => {
     const expoAlbum = await MediaLibrary.getAlbumAsync(ALBUM_NAME)
     const video_asset = await MediaLibrary.createAssetAsync(recordedVideo.uri);
@@ -50,20 +46,14 @@ const CameraScreen = ({ navigation }) => {
       });
     }
     setVideo(null);
-    if (selectedAutomaticRecording === 'true') {
+    if (settings.automaticRecording === true) {
       recordVideo();
     }
-    setGpsPosition({});
   };
+
   let recordVideo = async () => {
     if (!cameraRef) return;
-    console.log('Camera Granted');
-    console.log(`Resolution ${selectedResolution}`)
-    console.log(`cam type ${selectedCameraType}`)
-    console.log(`zoom ${selectedZoom}`)
-    console.log(`record length ${selectedRecordingLength}`)
-    console.log(`max size ${selectedMaxVideoFileSize}`)
-    console.log(`auto record ${selectedAutomaticRecording}`)
+
     //* Clear Locations and Video
     setVideo(null);
     //* Set Location subscription
@@ -76,13 +66,12 @@ const CameraScreen = ({ navigation }) => {
     },
       (location) => {
         tempLocations.push(location);
-        setGpsPosition(location);
       }
     );
     //* Set the camera options and made sure exif data is set
     let cameraOptions = {
-      quality: selectedResolution,
-      maxDuration: parseInt(selectedRecordingLength) * 60,
+      quality: settings.resolution,
+      maxDuration: parseInt(settings.recordingLength) * 60,
       mute: false,
       exif: true,
     };
@@ -105,51 +94,37 @@ const CameraScreen = ({ navigation }) => {
     setHasMicrophonePermission(microphonePermission.status === "granted");
     setHasMediaLibraryPermission(mediaLibraryPermission.status === "granted");
     setHasLocationPermission(locationPermission.status === "granted");
-    const tempResolution = await AsyncStorage.getItem('CameraResolution')
-    if (tempResolution !== null || tempResolution !== '') {
-      setSelectedResolution(tempResolution);
-    }
-    else {
-      setSelectedResolution('480p');
-    }
-    const tempCameraType = await AsyncStorage.getItem('CameraType')
-    if (tempCameraType !== null || tempCameraType !== '') {
-      setSelectedCameraType(tempCameraType);
-    }
-    else {
-      setSelectedCameraType('Back');
-    }
-    const tempZoom = await AsyncStorage.getItem('CameraZoom')
-    if (tempZoom !== null || tempZoom !== '') {
-      setSelectedZoom(tempZoom);
-    }
-    else {
-      setSelectedZoom('0');
-    }
-    const tempRecordingLength = await AsyncStorage.getItem('RecordingLength')
-    if (tempRecordingLength !== null || tempRecordingLength !== '') {
-      setSelectedRecordingLength(tempRecordingLength);
-    }
-    else {
-      setSelectedRecordingLength('1')
-    }
-    const tempMaxVideoFileSize = await AsyncStorage.getItem('MaxVideoFileSize')
-    if (tempMaxVideoFileSize !== null || tempMaxVideoFileSize !== '') {
-      setSelectedMaxVideoFileSize(tempMaxVideoFileSize);
-    }
-    else {
-      setSelectedMaxVideoFileSize('4294967296');
-    }
-    const tempAutomaticRecording = await AsyncStorage.getItem('AutomaticRecording')
-    if (tempAutomaticRecording !== null || tempAutomaticRecording !== '') {
-      setSelectedAutomaticRecording(tempAutomaticRecording);
-    }
-    else {
-      setSelectedAutomaticRecording('false');
-    }
+
+
+    setInitialValues();
   }
+
+  const setInitialValues = async () => {
+
+    try {
+      let tempSettings = await AsyncStorage.getItem('AMD_Settings')
+      tempSettings = JSON.parse(tempSettings)
+      if (tempSettings && Object.keys(tempSettings).length >= 1 && Object.getPrototypeOf(tempSettings) === Object.prototype) {
+        setSettings(tempSettings);
+      }
+      else {
+        setSettings(DEFAULT_CAMERA_SETTINGS);
+      }
+    } catch (err) {
+      Alert.alert('Unable to load Settings')
+    }
+  };
+
+  const updateSetting = (updatedValue) =>{
+    setSettings(settings => ({
+          ...settings,
+          ...updatedValue
+        }));
+  }
+
   useEffect(() => {
     setPermissions();
+   
     const unsubscribe = navigation.addListener('focus', () => {
       activateKeepAwake();
     });
@@ -177,54 +152,8 @@ const CameraScreen = ({ navigation }) => {
   let stopRecording = () => {
     setIsRecording(false);
     cameraRef.current.stopRecording();
-    setGpsPosition({});
   };
 
-  const getGPSMessage = () => {
-    if (gpsPosition && Object.keys(gpsPosition).length >= 1 && Object.getPrototypeOf(gpsPosition) === Object.prototype) {
-      return (
-        <View>
-          <View style={[GlobalStyles.marginYsm]}>
-            <Text variant='labelLarge' style={[GlobalStyles.whiteText]}>
-              Speed and Location:
-            </Text>
-            <Text variant='labelLarge' style={[GlobalStyles.whiteText]}>
-              {(gpsPosition.coords.speed).toFixed(2)} KM/H N{gpsPosition.coords.latitude} W{gpsPosition.coords.longitude}
-            </Text>
-          </View>
-          <View style={[GlobalStyles.marginYsm]}>
-            <Text variant='labelLarge' style={[GlobalStyles.whiteText]}>
-              Date and Time:
-            </Text>
-            <Text variant='labelLarge' style={[GlobalStyles.whiteText]}>
-              {(new Date()).toISOString().replace(/[^0-9]/g, "").slice(0, -3)}
-            </Text>
-          </View>
-        </View>
-      )
-    }
-    else {
-      return (<View>
-        <View style={[GlobalStyles.marginYsm]}>
-          <Text variant='labelLarge' style={[GlobalStyles.whiteText]}>
-            Speed and Location:
-          </Text>
-          <Text variant='labelLarge' style={[GlobalStyles.whiteText]}>
-            N/A
-          </Text>
-        </View>
-        <View style={[GlobalStyles.marginYsm]}>
-          <Text variant='labelLarge' style={[GlobalStyles.whiteText]}>
-            Date and Time:
-          </Text>
-          <Text variant='labelLarge' style={[GlobalStyles.whiteText]}>
-            {(new Date()).toISOString().replace(/[^0-9]/g, "").slice(0, -3)}
-          </Text>
-        </View>
-      </View>
-      )
-    }
-  }
   return (
     <View style={GlobalStyles.container}>
       <View style={[GlobalStyles.rowSpaceEven, GlobalStyles.divBlack]}>
@@ -234,13 +163,13 @@ const CameraScreen = ({ navigation }) => {
           size={22}
           onPress={() => navigation.goBack()}
         />
-         <IconButton
+        <IconButton
           icon={'flash'}
           iconColor={MD3Colors.neutral100}
           size={22}
           onPress={() => navigation.goBack()}
         />
-         <IconButton
+        <IconButton
           icon={'timer'}
           iconColor={MD3Colors.neutral100}
           size={22}
@@ -266,10 +195,8 @@ const CameraScreen = ({ navigation }) => {
           onPress={() => navigation.goBack()}
         />
       </View>
-      <Camera zoom={parseInt(selectedZoom)} style={[GlobalStyles.camera, GlobalStyles.flex6]} ref={cameraRef} onCameraReady={selectedAutomaticRecording === 'true' ? recordVideo : null} quality={selectedResolution} type={selectedCameraType === 'Back' ? CameraType.back : CameraType.front} >
-        {getGPSMessage()}
-
-
+      <Camera zoom={settings.zoomLevel} style={[GlobalStyles.camera, GlobalStyles.flex6]} ref={cameraRef} onCameraReady={settings.automaticRecording === true ? recordVideo : null} quality={settings.resolution} type={settings.cameraType === 'Back' ? CameraType.back : CameraType.front} >
+      
         <View style={[GlobalStyles.borderRounded, GlobalStyles.rowSpaceEven, GlobalStyles.divBlackTrans]}>
           <Button style={GlobalStyles.button} labelStyle={{ color: "white" }} mode="outline" >
             1x
@@ -301,10 +228,10 @@ const CameraScreen = ({ navigation }) => {
         />
         <View style={[GlobalStyles.divCenter, GlobalStyles.container]}>
           <IconButton
-            icon={selectedCameraType === 'Back' ? 'orbit-variant' : 'orbit-variant'}
+            icon={settings.cameraType === 'Back' ? 'orbit-variant' : 'orbit-variant'}
             iconColor={MD3Colors.neutral100}
             size={40}
-            onPress={() => { selectedCameraType === 'Back' ? setSelectedCameraType('Front') : setSelectedCameraType('Back') }}
+            onPress={() => { settings.cameraType === 'Back' ? updateSetting({'cameraType': 'Front'}) : updateSetting({'cameraType': 'Back'}) }}
           />
         </View>
       </View>

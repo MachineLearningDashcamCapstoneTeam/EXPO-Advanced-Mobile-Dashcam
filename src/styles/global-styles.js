@@ -136,6 +136,10 @@ const GlobalStyles = StyleSheet.create({
         justifyContent: 'center',
     },
 
+    paddingBsm:{
+        paddingBottom: 10,
+    },
+
     paddingYsm: {
         paddingVertical: 10,
     },
