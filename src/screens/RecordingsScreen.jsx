@@ -71,7 +71,6 @@ export default function RecordingsScreen({ navigation }) {
       unsubscribe;
     };
   }, [navigation]);
-  
 
   const saveVideoToSavedVideoIds = async (videoAsset, isLocked = null) => {
     if (isLocked === null) {
@@ -88,7 +87,6 @@ export default function RecordingsScreen({ navigation }) {
     }
   }
 
-
   const deleteVideoFromFavoriteVideos = async (videoAsset, isLocked = null) => {
     if (isLocked === null) {
       isLocked = savedFavoriteVideosIds.includes(videoAsset.id);
@@ -103,7 +101,6 @@ export default function RecordingsScreen({ navigation }) {
       Alert.alert("Successfully Unlocked Video");
     }
   }
-
   const deleteVideo = (videoAsset, isLocked = null) => {
     if (isLocked === null) {
       isLocked = savedFavoriteVideosIds.includes(videoAsset.id);
@@ -119,7 +116,6 @@ export default function RecordingsScreen({ navigation }) {
             //* Also delete the video from favorites
             deleteVideoFromFavoriteVideos(videoAsset);
             Alert.alert("Video successfully deleted");
-      
           } else {
             Alert.alert("Failed to delete video");
           }
@@ -178,12 +174,44 @@ export default function RecordingsScreen({ navigation }) {
   const videoWidgets = () => {
     if (selectedMenu === 0) {
       return (
-        <View style={GlobalStyles.marginYsm}>
-          {/* <Button style={GlobalStyles.button} icon="filter" mode="contained" onPress={() => resetVideoList()} > Reset </Button>
-          <Button style={GlobalStyles.button} icon="filter" mode="outlined" onPress={() => sortByLengthASC()} >Short to Long</Button>
-          <Button style={GlobalStyles.button} icon="filter" mode="outlined" onPress={() => sortByLengthDSC()} >Long to Short</Button>
-          <Button style={GlobalStyles.button} icon="filter" mode="outlined" onPress={() => sortByTimeASC()} >Oldest to Recent</Button>
-          <Button style={GlobalStyles.button} icon="filter" mode="outlined" onPress={() => sortByTimeDSC()} >Recent to Oldest</Button> */}
+        <View>
+          <Card mode="elevated" style={[GlobalStyles.borderRounded, GlobalStyles.marginYsm]}>
+            <Card.Content>
+              <Text variant='titleLarge' >
+                Filters
+              </Text>
+
+              <View style={[GlobalStyles.marginYsm]}>
+                <Button style={GlobalStyles.button} icon="filter" mode="contained" onPress={() => resetVideoList()} >Reset</Button>
+              </View>
+
+              <Text variant='labelMedium'>
+                Duration Filter
+              </Text>
+              <View style={[GlobalStyles.rowContainer, GlobalStyles.marginYsm]}>
+                <View style={GlobalStyles.buttonContainer}>
+                  <Button style={[GlobalStyles.button]} icon="filter" mode="outlined" onPress={() => sortByLengthASC()} >Short to Long</Button>
+                </View>
+                <View style={GlobalStyles.buttonContainer}>
+                  <Button style={[GlobalStyles.button]} icon="filter" mode="outlined" onPress={() => sortByLengthDSC()} >Long to Short</Button>
+                </View>
+              </View>
+
+
+              <Text variant='labelMedium'>
+                Created Filter
+              </Text>
+              <View style={[GlobalStyles.rowContainer, GlobalStyles.marginYsm]}>
+                <View style={GlobalStyles.buttonContainer}>
+                  <Button style={GlobalStyles.button} icon="filter" mode="outlined" onPress={() => sortByTimeASC()} >Old to New</Button>
+                </View>
+                <View style={GlobalStyles.buttonContainer}>
+                  <Button style={GlobalStyles.button} icon="filter" mode="outlined" onPress={() => sortByTimeDSC()} >New to Old</Button>
+                </View>
+              </View>
+            </Card.Content>
+          </Card>
+
           {
             videos.map((videoAsset) => (
               <LocalVideoCard key={videoAsset.id} videoAsset={videoAsset} savedFavoriteVideosIds={savedFavoriteVideosIds} getInfo={getInfo} deleteVideo={deleteVideo} deleteVideoFromFavoriteVideos={deleteVideoFromFavoriteVideos} saveVideoToSavedVideoIds={saveVideoToSavedVideoIds} />
