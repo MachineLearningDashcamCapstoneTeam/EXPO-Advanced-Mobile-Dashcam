@@ -7,7 +7,7 @@ import { shareAsync } from 'expo-sharing';
 import * as MediaLibrary from 'expo-media-library';
 import * as Location from 'expo-location';
 import * as FileSystem from 'expo-file-system';
-import { ALBUM_NAME, CAMERA_IMG } from '../constants';
+import { ALBUM_NAME, CAMERA_IMG, DEFAULT_CAMERA_SETTINGS } from '../constants';
 import { gpsJsonToGeojson } from '../utils/geojson-utils';
 import { Button, Text, Snackbar, IconButton, MD3Colors, Avatar } from 'react-native-paper';
 import { useKeepAwake, activateKeepAwake, deactivateKeepAwake } from 'expo-keep-awake';
@@ -25,18 +25,7 @@ const CameraScreen = ({ navigation }) => {
   const [hasLocationPermission, setHasLocationPermission] = useState();
   const [isRecording, setIsRecording] = useState(false);
   const [video, setVideo] = useState();
-  const [gpsPosition, setGpsPosition] = useState({});
-
-  const defaultSettings = {
-    'resolution': '480p',
-    'cameraType': 'Back',
-    'zoomLevel': 0,
-    'recordingLength': 1,
-    'maxVideoFileSize': 4294967296,
-    'automaticRecording': false,
-
-  };
-  const [settings, setSettings] = useState(defaultSettings)
+  const [settings, setSettings] = useState(DEFAULT_CAMERA_SETTINGS)
 
 
   const saveVideoData = async (recordedVideo, gpsLocations) => {
@@ -60,12 +49,10 @@ const CameraScreen = ({ navigation }) => {
     if (settings.automaticRecording === true) {
       recordVideo();
     }
-    setGpsPosition({});
   };
+
   let recordVideo = async () => {
     if (!cameraRef) return;
-
-    console.log(`Settings ${settings}`)
 
     //* Clear Locations and Video
     setVideo(null);
@@ -79,7 +66,6 @@ const CameraScreen = ({ navigation }) => {
     },
       (location) => {
         tempLocations.push(location);
-        setGpsPosition(location);
       }
     );
     //* Set the camera options and made sure exif data is set
@@ -113,7 +99,6 @@ const CameraScreen = ({ navigation }) => {
     setInitialValues();
   }
 
-
   const setInitialValues = async () => {
 
     try {
@@ -123,7 +108,7 @@ const CameraScreen = ({ navigation }) => {
         setSettings(tempSettings);
       }
       else {
-        setSettings(defaultSettings);
+        setSettings(DEFAULT_CAMERA_SETTINGS);
       }
     } catch (err) {
       Alert.alert('Unable to load Settings')
@@ -139,6 +124,7 @@ const CameraScreen = ({ navigation }) => {
 
   useEffect(() => {
     setPermissions();
+   
     const unsubscribe = navigation.addListener('focus', () => {
       activateKeepAwake();
     });
@@ -166,54 +152,8 @@ const CameraScreen = ({ navigation }) => {
   let stopRecording = () => {
     setIsRecording(false);
     cameraRef.current.stopRecording();
-    setGpsPosition({});
   };
 
-  const getGPSMessage = () => {
-    if (gpsPosition && Object.keys(gpsPosition).length >= 1 && Object.getPrototypeOf(gpsPosition) === Object.prototype) {
-      return (
-        <View>
-          <View style={[GlobalStyles.marginYsm]}>
-            <Text variant='labelLarge' style={[GlobalStyles.whiteText]}>
-              Speed and Location:
-            </Text>
-            <Text variant='labelLarge' style={[GlobalStyles.whiteText]}>
-              {(gpsPosition.coords.speed).toFixed(2)} KM/H N{gpsPosition.coords.latitude} W{gpsPosition.coords.longitude}
-            </Text>
-          </View>
-          <View style={[GlobalStyles.marginYsm]}>
-            <Text variant='labelLarge' style={[GlobalStyles.whiteText]}>
-              Date and Time:
-            </Text>
-            <Text variant='labelLarge' style={[GlobalStyles.whiteText]}>
-              {(new Date()).toISOString().replace(/[^0-9]/g, "").slice(0, -3)}
-            </Text>
-          </View>
-        </View>
-      )
-    }
-    else {
-      return (<View>
-        <View style={[GlobalStyles.marginYsm]}>
-          <Text variant='labelLarge' style={[GlobalStyles.whiteText]}>
-            Speed and Location:
-          </Text>
-          <Text variant='labelLarge' style={[GlobalStyles.whiteText]}>
-            N/A
-          </Text>
-        </View>
-        <View style={[GlobalStyles.marginYsm]}>
-          <Text variant='labelLarge' style={[GlobalStyles.whiteText]}>
-            Date and Time:
-          </Text>
-          <Text variant='labelLarge' style={[GlobalStyles.whiteText]}>
-            {(new Date()).toISOString().replace(/[^0-9]/g, "").slice(0, -3)}
-          </Text>
-        </View>
-      </View>
-      )
-    }
-  }
   return (
     <View style={GlobalStyles.container}>
       <View style={[GlobalStyles.rowSpaceEven, GlobalStyles.divBlack]}>
@@ -255,10 +195,8 @@ const CameraScreen = ({ navigation }) => {
           onPress={() => navigation.goBack()}
         />
       </View>
-      <Camera zoom={parseInt(settings.zoomLevel)} style={[GlobalStyles.camera, GlobalStyles.flex6]} ref={cameraRef} onCameraReady={settings.automaticRecording === true ? recordVideo : null} quality={settings.resolution} type={settings.cameraType === 'Back' ? CameraType.back : CameraType.front} >
-        {getGPSMessage()}
-
-
+      <Camera zoom={settings.zoomLevel} style={[GlobalStyles.camera, GlobalStyles.flex6]} ref={cameraRef} onCameraReady={settings.automaticRecording === true ? recordVideo : null} quality={settings.resolution} type={settings.cameraType === 'Back' ? CameraType.back : CameraType.front} >
+      
         <View style={[GlobalStyles.borderRounded, GlobalStyles.rowSpaceEven, GlobalStyles.divBlackTrans]}>
           <Button style={GlobalStyles.button} labelStyle={{ color: "white" }} mode="outline" >
             1x
