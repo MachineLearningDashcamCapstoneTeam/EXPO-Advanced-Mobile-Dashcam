@@ -2,10 +2,10 @@ import React from 'react';
 import { useEffect, useState, useContext } from 'react';
 import { View, Image } from 'react-native';
 import { Button } from 'react-native-paper';
-
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
-import { GOOGLE_CONFIG } from '../constants';
+import { DEFAULT_CAMERA_SETTINGS, GOOGLE_CONFIG } from '../constants';
 import { getGoogleUserInfo } from '../services/googleService';
 
 import { AccessContext } from '../context/accessTokenContext';
@@ -13,6 +13,7 @@ import { HEADER_IMG } from '../constants/index';
 import GlobalStyles from '../styles/global-styles';
 import UserCard from '../widget/userCard';
 import CloudCard from '../widget/cloudCard';
+import { Alert } from 'react-native';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -21,10 +22,32 @@ function HomeScreen({ navigation }) {
   const [user, setUser] = useState();
   const [accessToken, setAccessToken] = useState();
   const [request, response, promptAsync] = Google.useAuthRequest(GOOGLE_CONFIG);
+  const [settings, setSettings] = useState(DEFAULT_CAMERA_SETTINGS)
+
 
   useEffect(() => {
     checkIfUserLoggedIn();
+    setInitialValues();
   }, [response]);
+
+  const setInitialValues = async () => {
+
+    try {
+      let tempSettings = await AsyncStorage.getItem('AMD_Settings')
+      tempSettings = JSON.parse(tempSettings)
+      if (tempSettings && Object.keys(tempSettings).length >= 1 && Object.getPrototypeOf(tempSettings) === Object.prototype) {
+        if(tempSettings.loadCameraWhenApplicationStarts){
+          navigation.navigate('Camera')
+        }
+      }
+      else {
+        setSettings(DEFAULT_CAMERA_SETTINGS);
+      }
+    } catch (err) {
+      Alert.alert('Unable to load Settings')
+    }
+  };
+
   //* Check if the user already logged in with google
   const checkIfUserLoggedIn = () => {
     if (response?.type === "success") {

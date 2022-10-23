@@ -9,7 +9,12 @@ import { DEFAULT_CAMERA_SETTINGS } from '../constants';
 export default function SettingsScreen({ navigation }) {
 
 
-  const [settings, setSettings] = useState(DEFAULT_CAMERA_SETTINGS)
+  const [settings, setSettings] = useState(DEFAULT_CAMERA_SETTINGS);
+
+  const [loadCameraWhenApplicationStarts, setLoadCameraWhenApplicationStarts] = useState([
+    { label: 'No', value: false },
+    { label: 'Yes', value: true },
+  ]);
 
   const [resolutions, setResolutions] = useState([
     { label: '480p', value: '480p' },
@@ -125,6 +130,18 @@ export default function SettingsScreen({ navigation }) {
             <Text variant='titleLarge' >
               Camera Settings
             </Text>
+
+            <View style={[GlobalStyles.marginYsm]}>
+              <Text style={[GlobalStyles.paddingBsm]} variant='labelMedium'>
+              Load Camera when Application Starts
+              </Text>
+              <SegmentedButtons
+                value={settings.loadCameraWhenApplicationStarts}
+                onValueChange={(loadCameraWhenApplicationStarts) => updateSetting({ 'loadCameraWhenApplicationStarts': loadCameraWhenApplicationStarts })}
+                buttons={loadCameraWhenApplicationStarts}
+              />
+            </View>
+
             <View style={[GlobalStyles.marginYsm]}>
               <Text style={[GlobalStyles.paddingBsm]} variant='labelMedium'>
                 Resolution

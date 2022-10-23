@@ -115,16 +115,16 @@ const CameraScreen = ({ navigation }) => {
     }
   };
 
-  const updateSetting = (updatedValue) =>{
+  const updateSetting = (updatedValue) => {
     setSettings(settings => ({
-          ...settings,
-          ...updatedValue
-        }));
+      ...settings,
+      ...updatedValue
+    }));
   }
 
   useEffect(() => {
     setPermissions();
-   
+
     const unsubscribe = navigation.addListener('focus', () => {
       activateKeepAwake();
     });
@@ -163,27 +163,9 @@ const CameraScreen = ({ navigation }) => {
           size={22}
           onPress={() => navigation.goBack()}
         />
+        
         <IconButton
-          icon={'flash'}
-          iconColor={MD3Colors.neutral100}
-          size={22}
-          onPress={() => navigation.goBack()}
-        />
-        <IconButton
-          icon={'timer'}
-          iconColor={MD3Colors.neutral100}
-          size={22}
-          onPress={() => navigation.goBack()}
-        />
-        <IconButton
-          icon={'aspect-ratio'}
-          iconColor={MD3Colors.neutral100}
-          size={22}
-          onPress={() => navigation.goBack()}
-        />
-
-        <IconButton
-          icon={'grid'}
+          icon={'format-list-bulleted'}
           iconColor={MD3Colors.neutral100}
           size={22}
           onPress={() => navigation.goBack()}
@@ -196,20 +178,27 @@ const CameraScreen = ({ navigation }) => {
         />
       </View>
       <Camera zoom={settings.zoomLevel} style={[GlobalStyles.camera, GlobalStyles.flex6]} ref={cameraRef} onCameraReady={settings.automaticRecording === true ? recordVideo : null} quality={settings.resolution} type={settings.cameraType === 'Back' ? CameraType.back : CameraType.front} >
-      
+
+
+        <View></View>
         <View style={[GlobalStyles.borderRounded, GlobalStyles.rowSpaceEven, GlobalStyles.divBlackTrans]}>
-          <Button style={GlobalStyles.button} labelStyle={{ color: "white" }} mode="outline" >
+          <Button  labelStyle={{ color: settings.zoomLevel != 0 ? "white" : 'black' }}
+            mode={settings.zoomLevel === 0 ? "elevated" : 'outline'}
+            onPress={() => updateSetting({ 'zoomLevel': 0 })}>
             1x
           </Button>
-          <Button style={GlobalStyles.button} mode="elevated" >
-            2x
-          </Button>
-          <Button style={GlobalStyles.button} labelStyle={{ color: "white" }} mode="outline" >
+          <Button  labelStyle={{ color: settings.zoomLevel != 0.5 ? "white" : 'black' }}
+            mode={settings.zoomLevel === 0.5 ? "elevated" : 'outline'}
+            onPress={() => updateSetting({ 'zoomLevel': 0.5 })}>
             3x
           </Button>
-          <Button style={GlobalStyles.button} labelStyle={{ color: "white" }} mode="outline" >
+          <Button style={GlobalStyles.button}
+            labelStyle={{ color: settings.zoomLevel != 1 ? "white" : 'black' }}
+            mode={settings.zoomLevel === 1 ? "elevated" : 'outline'}
+            onPress={() => updateSetting({ 'zoomLevel': 1 })}>
             10x
           </Button>
+
         </View>
       </Camera>
 
@@ -231,7 +220,7 @@ const CameraScreen = ({ navigation }) => {
             icon={settings.cameraType === 'Back' ? 'orbit-variant' : 'orbit-variant'}
             iconColor={MD3Colors.neutral100}
             size={40}
-            onPress={() => { settings.cameraType === 'Back' ? updateSetting({'cameraType': 'Front'}) : updateSetting({'cameraType': 'Back'}) }}
+            onPress={() => { settings.cameraType === 'Back' ? updateSetting({ 'cameraType': 'Front' }) : updateSetting({ 'cameraType': 'Back' }) }}
           />
         </View>
       </View>

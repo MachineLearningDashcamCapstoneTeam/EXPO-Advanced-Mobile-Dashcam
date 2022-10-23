@@ -1,4 +1,5 @@
 export const DEFAULT_CAMERA_SETTINGS = {
+    'loadCameraWhenApplicationStarts': false,
     'resolution': '480p',
     'cameraType': 'Back',
     'zoomLevel': 0,
