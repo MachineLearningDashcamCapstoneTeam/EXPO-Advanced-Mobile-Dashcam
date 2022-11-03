@@ -1,11 +1,11 @@
-import { Card, Button, Title, Text, IconButton, MD3Colors } from 'react-native-paper';
-import { StyleSheet, View, ScrollView, Alert } from 'react-native';
+import { Card, Button, Text, DataTable } from 'react-native-paper';
+import { View, ScrollView, Alert } from 'react-native';
 import { useEffect, useState, useContext } from 'react';
 import * as MediaLibrary from 'expo-media-library';
 import { ALBUM_NAME } from '../constants';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { sortByLengthShortToLong, sortByLengthLongToShort, sortByTimeRecentToOldest, sortByTimeOldestToRecent } from '../utils/sorting-video-assets';
-import { getDashcamVideos, uploadDashcamVideos, deleteGoogleDriveFile } from '../services/googleDriveService';
+import { getDashcamVideos, deleteGoogleDriveFile } from '../services/googleDriveService';
 import { AccessContext } from '../context/accessTokenContext';
 
 import GoogleVideoCard from '../widget/googleVideoCard';
@@ -15,16 +15,27 @@ import LocalVideoCard from '../widget/localVideoCard';
 export default function RecordingsScreen({ navigation }) {
   const { accessTokenContextValue, setAccessTokenContextValue } = useContext(AccessContext);
   const [selectedMenu, setSelectedMenu] = useState(0);
+  const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
+
+  //* Local Videos, favorites, and Google Drive Files
   const [videos, setVideos] = useState([]);
   const [savedFavoriteVideosIds, setSavedFavoriteVideosIds] = useState([]);
-  const [files, setFiles] = useState([]);
-  const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
+  const [googleDriveFiles, setGoogleDriveFiles] = useState([]);
+
+  //* Pagination details for videos
+  const numberOfItemsPerPageList = [10, 20, 30];
+  const [paginationPage, setPaginationPage] = useState(0);
+  const [numberOfItemsPerPage, onItemsPerPageChange] = useState(numberOfItemsPerPageList[0]);
+  const [paginationFrom, setPaginationFrom] = useState(paginationPage * numberOfItemsPerPage);
+  const [paginationTo, setPaginationTo] = useState(Math.min((paginationPage + 1) * numberOfItemsPerPage, videos.length));
+
   const setPermissions = async () => {
     const mediaLibraryPermission = await MediaLibrary.requestPermissionsAsync();
     setHasMediaLibraryPermission(mediaLibraryPermission.status === "granted");
     //* If the user has permission, load the video data
     if (mediaLibraryPermission.status === 'granted') {
       getAlbumData();
+      setPaginationPage(0);
     }
   }
   const getAlbumData = async () => {
@@ -35,13 +46,14 @@ export default function RecordingsScreen({ navigation }) {
         const tempList = assets['assets'];
         const sortedArray = sortByTimeRecentToOldest(tempList)
         setVideos([...sortedArray])
+        setPaginationTo(Math.min((paginationPage + 1) * numberOfItemsPerPage, sortedArray.length));
       }).catch((error) => {
         Alert.alert("Unable to load Videos from the Album");
       });
     }).catch((error) => {
       Alert.alert("Unable to load Album");
     });
-    if (accessTokenContextValue && files.length <= 0) {
+    if (accessTokenContextValue && googleDriveFiles.length <= 0) {
       getDriveFiles();
     }
   }
@@ -62,6 +74,7 @@ export default function RecordingsScreen({ navigation }) {
   }
   useEffect(() => {
     setPermissions();
+   
     const unsubscribe = navigation.addListener('focus', () => {
       loadFavorites();
     });
@@ -70,8 +83,7 @@ export default function RecordingsScreen({ navigation }) {
       setVideos([]);
       unsubscribe;
     };
-  }, [navigation]);
-
+  }, [navigation, numberOfItemsPerPage]);
   const saveVideoToSavedVideoIds = async (videoAsset, isLocked = null) => {
     if (isLocked === null) {
       isLocked = savedFavoriteVideosIds.includes(videoAsset.id);
@@ -86,7 +98,6 @@ export default function RecordingsScreen({ navigation }) {
       Alert.alert("Successfully Locked Video");
     }
   }
-
   const deleteVideoFromFavoriteVideos = async (videoAsset, isLocked = null) => {
     if (isLocked === null) {
       isLocked = savedFavoriteVideosIds.includes(videoAsset.id);
@@ -159,15 +170,15 @@ export default function RecordingsScreen({ navigation }) {
   const getDriveFiles = async () => {
     const response = await getDashcamVideos(accessTokenContextValue);
     if (response.status === 200) {
-      setFiles(response.data.files)
+      setGoogleDriveFiles(response.data.files)
     }
   };
   const deleteDriveFile = async (file) => {
     const response = await deleteGoogleDriveFile(accessTokenContextValue, file.id);
     if (response.status === 204) {
-      let tempList = files;
+      let tempList = googleDriveFiles;
       tempList = tempList.filter(item => item.id !== file.id);
-      setFiles([...tempList])
+      setGoogleDriveFiles([...tempList])
       Alert.alert("Deleted video from Google Drive");
     }
   }
@@ -180,11 +191,9 @@ export default function RecordingsScreen({ navigation }) {
               <Text variant='titleLarge' >
                 Filters
               </Text>
-
               <View style={[GlobalStyles.marginYsm]}>
                 <Button style={GlobalStyles.button} icon="filter" mode="contained" onPress={() => resetVideoList()} >Reset</Button>
               </View>
-
               <Text variant='labelMedium'>
                 Duration Filter
               </Text>
@@ -196,7 +205,6 @@ export default function RecordingsScreen({ navigation }) {
                   <Button style={[GlobalStyles.button]} icon="filter" mode="outlined" onPress={() => sortByLengthDSC()} >Long to Short</Button>
                 </View>
               </View>
-
 
               <Text variant='labelMedium'>
                 Created Filter
@@ -212,18 +220,41 @@ export default function RecordingsScreen({ navigation }) {
             </Card.Content>
           </Card>
 
-          {
-            videos.map((videoAsset) => (
-              <LocalVideoCard key={videoAsset.id} videoAsset={videoAsset} savedFavoriteVideosIds={savedFavoriteVideosIds} getInfo={getInfo} deleteVideo={deleteVideo} deleteVideoFromFavoriteVideos={deleteVideoFromFavoriteVideos} saveVideoToSavedVideoIds={saveVideoToSavedVideoIds} />
-            ))
-          }
+          <DataTable>
+            {
+              videos.slice(
+                paginationPage * numberOfItemsPerPage,
+                paginationPage * numberOfItemsPerPage + numberOfItemsPerPage,
+              ).
+                map((videoAsset) => (
+                  <LocalVideoCard key={videoAsset.id} videoAsset={videoAsset} savedFavoriteVideosIds={savedFavoriteVideosIds} getInfo={getInfo} deleteVideo={deleteVideo} deleteVideoFromFavoriteVideos={deleteVideoFromFavoriteVideos} saveVideoToSavedVideoIds={saveVideoToSavedVideoIds} />
+                ))
+            }
+
+            <Card mode="elevated" style={[GlobalStyles.borderRounded, GlobalStyles.marginYsm]}>
+              <Card.Content>
+                <DataTable.Pagination
+                  style={[GlobalStyles.divCenter]}
+                  page={paginationPage}
+                  numberOfPages={Math.ceil(videos.length / numberOfItemsPerPage)}
+                  onPageChange={page => setPaginationPage(page)}
+                  label={`${paginationFrom + 1}-${paginationTo} of ${videos.length}`}
+                  showFastPaginationControls
+                  numberOfItemsPerPageList={numberOfItemsPerPageList}
+                  numberOfItemsPerPage={numberOfItemsPerPage}
+                  onItemsPerPageChange={onItemsPerPageChange}
+                  selectPageDropdownLabel={'Videos per page'}
+                />
+              </Card.Content>
+            </Card>
+          </DataTable>
         </View>
       )
     }
     else {
       return (
         <View style={GlobalStyles.marginYsm}>
-          {files.map((file) =>
+          {googleDriveFiles.map((file) =>
           ((file.fileExtension === "MP4" || file.fileExtension === "mp4" || file.fileExtension === 'jpg') &&
             <GoogleVideoCard key={file.id} file={file} deleteDriveFile={deleteDriveFile} />
           )

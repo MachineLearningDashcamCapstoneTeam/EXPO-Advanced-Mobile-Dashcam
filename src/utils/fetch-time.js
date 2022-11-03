@@ -37,3 +37,13 @@ export const timeStampToDate = (timeStamp) =>{
   }
  
 }
+
+export const timestampToDateTimeString = (timeStamp) =>{
+  if(timeStamp){
+    const dateStamp =  new Date(timeStamp);
+    return dateStamp.toISOString().replace(/[^0-9]/g, "").slice(0, -3)
+  }
+  else{
+    return 'Unable to format Timestamp';
+  }
+}

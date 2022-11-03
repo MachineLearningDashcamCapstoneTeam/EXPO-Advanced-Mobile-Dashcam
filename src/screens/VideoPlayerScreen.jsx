@@ -9,8 +9,12 @@ import * as FileSystem from 'expo-file-system';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import GlobalStyles from '../styles/global-styles';
 import LockButton from '../widget/lockButton';
+import { uploadDashcamVideos, uploadGoogleDriveFile } from '../services/googleDriveService';
+import { AccessContext } from '../context/accessTokenContext';
+import { useContext } from 'react';
 
 export default function VideoPlayerScreen({ route, navigation }) {
+  const { accessTokenContextValue, setAccessTokenContextValue } = useContext(AccessContext);
   const { videoAsset } = route.params;
   const video = useRef(null);
   const [savedFavoriteVideosIds, setSavedFavoriteVideosIds] = useState([]);
@@ -40,14 +44,38 @@ export default function VideoPlayerScreen({ route, navigation }) {
   }
 
   const shareVideo = async () => {
-    const filename = `${FileSystem.documentDirectory}${videoAsset.filename}.txt`;
-    const result = await FileSystem.readAsStringAsync(filename, {
-      encoding: FileSystem.EncodingType.UTF8
-    });
-    //! Somehow share video and coordinates together
-    console.log(result);
-    shareAsync(filename).then(() => {
-    });
+
+    // if(accessTokenContextValue){
+    //   const filename = `${FileSystem.documentDirectory}${videoAsset.filename}.txt`;
+    //   const GeoJSON = await FileSystem.readAsStringAsync(filename, {
+    //     encoding: FileSystem.EncodingType.UTF8
+    //   });
+
+    //   const videoAssetData = await FileSystem.readAsStringAsync(videoAsset.uri, {
+    //     encoding: FileSystem.EncodingType.Base64,
+    //   });
+
+    //   const videoAssetInfo = await FileSystem.getInfoAsync(videoAsset.uri);
+
+    //   shareAsync(videoAsset.uri);
+
+
+    //   const response =  uploadDashcamVideos(accessTokenContextValue, videoAsset, videoAssetData, videoAssetInfo.fileSize, GeoJSON )
+    //     if (response.status === 200) {
+    //       Alert.alert("Successfully uploaded video to Google Drive");
+    //     }
+    //     else{
+    //       Alert.alert(response.message);
+    //     }
+
+    
+   
+    // }
+    // else{
+    //   Alert.alert('Not signed into Google')
+    // }
+   
+
   };
   const saveVideoToSavedVideoIds = async (videoAsset, isLocked = null) => {
     if (isLocked === null) {
