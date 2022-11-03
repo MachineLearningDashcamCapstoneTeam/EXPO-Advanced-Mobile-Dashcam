@@ -163,7 +163,7 @@ const CameraScreen = ({ navigation }) => {
           size={22}
           onPress={() => navigation.goBack()}
         />
-        
+
         <IconButton
           icon={'format-list-bulleted'}
           iconColor={MD3Colors.neutral100}
@@ -182,12 +182,12 @@ const CameraScreen = ({ navigation }) => {
 
         <View></View>
         <View style={[GlobalStyles.borderRounded, GlobalStyles.rowSpaceEven, GlobalStyles.divBlackTrans]}>
-          <Button  labelStyle={{ color: settings.zoomLevel != 0 ? "white" : 'black' }}
+          <Button labelStyle={{ color: settings.zoomLevel != 0 ? "white" : 'black' }}
             mode={settings.zoomLevel === 0 ? "elevated" : 'outline'}
             onPress={() => updateSetting({ 'zoomLevel': 0 })}>
             1x
           </Button>
-          <Button  labelStyle={{ color: settings.zoomLevel != 0.5 ? "white" : 'black' }}
+          <Button labelStyle={{ color: settings.zoomLevel != 0.5 ? "white" : 'black' }}
             mode={settings.zoomLevel === 0.5 ? "elevated" : 'outline'}
             onPress={() => updateSetting({ 'zoomLevel': 0.5 })}>
             3x
