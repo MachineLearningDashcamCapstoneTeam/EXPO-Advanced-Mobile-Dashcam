@@ -5,6 +5,7 @@ import { Card, Button, Title, Text } from 'react-native-paper';
 import { Video } from 'expo-av';
 import { timeStampToDate } from '../utils/fetch-time';
 import { shareAsync } from 'expo-sharing';
+import { DEFAULT_CAMERA_SETTINGS } from '../constants';
 import * as FileSystem from 'expo-file-system';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import GlobalStyles from '../styles/global-styles';
@@ -12,6 +13,7 @@ import LockButton from '../widget/lockButton';
 import { uploadDashcamVideos, uploadGoogleDriveFile } from '../services/googleDriveService';
 import { AccessContext } from '../context/accessTokenContext';
 import { useContext } from 'react';
+import NetInfo from "@react-native-community/netinfo";
 
 export default function VideoPlayerScreen({ route, navigation }) {
   const { accessTokenContextValue, setAccessTokenContextValue } = useContext(AccessContext);
@@ -20,6 +22,8 @@ export default function VideoPlayerScreen({ route, navigation }) {
   const [savedFavoriteVideosIds, setSavedFavoriteVideosIds] = useState([]);
   const [status, setStatus] = useState({});
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
+  const [settings, setSettings] = useState(DEFAULT_CAMERA_SETTINGS)
+
 
   //* Set the permissions for the screen
   const setPermissions = async () => {
@@ -27,8 +31,26 @@ export default function VideoPlayerScreen({ route, navigation }) {
     setHasMediaLibraryPermission(mediaLibraryPermission.status === "granted");
     if (mediaLibraryPermission.status === 'granted') {
       loadFavorites();
+      setInitialValues();
     }
   }
+
+  const setInitialValues = async () => {
+
+    try {
+      let tempSettings = await AsyncStorage.getItem('AMD_Settings')
+      tempSettings = JSON.parse(tempSettings)
+      if (tempSettings && Object.keys(tempSettings).length >= 1 && Object.getPrototypeOf(tempSettings) === Object.prototype) {
+        setSettings(tempSettings);
+      }
+      else {
+        setSettings(DEFAULT_CAMERA_SETTINGS);
+      }
+    } catch (err) {
+      Alert.alert('Unable to load Settings')
+    }
+  };
+
   useEffect(() => {
     setPermissions();
   }, []);
@@ -43,39 +65,52 @@ export default function VideoPlayerScreen({ route, navigation }) {
     }
   }
 
+
+  const shareWithGoogleDrive = async () =>{
+    if(accessTokenContextValue){
+      const filename = `${FileSystem.documentDirectory}${videoAsset.filename}.txt`;
+      const GeoJSON = await FileSystem.readAsStringAsync(filename, {
+        encoding: FileSystem.EncodingType.UTF8
+      });
+      const videoAssetData = await FileSystem.readAsStringAsync(videoAsset.uri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+      const videoAssetInfo = await FileSystem.getInfoAsync(videoAsset.uri);
+      shareAsync(videoAsset.uri);
+      const response =  uploadDashcamVideos(accessTokenContextValue, videoAsset, videoAssetData, videoAssetInfo.fileSize, GeoJSON )
+        if (response.status === 200) {
+          Alert.alert("Successfully uploaded video to Google Drive");
+        }
+        else{
+          Alert.alert(response.message);
+        }
+    }
+    else{
+      Alert.alert('Not signed into Google')
+    }
+  }
+
   const shareVideo = async () => {
 
-    // if(accessTokenContextValue){
-    //   const filename = `${FileSystem.documentDirectory}${videoAsset.filename}.txt`;
-    //   const GeoJSON = await FileSystem.readAsStringAsync(filename, {
-    //     encoding: FileSystem.EncodingType.UTF8
-    //   });
 
-    //   const videoAssetData = await FileSystem.readAsStringAsync(videoAsset.uri, {
-    //     encoding: FileSystem.EncodingType.Base64,
-    //   });
+    let connection = await NetInfo.fetch();
+    console.log("Connection type", connection.type);
+    console.log("Is connected?", connection.isConnected);
 
-    //   const videoAssetInfo = await FileSystem.getInfoAsync(videoAsset.uri);
+    if(connection.type === 'wifi'){
+      console.log('sharing');
+      //shareWithGoogleDrive();
+    }
 
-    //   shareAsync(videoAsset.uri);
-
-
-    //   const response =  uploadDashcamVideos(accessTokenContextValue, videoAsset, videoAssetData, videoAssetInfo.fileSize, GeoJSON )
-    //     if (response.status === 200) {
-    //       Alert.alert("Successfully uploaded video to Google Drive");
-    //     }
-    //     else{
-    //       Alert.alert(response.message);
-    //     }
-
-    
-   
-    // }
-    // else{
-    //   Alert.alert('Not signed into Google')
-    // }
-   
-
+    if(connection.type === 'cellular'){
+      if(settings.allowUploadWithMobileData){
+        console.log('Sharing with a cellular network');
+        //shareWithGoogleDrive();
+      }
+      else{
+        console.log('Settings does not permit sharing with a Cellular Network');
+      }
+    }
   };
   const saveVideoToSavedVideoIds = async (videoAsset, isLocked = null) => {
     if (isLocked === null) {
