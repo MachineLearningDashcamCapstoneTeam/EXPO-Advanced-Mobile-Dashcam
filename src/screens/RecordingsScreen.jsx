@@ -74,7 +74,7 @@ export default function RecordingsScreen({ navigation }) {
   }
   useEffect(() => {
     setPermissions();
-   
+
     const unsubscribe = navigation.addListener('focus', () => {
       loadFavorites();
     });
@@ -220,7 +220,13 @@ export default function RecordingsScreen({ navigation }) {
             </Card.Content>
           </Card>
 
-          <DataTable>
+          {
+            videos.map((videoAsset) => (
+              <LocalVideoCard key={videoAsset.id} videoAsset={videoAsset} savedFavoriteVideosIds={savedFavoriteVideosIds} getInfo={getInfo} deleteVideo={deleteVideo} deleteVideoFromFavoriteVideos={deleteVideoFromFavoriteVideos} saveVideoToSavedVideoIds={saveVideoToSavedVideoIds} />
+            ))
+
+          }
+          {/* <DataTable>
             {
               videos.slice(
                 paginationPage * numberOfItemsPerPage,
@@ -247,7 +253,7 @@ export default function RecordingsScreen({ navigation }) {
                 />
               </Card.Content>
             </Card>
-          </DataTable>
+          </DataTable> */}
         </View>
       )
     }

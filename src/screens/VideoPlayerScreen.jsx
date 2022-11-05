@@ -99,7 +99,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
 
     if(connection.type === 'wifi'){
       console.log('sharing');
-      //shareWithGoogleDrive();
+      shareWithGoogleDrive();
     }
 
     if(connection.type === 'cellular'){
