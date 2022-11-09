@@ -19,15 +19,7 @@ export default function RecordingsScreen({ navigation }) {
 
   //* Local Videos, favorites, and Google Drive Files
   const [videos, setVideos] = useState([]);
-  const [savedFavoriteVideosIds, setSavedFavoriteVideosIds] = useState([]);
   const [googleDriveFiles, setGoogleDriveFiles] = useState([]);
-
-  //* Pagination details for videos
-  const numberOfItemsPerPageList = [10, 20, 30];
-  const [paginationPage, setPaginationPage] = useState(0);
-  const [numberOfItemsPerPage, onItemsPerPageChange] = useState(numberOfItemsPerPageList[0]);
-  const [paginationFrom, setPaginationFrom] = useState(paginationPage * numberOfItemsPerPage);
-  const [paginationTo, setPaginationTo] = useState(Math.min((paginationPage + 1) * numberOfItemsPerPage, videos.length));
 
   const setPermissions = async () => {
     const mediaLibraryPermission = await MediaLibrary.requestPermissionsAsync();
@@ -35,7 +27,6 @@ export default function RecordingsScreen({ navigation }) {
     //* If the user has permission, load the video data
     if (mediaLibraryPermission.status === 'granted') {
       getAlbumData();
-      setPaginationPage(0);
     }
   }
   const getAlbumData = async () => {
@@ -43,11 +34,13 @@ export default function RecordingsScreen({ navigation }) {
       return selectedAlbum;
     }).then((selectedAlbum) => {
       MediaLibrary.getAssetsAsync({ album: selectedAlbum.id, mediaType: 'video' }).then((assets) => {
-        const tempList = assets['assets'];
+        let tempList = assets['assets'];
+        // tempList = groupByTime(tempList);
         const sortedArray = sortByTimeRecentToOldest(tempList)
         setVideos([...sortedArray])
-        setPaginationTo(Math.min((paginationPage + 1) * numberOfItemsPerPage, sortedArray.length));
+
       }).catch((error) => {
+        console.log(error)
         Alert.alert("Unable to load Videos from the Album");
       });
     }).catch((error) => {
@@ -57,14 +50,7 @@ export default function RecordingsScreen({ navigation }) {
       getDriveFiles();
     }
   }
-  const loadFavorites = async () => {
-    //* Load Favorite videos
-    const tempSavedFavoriteVideosIds = await AsyncStorage.getItem('FavoriteVideosIds');
-    if (tempSavedFavoriteVideosIds && tempSavedFavoriteVideosIds !== null) {
-      const tempSavedFavoriteVideosIdsArray = JSON.parse(tempSavedFavoriteVideosIds)
-      setSavedFavoriteVideosIds([...tempSavedFavoriteVideosIdsArray]);
-    }
-  }
+
   const getInfo = async (asset) => {
     await MediaLibrary.getAssetInfoAsync(asset).then((info) => {
       navigation.navigate('Video Player', { videoAsset: info });
@@ -75,67 +61,14 @@ export default function RecordingsScreen({ navigation }) {
   useEffect(() => {
     setPermissions();
 
-    const unsubscribe = navigation.addListener('focus', () => {
-      loadFavorites();
-    });
+
     return () => {
       setHasMediaLibraryPermission(null);
       setVideos([]);
-      unsubscribe;
     };
-  }, [navigation, numberOfItemsPerPage]);
-  const saveVideoToSavedVideoIds = async (videoAsset, isLocked = null) => {
-    if (isLocked === null) {
-      isLocked = savedFavoriteVideosIds.includes(videoAsset.id);
-    }
-    if (isLocked === false) {
-      //* Video does not exist is saved videos list
-      const tempSavedFavoriteVideosIds = savedFavoriteVideosIds;
-      tempSavedFavoriteVideosIds.push(videoAsset.id);
-      const tempSavedFavoriteVideosIdsString = JSON.stringify(tempSavedFavoriteVideosIds);
-      await AsyncStorage.setItem('FavoriteVideosIds', tempSavedFavoriteVideosIdsString);
-      setSavedFavoriteVideosIds([...tempSavedFavoriteVideosIds]);
-      Alert.alert("Successfully Locked Video");
-    }
-  }
-  const deleteVideoFromFavoriteVideos = async (videoAsset, isLocked = null) => {
-    if (isLocked === null) {
-      isLocked = savedFavoriteVideosIds.includes(videoAsset.id);
-    }
-    if (isLocked) {
-      //* Video exists, delete from the favorites list
-      let tempSavedFavoriteVideosIds = savedFavoriteVideosIds;
-      tempSavedFavoriteVideosIds = tempSavedFavoriteVideosIds.filter(id => id !== videoAsset.id)
-      const tempSavedFavoriteVideosIdsString = JSON.stringify(tempSavedFavoriteVideosIds);
-      await AsyncStorage.setItem('FavoriteVideosIds', tempSavedFavoriteVideosIdsString);
-      setSavedFavoriteVideosIds([...tempSavedFavoriteVideosIds]);
-      Alert.alert("Successfully Unlocked Video");
-    }
-  }
-  const deleteVideo = (videoAsset, isLocked = null) => {
-    if (isLocked === null) {
-      isLocked = savedFavoriteVideosIds.includes(videoAsset.id);
-    }
-    //* If the user has permission, load the video data
-    if (hasMediaLibraryPermission && isLocked === false) {
-      MediaLibrary.deleteAssetsAsync([videoAsset.id])
-        .then((success) => {
-          if (success) {
-            let tempList = videos;
-            tempList = tempList.filter(item => item.id !== videoAsset.id)
-            setVideos(tempList);
-            //* Also delete the video from favorites
-            deleteVideoFromFavoriteVideos(videoAsset);
-            Alert.alert("Video successfully deleted");
-          } else {
-            Alert.alert("Failed to delete video");
-          }
-        })
-    }
-    else {
-      Alert.alert("Video is Locked");
-    }
-  }
+  }, [navigation]);
+
+
   //* Sort the videos and reset the initial video list
   const sortByLengthASC = () => {
     const tempList = videos;
@@ -220,40 +153,22 @@ export default function RecordingsScreen({ navigation }) {
             </Card.Content>
           </Card>
 
-          {
-            videos.map((videoAsset) => (
-              <LocalVideoCard key={videoAsset.id} videoAsset={videoAsset} savedFavoriteVideosIds={savedFavoriteVideosIds} getInfo={getInfo} deleteVideo={deleteVideo} deleteVideoFromFavoriteVideos={deleteVideoFromFavoriteVideos} saveVideoToSavedVideoIds={saveVideoToSavedVideoIds} />
-            ))
+          
 
-          }
-          {/* <DataTable>
-            {
-              videos.slice(
-                paginationPage * numberOfItemsPerPage,
-                paginationPage * numberOfItemsPerPage + numberOfItemsPerPage,
-              ).
-                map((videoAsset) => (
-                  <LocalVideoCard key={videoAsset.id} videoAsset={videoAsset} savedFavoriteVideosIds={savedFavoriteVideosIds} getInfo={getInfo} deleteVideo={deleteVideo} deleteVideoFromFavoriteVideos={deleteVideoFromFavoriteVideos} saveVideoToSavedVideoIds={saveVideoToSavedVideoIds} />
-                ))
-            }
+       
+              <View style={[GlobalStyles.rowContainerWrap, GlobalStyles.marginYsm]}>
 
-            <Card mode="elevated" style={[GlobalStyles.borderRounded, GlobalStyles.marginYsm]}>
-              <Card.Content>
-                <DataTable.Pagination
-                  style={[GlobalStyles.divCenter]}
-                  page={paginationPage}
-                  numberOfPages={Math.ceil(videos.length / numberOfItemsPerPage)}
-                  onPageChange={page => setPaginationPage(page)}
-                  label={`${paginationFrom + 1}-${paginationTo} of ${videos.length}`}
-                  showFastPaginationControls
-                  numberOfItemsPerPageList={numberOfItemsPerPageList}
-                  numberOfItemsPerPage={numberOfItemsPerPage}
-                  onItemsPerPageChange={onItemsPerPageChange}
-                  selectPageDropdownLabel={'Videos per page'}
-                />
-              </Card.Content>
-            </Card>
-          </DataTable> */}
+
+                {
+                  videos.map((videoAsset) => (
+                    <LocalVideoCard key={videoAsset.id} videoAsset={videoAsset} getInfo={getInfo} />
+                  ))
+
+                }
+
+              </View>
+           
+          
         </View>
       )
     }

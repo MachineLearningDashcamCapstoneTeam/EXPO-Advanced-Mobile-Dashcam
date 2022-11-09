@@ -1,4 +1,13 @@
 
+export const groupByTime = (video_array) =>{
+    let temp_array =  new Array(Object.values(video_array));
+
+    temp_array = temp_array.reduce((r, a) => {
+        r[a.creationTime] = [...r[a.creationTime] || [], a];
+        return r;
+       }, {});
+    return temp_array;
+}
 
 export const sortByTimeRecentToOldest = (video_array) => {
     const sortedArray = video_array.sort(

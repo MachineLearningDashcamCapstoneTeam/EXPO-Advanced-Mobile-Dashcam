@@ -16,6 +16,20 @@ const GlobalStyles = StyleSheet.create({
     container: {
         flex: 1,
     },
+
+    quarterFlex: {
+        width: '24%',
+    },
+
+
+    height100: {
+        height: 100,
+    },
+
+    marginBsm: {
+        marginBottom: 10,
+    },
+
     flex1: {
         flex: 1,
         padding: 20,
@@ -115,6 +129,13 @@ const GlobalStyles = StyleSheet.create({
         justifyContent: 'space-evenly',
         marginHorizontal: "auto",
     },
+    rowContainerWrap: {
+        flexWrap: 'wrap',
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginHorizontal: "auto",
+    },
 
     buttonMain: {
         backgroundColor: main,
@@ -136,7 +157,7 @@ const GlobalStyles = StyleSheet.create({
         justifyContent: 'center',
     },
 
-    paddingBsm:{
+    paddingBsm: {
         paddingBottom: 10,
     },
 

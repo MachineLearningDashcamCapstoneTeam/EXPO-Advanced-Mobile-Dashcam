@@ -1,18 +1,14 @@
 
 
 import React from 'react'
-import { Card, Button, Text } from 'react-native-paper';
-import { View } from 'react-native';
+import { Card } from 'react-native-paper';
 import GlobalStyles from '../styles/global-styles';
-import LockButton from './lockButton';
-import { timeStampToDate } from '../utils/fetch-time';
 
-const LocalVideoCard = ({ videoAsset, savedFavoriteVideosIds, getInfo, deleteVideo, deleteVideoFromFavoriteVideos, saveVideoToSavedVideoIds }) => {
+const LocalVideoCard = ({ videoAsset, getInfo }) => {
 
-    let isLocked = savedFavoriteVideosIds.includes(videoAsset.id);
     return (
-        <Card key={videoAsset.id} mode="elevated" onPress ={()=> getInfo(videoAsset)} style={[GlobalStyles.borderRounded, GlobalStyles.marginYsm]}>
-            <Card.Cover source={{ uri: videoAsset.uri }} style={[GlobalStyles.borderRounded]} />
+        <Card key={videoAsset.id} mode="elevated" onPress ={()=> getInfo(videoAsset)} style={[GlobalStyles.quarterFlex, GlobalStyles.height100, GlobalStyles.borderRounded, GlobalStyles.marginBsm]}>
+            <Card.Cover source={{ uri: videoAsset.uri }} style={[GlobalStyles.height100, GlobalStyles.borderRounded]} />
             
         </Card>
     )
