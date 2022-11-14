@@ -77,26 +77,38 @@ export default function VideoPlayerScreen({ route, navigation }) {
 
 
   const shareWithGoogleDrive = async () => {
-    if (accessTokenContextValue) {
-      const filename = `${FileSystem.documentDirectory}${videoAsset.filename}.txt`;
-      const GeoJSON = await FileSystem.readAsStringAsync(filename, {
-        encoding: FileSystem.EncodingType.UTF8
-      });
-      const videoAssetData = await FileSystem.readAsStringAsync(videoAsset.uri, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-      const videoAssetInfo = await FileSystem.getInfoAsync(videoAsset.uri);
-      shareAsync(videoAsset.uri);
-      const response = uploadDashcamVideos(accessTokenContextValue, videoAsset, videoAssetData, videoAssetInfo.fileSize, GeoJSON)
-      if (response.status === 200) {
-        Alert.alert("Successfully uploaded video to Google Drive");
-      }
-      else {
-        Alert.alert(response.message);
-      }
+
+    //* Get the text file 
+    const filename = `${FileSystem.documentDirectory}${videoAsset.filename}.txt`;
+    const GeoJSON = await FileSystem.readAsStringAsync(filename, {
+      encoding: FileSystem.EncodingType.UTF8
+    });
+
+    //* Get the video
+    const videoAssetData = await FileSystem.readAsStringAsync(videoAsset.uri, {
+      encoding: FileSystem.EncodingType.Base64,
+    });
+    const videoAssetInfo = await FileSystem.getInfoAsync(videoAsset.uri);
+
+    shareAsync(videoAsset.uri);
+
+    const response = uploadDashcamVideos(accessTokenContextValue, videoAsset, videoAssetData, videoAssetInfo.fileSize, GeoJSON)
+    if (response.status === 200) {
+      Alert.alert("Successfully uploaded video to Google Drive");
     }
     else {
-      Alert.alert('Not signed into Google')
+      Alert.alert(response.message);
+    }
+
+
+  }
+
+  const shareWithSimpleShare = async () => {
+    try {
+      shareAsync([videoAsset.uri]);
+    }
+    catch (err) {
+      Alert.alert(err);
     }
   }
 
@@ -109,7 +121,13 @@ export default function VideoPlayerScreen({ route, navigation }) {
 
     if (connection.type === 'wifi') {
       console.log('sharing');
-      shareWithGoogleDrive();
+      if (accessTokenContextValue) {
+        shareWithGoogleDrive();
+      }
+      else {
+        shareWithSimpleShare();
+      }
+
     }
 
     if (connection.type === 'cellular') {
@@ -176,7 +194,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
   }
   return (
     <ScrollView style={GlobalStyles.container}>
-    <View style={[GlobalStyles.divDark, GlobalStyles.header, GlobalStyles.flex2]}>
+      <View style={[GlobalStyles.divDark, GlobalStyles.header, GlobalStyles.flex2]}>
         <Text variant='titleLarge' style={GlobalStyles.whiteText}>
           {video.id}
         </Text>
@@ -190,7 +208,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
         <Card key={video.id} mode="elevated" style={[GlobalStyles.borderRounded, GlobalStyles.marginYsm]}>
           <Card.Content>
 
-            
+
             <Video
               ref={videoPlayer}
               style={GlobalStyles.video}
@@ -235,14 +253,14 @@ export default function VideoPlayerScreen({ route, navigation }) {
                 <Button style={[GlobalStyles.buttonMain, GlobalStyles.button]} icon="share" mode="contained" onPress={shareVideo} >Share</Button>
               </View>
               <View style={GlobalStyles.buttonContainer}>
-                <Button style={[ GlobalStyles.button]} icon="map" mode="outlined" onPress={() => navigation.navigate('Map', { videoAsset: video })} >Map</Button>
+                <Button style={[GlobalStyles.button]} icon="map" mode="outlined" onPress={() => navigation.navigate('Map', { videoAsset: video })} >Map</Button>
               </View>
             </View>
 
             <View style={[GlobalStyles.divLine, GlobalStyles.marginYsm]} />
 
             <View style={[GlobalStyles.marginYsm]}>
-              <Button style={[GlobalStyles.buttonDangerOutline]} labelStyle={{color: '#DF2935'}} icon="delete" mode="outlined" onPress={() => deleteVideo(video)} >Delete </Button>
+              <Button style={[GlobalStyles.buttonDangerOutline]} labelStyle={{ color: '#DF2935' }} icon="delete" mode="outlined" onPress={() => deleteVideo(video)} >Delete </Button>
             </View>
           </Card.Content>
         </Card>

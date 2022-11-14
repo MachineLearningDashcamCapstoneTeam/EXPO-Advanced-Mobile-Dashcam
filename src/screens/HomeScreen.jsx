@@ -100,6 +100,8 @@ function HomeScreen({ navigation }) {
 
       </View>
 
+      
+
       {showUserInfo()}
     </View>
   );
