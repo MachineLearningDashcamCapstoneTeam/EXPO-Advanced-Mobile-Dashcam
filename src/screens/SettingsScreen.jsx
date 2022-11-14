@@ -105,7 +105,7 @@ export default function SettingsScreen({ navigation }) {
 
   const saveResetButtons = () => {
     return (
-      <View style={[GlobalStyles.rowContainer, GlobalStyles.marginYsm]}>
+      <View style={[GlobalStyles.rowContainerWrap, GlobalStyles.marginYsm]}>
         <View style={GlobalStyles.buttonContainer}>
           <Button style={GlobalStyles.button} icon="restart" mode="outlined" onPress={resetSettings}>
             Reset

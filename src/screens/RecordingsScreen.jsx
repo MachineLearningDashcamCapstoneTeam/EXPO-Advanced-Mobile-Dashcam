@@ -138,7 +138,7 @@ export default function RecordingsScreen({ navigation }) {
               <Text variant='labelMedium'>
                 Created Filter
               </Text>
-              <View style={[GlobalStyles.rowContainer, GlobalStyles.marginYsm]}>
+              <View style={[GlobalStyles.rowContainerWrap, GlobalStyles.marginYsm]}>
                 <View style={GlobalStyles.buttonContainer}>
                   <Button style={GlobalStyles.button} icon="filter" mode="outlined" onPress={() => sortByTimeASC()} >Old to New</Button>
                 </View>
@@ -151,11 +151,11 @@ export default function RecordingsScreen({ navigation }) {
 
           {Object.entries(videos).map(([key, value]) => {
             return (
-              <>
-                <Text variant='titleLarge'>  
+              <View key={key}>
+                <Text variant='titleMedium'>  
                   {key}
                 </Text>
-                <Text variant='labelMedium'>
+                <Text variant='labelMedium' style={[GlobalStyles.textGray]}>
                 {value.length} video(s)
               </Text>
                 <View style={[GlobalStyles.rowContainerWrap, GlobalStyles.marginYsm]}>
@@ -166,7 +166,7 @@ export default function RecordingsScreen({ navigation }) {
                   }
                 </View>
 
-              </>
+              </View>
             );
           })}
 

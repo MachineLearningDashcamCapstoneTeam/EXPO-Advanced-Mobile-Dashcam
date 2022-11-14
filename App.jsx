@@ -10,7 +10,7 @@ const theme = {
   version: 3,
   colors: {
     ...DefaultTheme.colors,
-    primary: '#456de4',
+    primary: 'rgb(41, 72, 161)',
     secondary: '#fe1615',
     tertiary: '#a1b2c3'
   },

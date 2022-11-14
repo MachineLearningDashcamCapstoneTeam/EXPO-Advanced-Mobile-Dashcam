@@ -1,16 +1,21 @@
 import { StyleSheet, Dimensions } from 'react-native';
 
-const main = '#456de4';
-const smoke = '#f8f9fd';
-const gray = '#b5b5b5';
-const white = '#ffffff';
-const dark = '#181d3d';
-const navbarBlackTrans = 'rgba(0,0,0, 0.4)'
-const navbarBlack = '#000000';
+const main = 'rgb(41, 72, 161)';
+const gray = 'rgb(116, 116, 116)';
+const white = 'rgb(255, 255, 255)';
+const dark = 'rgb(37, 37, 37)';
+const black = 'rgb(0,0,0)';
 const error = "#DF2935";
 const success = "#679436";
 const warning = "#FC9E4F";
-const secondary = '#6233f5';
+const smoke =  'rgb(250, 250, 250)';
+const navbarBlackTrans = 'rgba(0,0,0, 0.4)'
+const navbarBlack = '#000000';
+const small = 10;
+const medium = 20;
+const large = 30;
+const border = 10;
+
 
 const GlobalStyles = StyleSheet.create({
     container: {
@@ -22,44 +27,73 @@ const GlobalStyles = StyleSheet.create({
         width: '24%',
     },
 
+    textGray: {
+        color: gray,
+    },
+    textMain: {
+        color: main,
+    },
+    textError: {
+        color: error,
+    },
+    textSuccess: {
+        color: success,
+    },
+    textWarning: {
+        color: warning,
+    },
+
+
+
 
     height100: {
         height: 90,
     },
 
     marginBsm: {
-        marginBottom: 10,
+        marginBottom: small,
     },
 
     flex1: {
         flex: 1,
-        padding: 20,
+        padding: medium,
     },
     flex2: {
         flex: 2,
-        padding: 20,
+        padding: medium,
     },
     flex3: {
         flex: 3,
-        padding: 20,
+        padding: medium,
     },
     flex4: {
         flex: 4,
-        padding: 20,
+        padding: medium,
     },
     flex5: {
         flex: 5,
-        padding: 20,
+        padding: medium,
     },
     flex6: {
+    
         flex: 6,
-        padding: 20,
+        padding: medium,
     },
+
+
     button: {
         padding: 1,
     },
+
+    buttonLg: {
+        padding: 5,
+        marginBottom: 5,
+    },
+
+
+
     borderRounded: {
-        borderRadius: 15,
+        borderRadius: border,
     },
     buttonContainer: {
         flex: 1,
@@ -79,10 +113,7 @@ const GlobalStyles = StyleSheet.create({
         justifyContent: 'center',
     },
 
-    buttonLg: {
-        padding: 5,
-        marginBottom: 5,
-    },
+   
     marginYsm: {
         marginVertical: 10,
     },
@@ -110,30 +141,13 @@ const GlobalStyles = StyleSheet.create({
     divSpaceBetween: {
         justifyContent: 'space-between',
     },
-    header: {
-        padding: 20,
-        paddingVertical: 20,
-        justifyContent: 'center',
-        color: white,
-    
-    },
-    attention: {
-       
-        padding: 20,
-        paddingVertical: 20,
+   
 
-        color: 'white',
-    },
-    rowContainer: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        marginHorizontal: "auto",
-    },
     rowContainerWrap: {
         flexWrap: 'wrap',
         display: 'flex',
         flexDirection: 'row',
+        
         marginHorizontal: "auto",
     },
 
@@ -148,16 +162,14 @@ const GlobalStyles = StyleSheet.create({
         borderColor: error,
         backgroundColor: white,
     },
-    
+
     buttonSuccess: {
         backgroundColor: success,
     },
     buttonWarning: {
         backgroundColor: warning,
     },
-    buttonSecondary: {
-        backgroundColor: secondary,
-    },
+  
     divCenter: {
         alignItems: 'center',
         justifyContent: 'center',
@@ -191,14 +203,6 @@ const GlobalStyles = StyleSheet.create({
     },
 
 
-    divBlackTrans: {
-        backgroundColor: navbarBlackTrans,
-    },
-
-    divBlack: {
-        backgroundColor: navbarBlack,
-    },
-
     rowSpaceEven: {
         alignItems: 'center',
         justifyContent: 'space-evenly',
@@ -222,6 +226,14 @@ const GlobalStyles = StyleSheet.create({
     divLine: {
         borderBottomColor: gray,
         borderBottomWidth: StyleSheet.hairlineWidth,
+    },
+
+    divBlackTrans: {
+        backgroundColor: navbarBlackTrans,
+    },
+
+    divBlack: {
+        backgroundColor: navbarBlack,
     }
 
 });

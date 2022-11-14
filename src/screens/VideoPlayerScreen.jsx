@@ -50,6 +50,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
       }
 
       let tempVideo = videoAsset;
+      tempVideo.duration = tempVideo.duration.toFixed(2);
       tempVideo.creationTime = timeStampToDate(tempVideo.creationTime)
       tempVideo.modificationTime = timeStampToDate(tempVideo.modificationTime)
       setVideo(tempVideo);
@@ -175,7 +176,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
   }
   return (
     <ScrollView style={GlobalStyles.container}>
-      <View style={[GlobalStyles.divDark, GlobalStyles.header]}>
+    <View style={[GlobalStyles.divDark, GlobalStyles.header, GlobalStyles.flex2]}>
         <Text variant='titleLarge' style={GlobalStyles.whiteText}>
           {video.id}
         </Text>
@@ -188,6 +189,8 @@ export default function VideoPlayerScreen({ route, navigation }) {
 
         <Card key={video.id} mode="elevated" style={[GlobalStyles.borderRounded, GlobalStyles.marginYsm]}>
           <Card.Content>
+
+            
             <Video
               ref={videoPlayer}
               style={GlobalStyles.video}
@@ -222,7 +225,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
 
             </View>
 
-            <View style={[GlobalStyles.rowContainer, GlobalStyles.marginYsm]}>
+            <View style={[GlobalStyles.rowContainerWrap, GlobalStyles.marginYsm]}>
               <View style={GlobalStyles.buttonContainer}>
 
                 <LockButton savedFavoriteVideosIds={savedFavoriteVideosIds} videoAsset={video} deleteVideoFromFavoriteVideos={deleteVideoFromFavoriteVideos} saveVideoToSavedVideoIds={saveVideoToSavedVideoIds} />
@@ -232,14 +235,14 @@ export default function VideoPlayerScreen({ route, navigation }) {
                 <Button style={[GlobalStyles.buttonMain, GlobalStyles.button]} icon="share" mode="contained" onPress={shareVideo} >Share</Button>
               </View>
               <View style={GlobalStyles.buttonContainer}>
-                <Button style={[GlobalStyles.buttonMain, GlobalStyles.button]} icon="map" mode="contained" onPress={() => navigation.navigate('Map', { videoAsset: video })} >Map</Button>
+                <Button style={[ GlobalStyles.button]} icon="map" mode="outlined" onPress={() => navigation.navigate('Map', { videoAsset: video })} >Map</Button>
               </View>
             </View>
 
             <View style={[GlobalStyles.divLine, GlobalStyles.marginYsm]} />
 
             <View style={[GlobalStyles.marginYsm]}>
-              <Button style={[GlobalStyles.buttonDangerOutline]} icon="delete" mode="elevated" onPress={() => deleteVideo(video)} >Delete </Button>
+              <Button style={[GlobalStyles.buttonDangerOutline]} labelStyle={{color: '#DF2935'}} icon="delete" mode="outlined" onPress={() => deleteVideo(video)} >Delete </Button>
             </View>
           </Card.Content>
         </Card>
