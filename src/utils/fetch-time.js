@@ -25,7 +25,9 @@ export const getCurrentTime = () => {
 };
 
 export const timeStampToDate = (timeStamp) =>{
+ 
   if(timeStamp){
+    timeStamp =  timeStamp * 1
     const dateStamp =  new Date(timeStamp);
     const dd = String(dateStamp.getDate()).padStart(2, '0');
     const mm = String(dateStamp.getMonth() + 1).padStart(2, '0'); // January is 0!
@@ -39,6 +41,7 @@ export const timeStampToDate = (timeStamp) =>{
 }
 
 export const timestampToDateTimeString = (timeStamp) =>{
+
   if(timeStamp){
     const dateStamp =  new Date(timeStamp);
     return dateStamp.toISOString().replace(/[^0-9]/g, "").slice(0, -3)

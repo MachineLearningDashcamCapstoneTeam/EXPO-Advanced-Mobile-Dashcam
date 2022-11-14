@@ -18,7 +18,9 @@ import NetInfo from "@react-native-community/netinfo";
 export default function VideoPlayerScreen({ route, navigation }) {
   const { accessTokenContextValue, setAccessTokenContextValue } = useContext(AccessContext);
   const { videoAsset } = route.params;
-  const video = useRef(null);
+
+  const [video, setVideo] = useState({});
+  const videoPlayer = useRef(null);
   const [savedFavoriteVideosIds, setSavedFavoriteVideosIds] = useState([]);
   const [status, setStatus] = useState({});
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
@@ -46,6 +48,13 @@ export default function VideoPlayerScreen({ route, navigation }) {
       else {
         setSettings(DEFAULT_CAMERA_SETTINGS);
       }
+
+      let tempVideo = videoAsset;
+      tempVideo.creationTime = timeStampToDate(tempVideo.creationTime)
+      tempVideo.modificationTime = timeStampToDate(tempVideo.modificationTime)
+      setVideo(tempVideo);
+
+
     } catch (err) {
       Alert.alert('Unable to load Settings')
     }
@@ -168,21 +177,21 @@ export default function VideoPlayerScreen({ route, navigation }) {
     <ScrollView style={GlobalStyles.container}>
       <View style={[GlobalStyles.divDark, GlobalStyles.header]}>
         <Text variant='titleLarge' style={GlobalStyles.whiteText}>
-          {videoAsset.id}
+          {video.id}
         </Text>
         <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant='labelMedium'>
-          Path: {videoAsset.uri}
+          Path: {video.uri}
         </Text>
-        
+
       </View>
       <View style={GlobalStyles.flex5}>
 
-        <Card key={videoAsset.id} mode="elevated" style={[GlobalStyles.borderRounded, GlobalStyles.marginYsm]}>
+        <Card key={video.id} mode="elevated" style={[GlobalStyles.borderRounded, GlobalStyles.marginYsm]}>
           <Card.Content>
             <Video
-              ref={video}
+              ref={videoPlayer}
               style={GlobalStyles.video}
-              source={{ uri: (Platform.OS === "android") ? videoAsset.uri : videoAsset.localUri }}
+              source={{ uri: (Platform.OS === "android") ? video.uri : video.localUri }}
               useNativeControls
               resizeMode='cover'
               isLooping
@@ -191,24 +200,24 @@ export default function VideoPlayerScreen({ route, navigation }) {
 
             <View style={[GlobalStyles.marginYsm]}>
               <Text variant='labelMedium'>
-                Album Id: {videoAsset.albumId}
+                Album Id: {video.albumId}
               </Text>
 
               <Text variant='labelMedium'>
-                Created: {timeStampToDate(videoAsset.creationTime)}
+                Created: {video.creationTime}
               </Text>
               <Text variant='labelMedium'>
-                Modified: {timeStampToDate(videoAsset.modificationTime)}
+                Modified: {video.modificationTime}
               </Text>
               <Text variant='labelMedium'>
-                Duration: {videoAsset.duration}s
+                Duration: {video.duration}s
               </Text>
 
               <Text variant='labelMedium'>
-                Media Type: {videoAsset.mediaType}
+                Media Type: {video.mediaType}
               </Text>
               <Text variant='labelMedium'>
-                Size: {videoAsset.height} x {videoAsset.width}
+                Size: {video.height} x {video.width}
               </Text>
 
             </View>
@@ -216,21 +225,21 @@ export default function VideoPlayerScreen({ route, navigation }) {
             <View style={[GlobalStyles.rowContainer, GlobalStyles.marginYsm]}>
               <View style={GlobalStyles.buttonContainer}>
 
-                <LockButton savedFavoriteVideosIds={savedFavoriteVideosIds} videoAsset={videoAsset} deleteVideoFromFavoriteVideos={deleteVideoFromFavoriteVideos} saveVideoToSavedVideoIds={saveVideoToSavedVideoIds} />
+                <LockButton savedFavoriteVideosIds={savedFavoriteVideosIds} videoAsset={video} deleteVideoFromFavoriteVideos={deleteVideoFromFavoriteVideos} saveVideoToSavedVideoIds={saveVideoToSavedVideoIds} />
 
               </View>
               <View style={GlobalStyles.buttonContainer}>
                 <Button style={[GlobalStyles.buttonMain, GlobalStyles.button]} icon="share" mode="contained" onPress={shareVideo} >Share</Button>
               </View>
               <View style={GlobalStyles.buttonContainer}>
-                <Button style={[GlobalStyles.buttonMain, GlobalStyles.button]} icon="map" mode="contained" onPress={() => navigation.navigate('Map', { videoAsset: videoAsset })} >Map</Button>
+                <Button style={[GlobalStyles.buttonMain, GlobalStyles.button]} icon="map" mode="contained" onPress={() => navigation.navigate('Map', { videoAsset: video })} >Map</Button>
               </View>
             </View>
 
             <View style={[GlobalStyles.divLine, GlobalStyles.marginYsm]} />
 
             <View style={[GlobalStyles.marginYsm]}>
-              <Button style={[GlobalStyles.buttonDangerOutline]} icon="delete" mode="elevated" onPress={() => deleteVideo(videoAsset)} >Delete </Button>
+              <Button style={[GlobalStyles.buttonDangerOutline]} icon="delete" mode="elevated" onPress={() => deleteVideo(video)} >Delete </Button>
             </View>
           </Card.Content>
         </Card>

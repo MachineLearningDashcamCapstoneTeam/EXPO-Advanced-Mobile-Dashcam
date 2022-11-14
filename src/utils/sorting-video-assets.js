@@ -1,12 +1,19 @@
+import { timeStampToDate } from './fetch-time';
 
-export const groupByTime = (video_array) =>{
-    let temp_array =  new Array(Object.values(video_array));
+export const groupByTime = (video_array) => {
+    try {
+        let temp_array = video_array.reduce((r, a) => {
+            let dateTime = timeStampToDate(a.creationTime);
+            r[dateTime] = [...r[dateTime] || [], a];
+            return r;
+        }, {});
 
-    temp_array = temp_array.reduce((r, a) => {
-        r[a.creationTime] = [...r[a.creationTime] || [], a];
-        return r;
-       }, {});
-    return temp_array;
+        return temp_array;
+    }
+    catch(err){
+       console.log(err);
+    }
+
 }
 
 export const sortByTimeRecentToOldest = (video_array) => {

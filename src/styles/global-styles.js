@@ -24,7 +24,7 @@ const GlobalStyles = StyleSheet.create({
 
 
     height100: {
-        height: 100,
+        height: 90,
     },
 
     marginBsm: {

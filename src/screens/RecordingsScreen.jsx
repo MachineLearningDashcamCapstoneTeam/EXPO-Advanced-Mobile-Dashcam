@@ -4,13 +4,14 @@ import { useEffect, useState, useContext } from 'react';
 import * as MediaLibrary from 'expo-media-library';
 import { ALBUM_NAME } from '../constants';
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { sortByLengthShortToLong, sortByLengthLongToShort, sortByTimeRecentToOldest, sortByTimeOldestToRecent } from '../utils/sorting-video-assets';
+import { groupByTime, sortByLengthShortToLong, sortByLengthLongToShort, sortByTimeRecentToOldest, sortByTimeOldestToRecent } from '../utils/sorting-video-assets';
 import { getDashcamVideos, deleteGoogleDriveFile } from '../services/googleDriveService';
 import { AccessContext } from '../context/accessTokenContext';
 
 import GoogleVideoCard from '../widget/googleVideoCard';
 import GlobalStyles from '../styles/global-styles';
 import LocalVideoCard from '../widget/localVideoCard';
+import { timeStampToDate } from '../utils/fetch-time';
 
 export default function RecordingsScreen({ navigation }) {
   const { accessTokenContextValue, setAccessTokenContextValue } = useContext(AccessContext);
@@ -34,10 +35,10 @@ export default function RecordingsScreen({ navigation }) {
       return selectedAlbum;
     }).then((selectedAlbum) => {
       MediaLibrary.getAssetsAsync({ album: selectedAlbum.id, mediaType: 'video' }).then((assets) => {
+
         let tempList = assets['assets'];
-        // tempList = groupByTime(tempList);
-        const sortedArray = sortByTimeRecentToOldest(tempList)
-        setVideos([...sortedArray])
+        const groupedArray = groupByTime(tempList);
+        setVideos(groupedArray)
 
       }).catch((error) => {
         console.log(error)
@@ -124,7 +125,7 @@ export default function RecordingsScreen({ navigation }) {
     if (selectedMenu === 0) {
       return (
         <View>
-          <Card mode="elevated" style={[GlobalStyles.borderRounded, GlobalStyles.marginYsm]}>
+          {/* <Card mode="elevated" style={[GlobalStyles.borderRounded, GlobalStyles.marginYsm]}>
             <Card.Content>
               <Text variant='titleLarge' >
                 Filters
@@ -132,17 +133,7 @@ export default function RecordingsScreen({ navigation }) {
               <View style={[GlobalStyles.marginYsm]}>
                 <Button style={GlobalStyles.button} icon="filter" mode="contained" onPress={() => resetVideoList()} >Reset</Button>
               </View>
-              <Text variant='labelMedium'>
-                Duration Filter
-              </Text>
-              <View style={[GlobalStyles.rowContainer, GlobalStyles.marginYsm]}>
-                <View style={GlobalStyles.buttonContainer}>
-                  <Button style={[GlobalStyles.button]} icon="filter" mode="outlined" onPress={() => sortByLengthASC()} >Short to Long</Button>
-                </View>
-                <View style={GlobalStyles.buttonContainer}>
-                  <Button style={[GlobalStyles.button]} icon="filter" mode="outlined" onPress={() => sortByLengthDSC()} >Long to Short</Button>
-                </View>
-              </View>
+            
 
               <Text variant='labelMedium'>
                 Created Filter
@@ -156,15 +147,29 @@ export default function RecordingsScreen({ navigation }) {
                 </View>
               </View>
             </Card.Content>
-          </Card>
+          </Card> */}
 
-          <View style={[GlobalStyles.rowContainerWrap, GlobalStyles.marginYsm]}>
-            {
-              videos.map((videoAsset) => (
-                <LocalVideoCard key={videoAsset.id} videoAsset={videoAsset} getInfo={getInfo} />
-              ))
-            }
-          </View>
+          {Object.entries(videos).map(([key, value]) => {
+            return (
+              <>
+                <Text variant='titleLarge'>  
+                  {key}
+                </Text>
+                <Text variant='labelMedium'>
+                {value.length} video(s)
+              </Text>
+                <View style={[GlobalStyles.rowContainerWrap, GlobalStyles.marginYsm]}>
+                  {
+                    value.map((videoAsset) => (
+                      <LocalVideoCard key={videoAsset.id} videoAsset={videoAsset} getInfo={getInfo} />
+                    ))
+                  }
+                </View>
+
+              </>
+            );
+          })}
+
         </View>
       )
     }
