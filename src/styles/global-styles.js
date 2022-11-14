@@ -18,6 +18,7 @@ const GlobalStyles = StyleSheet.create({
     },
 
     quarterFlex: {
+        marginHorizontal: 1,
         width: '24%',
     },
 
@@ -114,10 +115,10 @@ const GlobalStyles = StyleSheet.create({
         paddingVertical: 20,
         justifyContent: 'center',
         color: white,
-        borderBottomLeftRadius: 30,
+    
     },
     attention: {
-        borderTopRightRadius: 30,
+       
         padding: 20,
         paddingVertical: 20,
 
@@ -133,7 +134,6 @@ const GlobalStyles = StyleSheet.create({
         flexWrap: 'wrap',
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'space-between',
         marginHorizontal: "auto",
     },
 
@@ -143,6 +143,12 @@ const GlobalStyles = StyleSheet.create({
     buttonDanger: {
         backgroundColor: error,
     },
+    buttonDangerOutline: {
+        color: error,
+        borderColor: error,
+        backgroundColor: white,
+    },
+    
     buttonSuccess: {
         backgroundColor: success,
     },

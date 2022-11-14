@@ -61,10 +61,15 @@ export default function RecordingsScreen({ navigation }) {
   useEffect(() => {
     setPermissions();
 
+    const unsubscribe = navigation.addListener('focus', () => {
+      getAlbumData();
+    });
+
 
     return () => {
       setHasMediaLibraryPermission(null);
       setVideos([]);
+      unsubscribe;
     };
   }, [navigation]);
 
@@ -153,13 +158,13 @@ export default function RecordingsScreen({ navigation }) {
             </Card.Content>
           </Card>
 
-              <View style={[GlobalStyles.rowContainerWrap, GlobalStyles.marginYsm]}>
-                {
-                  videos.map((videoAsset) => (
-                    <LocalVideoCard key={videoAsset.id} videoAsset={videoAsset} getInfo={getInfo} />
-                  ))
-                }
-              </View>    
+          <View style={[GlobalStyles.rowContainerWrap, GlobalStyles.marginYsm]}>
+            {
+              videos.map((videoAsset) => (
+                <LocalVideoCard key={videoAsset.id} videoAsset={videoAsset} getInfo={getInfo} />
+              ))
+            }
+          </View>
         </View>
       )
     }

@@ -66,8 +66,8 @@ export default function VideoPlayerScreen({ route, navigation }) {
   }
 
 
-  const shareWithGoogleDrive = async () =>{
-    if(accessTokenContextValue){
+  const shareWithGoogleDrive = async () => {
+    if (accessTokenContextValue) {
       const filename = `${FileSystem.documentDirectory}${videoAsset.filename}.txt`;
       const GeoJSON = await FileSystem.readAsStringAsync(filename, {
         encoding: FileSystem.EncodingType.UTF8
@@ -77,15 +77,15 @@ export default function VideoPlayerScreen({ route, navigation }) {
       });
       const videoAssetInfo = await FileSystem.getInfoAsync(videoAsset.uri);
       shareAsync(videoAsset.uri);
-      const response =  uploadDashcamVideos(accessTokenContextValue, videoAsset, videoAssetData, videoAssetInfo.fileSize, GeoJSON )
-        if (response.status === 200) {
-          Alert.alert("Successfully uploaded video to Google Drive");
-        }
-        else{
-          Alert.alert(response.message);
-        }
+      const response = uploadDashcamVideos(accessTokenContextValue, videoAsset, videoAssetData, videoAssetInfo.fileSize, GeoJSON)
+      if (response.status === 200) {
+        Alert.alert("Successfully uploaded video to Google Drive");
+      }
+      else {
+        Alert.alert(response.message);
+      }
     }
-    else{
+    else {
       Alert.alert('Not signed into Google')
     }
   }
@@ -97,17 +97,17 @@ export default function VideoPlayerScreen({ route, navigation }) {
     console.log("Connection type", connection.type);
     console.log("Is connected?", connection.isConnected);
 
-    if(connection.type === 'wifi'){
+    if (connection.type === 'wifi') {
       console.log('sharing');
       shareWithGoogleDrive();
     }
 
-    if(connection.type === 'cellular'){
-      if(settings.allowUploadWithMobileData){
+    if (connection.type === 'cellular') {
+      if (settings.allowUploadWithMobileData) {
         console.log('Sharing with a cellular network');
         //shareWithGoogleDrive();
       }
-      else{
+      else {
         console.log('Settings does not permit sharing with a Cellular Network');
       }
     }
@@ -173,11 +173,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
         <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant='labelMedium'>
           Path: {videoAsset.uri}
         </Text>
-        <Button style={GlobalStyles.button} mode="elevated" onPress={() =>
-          status.isPlaying ? video.current.pauseAsync() : video.current.playAsync()
-        }
-          icon={status.isPlaying ? 'pause' : 'play'}
-        >{status.isPlaying ? 'Pause' : 'Play'}</Button>
+        
       </View>
       <View style={GlobalStyles.flex5}>
 
@@ -234,7 +230,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
             <View style={[GlobalStyles.divLine, GlobalStyles.marginYsm]} />
 
             <View style={[GlobalStyles.marginYsm]}>
-              <Button style={[GlobalStyles.button]} icon="delete" mode="elevated" onPress={() => deleteVideo(videoAsset)} >Delete </Button>
+              <Button style={[GlobalStyles.buttonDangerOutline]} icon="delete" mode="elevated" onPress={() => deleteVideo(videoAsset)} >Delete </Button>
             </View>
           </Card.Content>
         </Card>

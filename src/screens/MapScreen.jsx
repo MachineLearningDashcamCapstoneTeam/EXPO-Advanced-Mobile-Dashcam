@@ -20,24 +20,32 @@ const MapScreen = ({ route, navigation }) => {
 
     let loadGPSData = async () => {
 
-        //* Get the file from the documents directory
-        const filename = `${FileSystem.documentDirectory}${videoAsset.filename}.txt`;
-        const result = await FileSystem.readAsStringAsync(filename, {
-            encoding: FileSystem.EncodingType.UTF8
-        });
+        try {
 
-        //* Get the gps data from json and set the initial map location
-        const gpsData = JSON.parse(result);
-        setMapRegion({
-            latitude: gpsData.features[0].geometry.coordinates[1],
-            longitude: gpsData.features[0].geometry.coordinates[0],
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-        })
+            //* Get the file from the documents directory
+            const filename = `${FileSystem.documentDirectory}${videoAsset.filename}.txt`;
+            const result = await FileSystem.readAsStringAsync(filename, {
+                encoding: FileSystem.EncodingType.UTF8
+            });
 
-        //* Create the google gps markers using the gps data
-        const gpsMarkers = gpsJsonToGoogleMarkers(gpsData);
-        setMarkers(gpsMarkers);
+            console.log(result);
+
+            //* Get the gps data from json and set the initial map location
+            const gpsData = JSON.parse(result);
+            setMapRegion({
+                latitude: gpsData.features[0].geometry.coordinates[1],
+                longitude: gpsData.features[0].geometry.coordinates[0],
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+            })
+
+            //* Create the google gps markers using the gps data
+            const gpsMarkers = gpsJsonToGoogleMarkers(gpsData);
+            setMarkers(gpsMarkers);
+        }
+        catch (error) {
+            alert(error);
+        }
     };
 
     useEffect(() => {
