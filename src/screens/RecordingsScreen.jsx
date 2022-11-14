@@ -153,22 +153,13 @@ export default function RecordingsScreen({ navigation }) {
             </Card.Content>
           </Card>
 
-          
-
-       
               <View style={[GlobalStyles.rowContainerWrap, GlobalStyles.marginYsm]}>
-
-
                 {
                   videos.map((videoAsset) => (
                     <LocalVideoCard key={videoAsset.id} videoAsset={videoAsset} getInfo={getInfo} />
                   ))
-
                 }
-
-              </View>
-           
-          
+              </View>    
         </View>
       )
     }
