@@ -37,7 +37,7 @@ export default function RecordingsScreen({ navigation }) {
       MediaLibrary.getAssetsAsync({ album: selectedAlbum.id, mediaType: 'video' }).then((assets) => {
 
         let tempList = assets['assets'];
-        const groupedArray = groupByTime(tempList);
+        const groupedArray = sortByLengthASC(tempList);
         setVideos(groupedArray)
 
       }).catch((error) => {
