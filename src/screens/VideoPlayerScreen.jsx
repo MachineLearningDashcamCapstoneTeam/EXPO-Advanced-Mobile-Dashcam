@@ -49,17 +49,21 @@ export default function VideoPlayerScreen({ route, navigation }) {
         setSettings(DEFAULT_CAMERA_SETTINGS);
       }
 
-      let tempVideo = videoAsset;
-      tempVideo.duration = tempVideo.duration.toFixed(2);
-      tempVideo.creationTime = timeStampToDate(tempVideo.creationTime)
-      tempVideo.modificationTime = timeStampToDate(tempVideo.modificationTime)
-      setVideo(tempVideo);
-
-
+      setVideoSDetails();
     } catch (err) {
       Alert.alert('Unable to load Settings')
     }
   };
+
+  const setVideoSDetails = () => {
+
+    let tempVideo = videoAsset;
+    tempVideo.duration = tempVideo.duration.toFixed(2);
+    tempVideo.creationTime = timeStampToDate(tempVideo.creationTime)
+    tempVideo.modificationTime = timeStampToDate(tempVideo.modificationTime)
+    setVideo(tempVideo);
+
+  }
 
   useEffect(() => {
     setPermissions();
@@ -78,17 +82,18 @@ export default function VideoPlayerScreen({ route, navigation }) {
 
   const shareWithGoogleDrive = async () => {
 
+    //* Get the video
+    const videoAssetData = await FileSystem.readAsStringAsync(videoAsset.uri, {
+      encoding: FileSystem.EncodingType.Base64,
+    });
+    const videoAssetInfo = await FileSystem.getInfoAsync(videoAsset.uri);
+
     //* Get the text file 
     const filename = `${FileSystem.documentDirectory}${videoAsset.filename}.txt`;
     const GeoJSON = await FileSystem.readAsStringAsync(filename, {
       encoding: FileSystem.EncodingType.UTF8
     });
 
-    //* Get the video
-    const videoAssetData = await FileSystem.readAsStringAsync(videoAsset.uri, {
-      encoding: FileSystem.EncodingType.Base64,
-    });
-    const videoAssetInfo = await FileSystem.getInfoAsync(videoAsset.uri);
 
     shareAsync(videoAsset.uri);
 

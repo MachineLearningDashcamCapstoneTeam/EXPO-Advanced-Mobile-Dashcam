@@ -6,6 +6,20 @@ import { Buffer } from "buffer";
 import { timestampToDateTimeString } from '../utils/fetch-time';
 import { CONSTANTS } from '@firebase/util';
 
+export const axiosUtility = async (config) => {
+    try {
+        const promise = await axios(config);
+        return promise;
+    } catch (error) {
+        if (error.response) {
+            return error.response.status;
+        } if (error.request) {
+            return error.request;
+        }
+        return error.message;
+    }
+};
+
 export const getGoogleDriveFolders = async (accessToken) => {
     try {
         const promise = await axios.get(GOOGLE_FOLDER_URL, {
@@ -46,13 +60,18 @@ export const getGoogleDriveFiles = async (accessToken, folderId) => {
 //* Using the access token and file url, delete the file
 export const deleteGoogleDriveFile = async (accessToken, fileId) => {
     try {
+
         const customUrl = `${GOOGLE_FILE_URL}${fileId}`;
-        const promise = await axios.delete(customUrl, {
+        let config = {
+            method: 'delete',
+            url: customUrl,
             headers: {
                 Authorization: `Bearer ${accessToken}`,
-            },
-        });
-        return promise;
+                'Content-Type': 'application/json'
+            }
+        };
+
+        return axiosUtility(config);
     } catch (error) {
         if (error.response) {
             return error.response.status;
@@ -66,18 +85,8 @@ export const deleteGoogleDriveFile = async (accessToken, fileId) => {
 
 export const uploadGoogleDriveGeojsonFilePost = async (accessToken, metadata) => {
     try {
-        const customUrl = `${GOOGLE_UPLOAD_URL}`;
-        const promise = await axios({
-            method: "POST",
-            url: customUrl,
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-                "Content-Type": "application/json",
-            },
-            data: JSON.stringify(metadata),
-        })
-
-        return promise;
+      
+        return axiosUtility(config);
 
     } catch (error) {
         if (error.response) {
@@ -97,9 +106,10 @@ export const uploadGoogleDriveGeojsonFilePut = async (accessToken, geojson, loca
         const promise = await axios({
             method: "PUT",
             url: location,
-            headers: { 
-                Authorization: `Bearer ${accessToken}`, 
-                "Content-Length": `bytes ${fileSize}` },
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                "Content-Length": `bytes ${fileSize}`
+            },
             data: data,
         });
 
@@ -114,14 +124,14 @@ export const uploadGoogleDriveGeojsonFilePut = async (accessToken, geojson, loca
     }
 }
 
-export const uploadGoogleDriveVideoFilePost = async (accessToken, metadata) =>{
+export const uploadGoogleDriveVideoFilePost = async (accessToken, metadata) => {
     try {
-   
+
         const promise = await axios({
             method: "POST",
             url: GOOGLE_UPLOAD_URL,
-            headers: { 
-                Authorization: `Bearer ${accessToken}`, 
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
                 "Content-Type": "application/json",
             },
             data: JSON.stringify(metadata),
@@ -139,7 +149,7 @@ export const uploadGoogleDriveVideoFilePost = async (accessToken, metadata) =>{
 }
 
 
-export const simpleUpload = async (accessToken, videoAssetData, fileSize) =>{
+export const simpleUpload = async (accessToken, videoAssetData, fileSize) => {
     try {
 
         const promise = await axios({
@@ -195,7 +205,7 @@ export const uploadDashcamVideos = async (accessToken, videoAsset, videoAssetDat
         const response = await getGoogleDriveFolders(accessToken);
         if (response.status === 200) {
             const cameraFolders = getObjectsWhereKeyEqualsValue(response.data.files, 'name', 'Dashcam');
-           
+
             if (cameraFolders && cameraFolders.length >= 1) {
 
                 // const res = await simpleUpload(accessToken, videoAssetData, fileSize)
@@ -206,27 +216,42 @@ export const uploadDashcamVideos = async (accessToken, videoAsset, videoAssetDat
                 //     'parents': [`${cameraFolders[0].id}`], // Folder ID at Google Drive
                 // };
                 // const uploadResponseVideoPost = await uploadGoogleDriveVideoFilePost(accessToken, videoMetaData);
-              
+
                 // if(uploadResponseVideoPost.status === 200){
                 //     console.log('test test test')
                 //     const uploadResponseVideoPut = await uploadGoogleDriveVideoFilePut(accessToken,videoAssetData, fileSize, uploadResponseVideoPost.request.responseHeaders.location)
                 //     console.log(uploadResponseVideoPut)
                 // }
 
+
+                //* Prepare the Geojson File
                 let metadata = {
-                    'name': `${timestampToDateTimeString(videoAsset.creationTime)}.geojson`, // Filename at Google Drive
-                    'mimeType': 'text/json', // mimeType at Google Drive
-                    'parents': [`${cameraFolders[0].id}`], // Folder ID at Google Drive
+                    'name': `${timestampToDateTimeString(videoAsset.creationTime)}.geojson`, 
+                    'mimeType': 'text/json',
+                    'parents': [`${cameraFolders[0].id}`],
                 };
-                const uploadResponseGeojsonPost = await uploadGoogleDriveGeojsonFilePost(accessToken, metadata);
-                if(uploadResponseGeojsonPost.status === 200){
+
+                const customUrl = `${GOOGLE_UPLOAD_URL}`;
+                let config = {
+                    method: 'POST',
+                    url: customUrl,
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    data: JSON.stringify(metadata),
+                };
+        
+
+                const uploadResponseGeojsonPost = await axiosUtility(config);
+                if (uploadResponseGeojsonPost.status === 200) {
                     const uploadResponsePut = await uploadGoogleDriveGeojsonFilePut(accessToken, geojson, uploadResponseGeojsonPost.request.responseHeaders.location)
                     return uploadResponsePut;
                 }
-                else{
+                else {
                     throw 'Unable to create file to store GPS Data'
                 }
-              
+
             }
             else {
                 throw 'Dashcam folder not found in Google Drive'
