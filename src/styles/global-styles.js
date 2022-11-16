@@ -24,7 +24,7 @@ const GlobalStyles = StyleSheet.create({
 
     quarterFlex: {
         marginHorizontal: 1,
-        width: '24%',
+        width: '1000%',
     },
 
     textGray: {
