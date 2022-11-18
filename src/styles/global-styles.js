@@ -1,5 +1,5 @@
 import { StyleSheet, Dimensions } from 'react-native';
-
+const windowWidth = Dimensions.get('window').width;
 const main = 'rgb(41, 72, 161)';
 const gray = 'rgb(116, 116, 116)';
 const white = 'rgb(255, 255, 255)';
@@ -24,7 +24,7 @@ const GlobalStyles = StyleSheet.create({
 
     quarterFlex: {
         marginHorizontal: 1,
-        width: '1000%',
+        width: windowWidth*0.22,
     },
 
     textGray: {

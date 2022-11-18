@@ -82,6 +82,8 @@ export default function VideoPlayerScreen({ route, navigation }) {
 
   const shareWithGoogleDrive = async () => {
 
+    //! check internet stuff here
+
     //* Get the video
     const videoAssetData = await FileSystem.readAsStringAsync(videoAsset.uri, {
       encoding: FileSystem.EncodingType.Base64,
@@ -110,6 +112,9 @@ export default function VideoPlayerScreen({ route, navigation }) {
 
   const shareWithSimpleShare = async () => {
     try {
+
+      //! Simple share stuff. Share video with email, etc.
+
       shareAsync([videoAsset.uri]);
     }
     catch (err) {
