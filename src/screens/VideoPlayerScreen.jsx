@@ -205,11 +205,9 @@ export default function VideoPlayerScreen({ route, navigation }) {
   return (
     <ScrollView style={GlobalStyles.container}>
       <View style={[GlobalStyles.divDark, GlobalStyles.header, GlobalStyles.flex2]}>
-        <Text variant='titleLarge' style={GlobalStyles.whiteText}>
-          {video.id}
-        </Text>
-        <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant='labelMedium'>
-          Path: {video.uri}
+        
+        <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant='titleMedium'>
+        Created on: {video.creationTime}
         </Text>
 
       </View>
@@ -231,17 +229,20 @@ export default function VideoPlayerScreen({ route, navigation }) {
 
             <View style={[GlobalStyles.marginYsm]}>
               
-              <Text variant='labelMedium'>
+              {/* <Text variant='labelMedium'>
                 Created: {video.creationTime}
-              </Text>
+              </Text> */}
               
               <Text variant='labelMedium'>
                 Duration: {video.duration}s
               </Text>
 
-              
               <Text variant='labelMedium'>
                 Size: {video.height} x {video.width}
+              </Text>
+
+              <Text variant='labelMedium'>
+                Last Modified: {video.modificationTime}
               </Text>
 
             </View>
