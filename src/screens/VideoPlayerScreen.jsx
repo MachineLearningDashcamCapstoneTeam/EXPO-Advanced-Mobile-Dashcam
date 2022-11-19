@@ -230,23 +230,16 @@ export default function VideoPlayerScreen({ route, navigation }) {
             />
 
             <View style={[GlobalStyles.marginYsm]}>
-              <Text variant='labelMedium'>
-                Album Id: {video.albumId}
-              </Text>
-
+              
               <Text variant='labelMedium'>
                 Created: {video.creationTime}
               </Text>
-              <Text variant='labelMedium'>
-                Modified: {video.modificationTime}
-              </Text>
+              
               <Text variant='labelMedium'>
                 Duration: {video.duration}s
               </Text>
 
-              <Text variant='labelMedium'>
-                Media Type: {video.mediaType}
-              </Text>
+              
               <Text variant='labelMedium'>
                 Size: {video.height} x {video.width}
               </Text>

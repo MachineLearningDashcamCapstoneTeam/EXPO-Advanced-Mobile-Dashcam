@@ -158,25 +158,7 @@ const CameraScreen = ({ navigation }) => {
     <View style={GlobalStyles.container}>
       <View style={[GlobalStyles.rowSpaceEven, GlobalStyles.divBlack]}>
         
-        {/* Nuke this stuff <IconButton
-          icon={'cog'}
-          iconColor={MD3Colors.neutral100}
-          size={22}
-          onPress={() => navigation.goBack()}
-        />
-
-        <IconButton
-          icon={'format-list-bulleted'}
-          iconColor={MD3Colors.neutral100}
-          size={22}
-          onPress={() => navigation.goBack()}
-        />
-        <IconButton
-          icon={'help-circle-outline'}
-          iconColor={MD3Colors.neutral100}
-          size={22}
-          onPress={() => navigation.goBack()}
-        /> */}
+        
       </View>
       <Camera zoom={settings.zoomLevel} style={[GlobalStyles.camera, GlobalStyles.flex6]} ref={cameraRef} onCameraReady={settings.automaticRecording === true ? recordVideo : null} quality={settings.resolution} type={settings.cameraType === 'Back' ? CameraType.back : CameraType.front} >
 
