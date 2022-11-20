@@ -250,7 +250,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
             <View style={[GlobalStyles.rowContainerWrap, GlobalStyles.marginYsm]}>
               <View style={GlobalStyles.buttonContainer}>
 
-                <LockButton savedFavoriteVideosIds={savedFavoriteVideosIds} videoAsset={video} deleteVideoFromFavoriteVideos={deleteVideoFromFavoriteVideos} saveVideoToSavedVideoIds={saveVideoToSavedVideoIds} />
+                <LockButton  savedFavoriteVideosIds={savedFavoriteVideosIds} videoAsset={video} deleteVideoFromFavoriteVideos={deleteVideoFromFavoriteVideos} saveVideoToSavedVideoIds={saveVideoToSavedVideoIds} />
 
               </View>
               <View style={GlobalStyles.buttonContainer}>
