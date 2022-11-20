@@ -7,7 +7,8 @@ import { shareAsync } from 'expo-sharing';
 import * as MediaLibrary from 'expo-media-library';
 import * as Location from 'expo-location';
 import * as FileSystem from 'expo-file-system';
-import { ALBUM_NAME, CAMERA_IMG, DEFAULT_CAMERA_SETTINGS } from '../constants';
+import { ALBUM_NAME, DEFAULT_CAMERA_SETTINGS } from '../constants';
+import CAMERA_IMG from'../../assets/header-alt.jpg';
 import { gpsJsonToGeojson } from '../utils/geojson-utils';
 import { Button, Text, Snackbar, IconButton, MD3Colors, Avatar } from 'react-native-paper';
 import { useKeepAwake, activateKeepAwake, deactivateKeepAwake } from 'expo-keep-awake';
@@ -189,7 +190,7 @@ const CameraScreen = ({ navigation }) => {
       <View style={[GlobalStyles.rowSpaceEven, GlobalStyles.divBlack, GlobalStyles.flex1]}>
         <View style={[GlobalStyles.divCenter, GlobalStyles.container]}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Avatar.Image size={45} source={{ uri: CAMERA_IMG }} />
+            <Avatar.Image size={45} source={ CAMERA_IMG } />
           </TouchableOpacity>
         </View>
         <IconButton

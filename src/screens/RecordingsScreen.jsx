@@ -2,8 +2,7 @@ import { Card, Button, Text, DataTable } from 'react-native-paper';
 import { View, ScrollView, Alert } from 'react-native';
 import { useEffect, useState, useContext } from 'react';
 import * as MediaLibrary from 'expo-media-library';
-import { ALBUM_NAME } from '../constants';
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import { ALBUM_NAME , AMD_SETTINGS} from '../constants';
 import { groupByTime, sortByLengthShortToLong, sortByLengthLongToShort, sortByTimeRecentToOldest, sortByTimeOldestToRecent } from '../utils/sorting-video-assets';
 import { getDashcamVideos, deleteGoogleDriveFile } from '../services/googleDriveService';
 import { AccessContext } from '../context/accessTokenContext';
@@ -11,7 +10,6 @@ import { AccessContext } from '../context/accessTokenContext';
 import GoogleVideoCard from '../widget/googleVideoCard';
 import GlobalStyles from '../styles/global-styles';
 import LocalVideoCard from '../widget/localVideoCard';
-import { timeStampToDate } from '../utils/fetch-time';
 
 export default function RecordingsScreen({ navigation }) {
   const { accessTokenContextValue, setAccessTokenContextValue } = useContext(AccessContext);

@@ -9,7 +9,7 @@ import { DEFAULT_CAMERA_SETTINGS, GOOGLE_CONFIG } from '../constants';
 import { getGoogleUserInfo } from '../services/googleService';
 
 import { AccessContext } from '../context/accessTokenContext';
-import { HEADER_IMG } from '../constants/index';
+import HEADER_IMG  from'../../assets/header.jpg';
 import GlobalStyles from '../styles/global-styles';
 import UserCard from '../widget/userCard';
 import CloudCard from '../widget/cloudCard';
@@ -81,7 +81,7 @@ function HomeScreen({ navigation }) {
   return (
     <View style={GlobalStyles.container}>
 
-      <Image blurRadius={1} source={{ uri: HEADER_IMG }} style={[GlobalStyles.header, GlobalStyles.flex2]} />
+      <Image blurRadius={1} source={HEADER_IMG} style={[GlobalStyles.header, GlobalStyles.flex2]} />
 
       <View style={[GlobalStyles.divWhite, GlobalStyles.marginYsm, GlobalStyles.divSpaceBetween, GlobalStyles.flex3]}>
 

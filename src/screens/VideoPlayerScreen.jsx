@@ -5,7 +5,6 @@ import { Card, Button, Title, Text } from 'react-native-paper';
 import { Video } from 'expo-av';
 import { timeStampToDate } from '../utils/fetch-time';
 import { shareAsync } from 'expo-sharing';
-import { DEFAULT_CAMERA_SETTINGS } from '../constants';
 import * as FileSystem from 'expo-file-system';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import GlobalStyles from '../styles/global-styles';
@@ -14,6 +13,7 @@ import { uploadDashcamVideos, uploadGoogleDriveFile } from '../services/googleDr
 import { AccessContext } from '../context/accessTokenContext';
 import { useContext } from 'react';
 import NetInfo from "@react-native-community/netinfo";
+import { DEFAULT_CAMERA_SETTINGS, ALBUM_NAME , AMD_SETTINGS, FAVORITE_VIDEOS_IDS} from '../constants';
 
 export default function VideoPlayerScreen({ route, navigation }) {
   const { accessTokenContextValue, setAccessTokenContextValue } = useContext(AccessContext);
@@ -35,12 +35,15 @@ export default function VideoPlayerScreen({ route, navigation }) {
       loadFavorites();
       setInitialValues();
     }
+    else{
+      Alert.alert('Media Library Permission is not granted')
+    }
   }
 
   const setInitialValues = async () => {
 
     try {
-      let tempSettings = await AsyncStorage.getItem('AMD_Settings')
+      let tempSettings = await AsyncStorage.getItem(AMD_SETTINGS)
       tempSettings = JSON.parse(tempSettings)
       if (tempSettings && Object.keys(tempSettings).length >= 1 && Object.getPrototypeOf(tempSettings) === Object.prototype) {
         setSettings(tempSettings);
@@ -49,21 +52,12 @@ export default function VideoPlayerScreen({ route, navigation }) {
         setSettings(DEFAULT_CAMERA_SETTINGS);
       }
 
-      setVideoSDetails();
+      setVideo(videoAsset);
     } catch (err) {
       Alert.alert('Unable to load Settings')
     }
   };
 
-  const setVideoSDetails = () => {
-
-    let tempVideo = videoAsset;
-    tempVideo.duration = tempVideo.duration.toFixed(2);
-    tempVideo.creationTime = timeStampToDate(tempVideo.creationTime)
-    tempVideo.modificationTime = timeStampToDate(tempVideo.modificationTime)
-    setVideo(tempVideo);
-
-  }
 
   useEffect(() => {
     setPermissions();
@@ -72,7 +66,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
 
   const loadFavorites = async () => {
     //* Load Favorite videos
-    const tempSavedFavoriteVideosIds = await AsyncStorage.getItem('FavoriteVideosIds');
+    const tempSavedFavoriteVideosIds = await AsyncStorage.getItem(FAVORITE_VIDEOS_IDS);
     if (tempSavedFavoriteVideosIds && tempSavedFavoriteVideosIds !== null) {
       const tempSavedFavoriteVideosIdsArray = JSON.parse(tempSavedFavoriteVideosIds)
       setSavedFavoriteVideosIds([...tempSavedFavoriteVideosIdsArray]);
@@ -207,7 +201,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
       <View style={[GlobalStyles.divDark, GlobalStyles.header, GlobalStyles.flex2]}>
         
         <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant='titleMedium'>
-        Created on: {video.creationTime}
+          Created on: {timeStampToDate(video.creationTime)}
         </Text>
 
       </View>
@@ -229,10 +223,6 @@ export default function VideoPlayerScreen({ route, navigation }) {
 
             <View style={[GlobalStyles.marginYsm]}>
               
-              {/* <Text variant='labelMedium'>
-                Created: {video.creationTime}
-              </Text> */}
-              
               <Text variant='labelMedium'>
                 Duration: {video.duration}s
               </Text>
@@ -242,7 +232,12 @@ export default function VideoPlayerScreen({ route, navigation }) {
               </Text>
 
               <Text variant='labelMedium'>
-                Last Modified: {video.modificationTime}
+                Created on: {timeStampToDate(video.creationTime)}
+              </Text>
+
+
+              <Text variant='labelMedium'>
+                Last Modified: {timeStampToDate(video.modificationTime)}
               </Text>
 
             </View>
