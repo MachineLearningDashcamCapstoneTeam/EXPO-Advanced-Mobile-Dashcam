@@ -1,8 +1,8 @@
-import { Card, Button, Text, DataTable } from 'react-native-paper';
+import { Card, Button, Text, DataTable, List, Searchbar } from 'react-native-paper';
 import { View, ScrollView, Alert } from 'react-native';
 import { useEffect, useState, useContext } from 'react';
 import * as MediaLibrary from 'expo-media-library';
-import { ALBUM_NAME , AMD_SETTINGS} from '../constants';
+import { ALBUM_NAME, AMD_SETTINGS } from '../constants';
 import { groupByTime, sortByLengthShortToLong, sortByLengthLongToShort, sortByTimeRecentToOldest, sortByTimeOldestToRecent } from '../utils/sorting-video-assets';
 import { getDashcamVideos, deleteGoogleDriveFile } from '../services/googleDriveService';
 import { AccessContext } from '../context/accessTokenContext';
@@ -15,6 +15,9 @@ export default function RecordingsScreen({ navigation }) {
   const { accessTokenContextValue, setAccessTokenContextValue } = useContext(AccessContext);
   const [selectedMenu, setSelectedMenu] = useState(0);
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const onChangeSearch = query => setSearchQuery(query);
 
   //* Local Videos, favorites, and Google Drive Files
   const [videos, setVideos] = useState([]);
@@ -119,55 +122,54 @@ export default function RecordingsScreen({ navigation }) {
       Alert.alert("Deleted video from Google Drive");
     }
   }
+
+
+
+  const renderListItem = (key, value) =>{
+    const titleMessage = `${key}  ${value.length} video(s)`
+    if (titleMessage.includes(searchQuery)) {
+      return <View key={key}>
+        <List.Accordion
+         style={[ GlobalStyles.divWhite]}
+          title={titleMessage}
+          left={props => <List.Icon {...props} icon="folder" />}>
+          <View style={[GlobalStyles.rowContainerWrap, GlobalStyles.marginYsm]}>
+            {
+              value.map((videoAsset) => (
+                <LocalVideoCard key={videoAsset.id} videoAsset={videoAsset} getInfo={getInfo} />
+              ))
+            }
+          </View>
+        </List.Accordion>
+
+      </View>
+    }
+    else{
+      return null;
+    }
+  }
+
   const videoWidgets = () => {
     if (selectedMenu === 0) {
       return (
         <View>
-          {/* <Card mode="elevated" style={[GlobalStyles.borderRounded, GlobalStyles.marginYsm]}>
-            <Card.Content>
-              <Text variant='titleLarge' >
-                Filters
-              </Text>
-              <View style={[GlobalStyles.marginYsm]}>
-                <Button style={GlobalStyles.button} icon="filter" mode="contained" onPress={() => resetVideoList()} >Reset</Button>
-              </View>
-            
 
-              <Text variant='labelMedium'>
-                Created Filter
-              </Text>
-              <View style={[GlobalStyles.rowContainerWrap, GlobalStyles.marginYsm]}>
-                <View style={GlobalStyles.buttonContainer}>
-                  <Button style={GlobalStyles.button} icon="filter" mode="outlined" onPress={() => sortByTimeASC()} >Old to New</Button>
-                </View>
-                <View style={GlobalStyles.buttonContainer}>
-                  <Button style={GlobalStyles.button} icon="filter" mode="outlined" onPress={() => sortByTimeDSC()} >New to Old</Button>
-                </View>
-              </View>
-            </Card.Content>
-          </Card> */}
+          <Searchbar
+            placeholder="Search"
+            onChangeText={onChangeSearch}
+            value={searchQuery}
+            style={[GlobalStyles.borderRounded, GlobalStyles.divWhite]}
+          />
 
-          {Object.entries(videos).map(([key, value]) => {
-            return (
-              <View key={key}>
-                <Text variant='titleMedium'>  
-                  {key}
-                </Text>
-                <Text variant='labelMedium' style={[GlobalStyles.textGray]}>
-                {value.length} video(s)
-              </Text>
-                <View style={[GlobalStyles.rowContainerWrap, GlobalStyles.marginYsm]}>
-                  {
-                    value.map((videoAsset) => (
-                      <LocalVideoCard key={videoAsset.id} videoAsset={videoAsset} getInfo={getInfo} />
-                    ))
-                  }
-                </View>
 
-              </View>
-            );
-          })}
+          <List.Section title="Recordings">
+            {Object.entries(videos).map(([key, value]) => {
+              return (
+                renderListItem(key, value)
+              );
+            })}
 
+          </List.Section>
         </View>
       )
     }

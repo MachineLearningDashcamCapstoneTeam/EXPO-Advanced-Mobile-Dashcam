@@ -8,15 +8,16 @@ import * as MediaLibrary from 'expo-media-library';
 import * as Location from 'expo-location';
 import * as FileSystem from 'expo-file-system';
 import { ALBUM_NAME, DEFAULT_CAMERA_SETTINGS } from '../constants';
-import CAMERA_IMG from'../../assets/header-alt.jpg';
+import CAMERA_IMG from '../../assets/header-alt.jpg';
 import { gpsJsonToGeojson } from '../utils/geojson-utils';
 import { Button, Text, Snackbar, IconButton, MD3Colors, Avatar } from 'react-native-paper';
 import { useKeepAwake, activateKeepAwake, deactivateKeepAwake } from 'expo-keep-awake';
 import GlobalStyles from '../styles/global-styles';
 import ErrorCameraCard from '../widget/errorCameraCard';
+import { useIsFocused } from '@react-navigation/native';
 
 const CameraScreen = ({ navigation }) => {
-
+  const isFocused = useIsFocused()
   useKeepAwake();
   let cameraRef = useRef();
   const [snackBarVisible, setSnackBarVisible] = useState(false);
@@ -138,9 +139,12 @@ const CameraScreen = ({ navigation }) => {
       setHasLocationPermission(null);
       setIsRecording(false);
       setVideo(null);
+      setSettings(DEFAULT_CAMERA_SETTINGS);
       //* Deactivate keep awake so the system never keeps running
       deactivateKeepAwake();
+      cameraRef = null;
       unsubscribe;
+
     };
   }, []);
   //* If the application does not have permission, show an error
@@ -157,68 +161,75 @@ const CameraScreen = ({ navigation }) => {
 
   return (
     <View style={GlobalStyles.container}>
-      <View style={[GlobalStyles.rowSpaceEven, GlobalStyles.divBlack]}>
-        
-        
-      </View>
-      <Camera zoom={settings.zoomLevel} style={[GlobalStyles.camera, GlobalStyles.flex6]} ref={cameraRef} onCameraReady={settings.automaticRecording === true ? recordVideo : null} quality={settings.resolution} type={settings.cameraType === 'Back' ? CameraType.back : CameraType.front} >
+      {isFocused && <View style={GlobalStyles.container}>
+        <View style={[GlobalStyles.rowSpaceEven, GlobalStyles.divBlack]}>
 
-
-        <View></View>
-        <View style={[GlobalStyles.borderRounded, GlobalStyles.rowSpaceEven, GlobalStyles.divBlackTrans]}>
-          <Button labelStyle={{ color: settings.zoomLevel != 0 ? "white" : 'black' }}
-            mode={settings.zoomLevel === 0 ? "elevated" : 'outline'}
-            onPress={() => updateSetting({ 'zoomLevel': 0 })}>
-            1x
-          </Button>
-          <Button labelStyle={{ color: settings.zoomLevel != 0.5 ? "white" : 'black' }}
-            mode={settings.zoomLevel === 0.5 ? "elevated" : 'outline'}
-            onPress={() => updateSetting({ 'zoomLevel': 0.5 })}>
-            3x
-          </Button>
-          <Button style={GlobalStyles.button}
-            labelStyle={{ color: settings.zoomLevel != 1 ? "white" : 'black' }}
-            mode={settings.zoomLevel === 1 ? "elevated" : 'outline'}
-            onPress={() => updateSetting({ 'zoomLevel': 1 })}>
-            10x
-          </Button>
 
         </View>
-      </Camera>
+        <Camera zoom={settings.zoomLevel} style={[GlobalStyles.camera, GlobalStyles.flex6]} ref={cameraRef} onCameraReady={settings.automaticRecording === true ? recordVideo : null} quality={settings.resolution} type={settings.cameraType === 'Back' ? CameraType.back : CameraType.front} >
 
 
-      <View style={[GlobalStyles.rowSpaceEven, GlobalStyles.divBlack, GlobalStyles.flex1]}>
-        <View style={[GlobalStyles.divCenter, GlobalStyles.container]}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Avatar.Image size={45} source={ CAMERA_IMG } />
-          </TouchableOpacity>
-        </View>
-        <IconButton
-          icon={isRecording ? 'record' : 'record'}
-          iconColor={isRecording ? MD3Colors.error50 : MD3Colors.neutral100}
-          size={isRecording ? 100 : 100}
-          onPress={isRecording ? stopRecording : recordVideo}
-        />
-        <View style={[GlobalStyles.divCenter, GlobalStyles.container]}>
+          <View></View>
+          <View style={[GlobalStyles.borderRounded, GlobalStyles.rowSpaceEven, GlobalStyles.divBlackTrans]}>
+            <Button labelStyle={{ color: settings.zoomLevel != 0 ? "white" : 'black' }}
+              mode={settings.zoomLevel === 0 ? "elevated" : 'outline'}
+              onPress={() => updateSetting({ 'zoomLevel': 0 })}>
+              1x
+            </Button>
+            <Button labelStyle={{ color: settings.zoomLevel != 0.5 ? "white" : 'black' }}
+              mode={settings.zoomLevel === 0.5 ? "elevated" : 'outline'}
+              onPress={() => updateSetting({ 'zoomLevel': 0.5 })}>
+              3x
+            </Button>
+            <Button style={GlobalStyles.button}
+              labelStyle={{ color: settings.zoomLevel != 1 ? "white" : 'black' }}
+              mode={settings.zoomLevel === 1 ? "elevated" : 'outline'}
+              onPress={() => updateSetting({ 'zoomLevel': 1 })}>
+              10x
+            </Button>
+
+          </View>
+        </Camera>
+
+
+        <View style={[GlobalStyles.rowSpaceEven, GlobalStyles.divBlack, GlobalStyles.flex1]}>
+          <View style={[GlobalStyles.divCenter, GlobalStyles.container]}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Avatar.Image size={45} source={CAMERA_IMG} />
+            </TouchableOpacity>
+          </View>
           <IconButton
-            icon={settings.cameraType === 'Back' ? 'orbit-variant' : 'orbit-variant'}
-            iconColor={MD3Colors.neutral100}
-            size={40}
-            onPress={() => { settings.cameraType === 'Back' ? updateSetting({ 'cameraType': 'Front' }) : updateSetting({ 'cameraType': 'Back' }) }}
+            icon={isRecording ? 'record' : 'record'}
+            iconColor={isRecording ? MD3Colors.error50 : MD3Colors.neutral100}
+            size={isRecording ? 100 : 100}
+            onPress={isRecording ? stopRecording : recordVideo}
           />
+          <View style={[GlobalStyles.divCenter, GlobalStyles.container]}>
+            <IconButton
+              icon={settings.cameraType === 'Back' ? 'orbit-variant' : 'orbit-variant'}
+              iconColor={MD3Colors.neutral100}
+              size={40}
+              onPress={() => { settings.cameraType === 'Back' ? updateSetting({ 'cameraType': 'Front' }) : updateSetting({ 'cameraType': 'Back' }) }}
+            />
+          </View>
         </View>
-      </View>
-      <Snackbar
-        visible={snackBarVisible}
-        onDismiss={() => setSnackBarVisible(false)}
-        duration={3000}
-        action={{
-          label: 'Close',
-        }}>
-        Recording Started
-      </Snackbar>
+        <Snackbar
+          visible={snackBarVisible}
+          onDismiss={() => setSnackBarVisible(false)}
+          duration={3000}
+          action={{
+            label: 'Close',
+          }}>
+          Recording Started
+        </Snackbar>
+
+
+      </View>}
+
+
+
     </View>
   );
-}
+};
 
 export default CameraScreen;
