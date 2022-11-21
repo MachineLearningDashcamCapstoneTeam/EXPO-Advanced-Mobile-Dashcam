@@ -1,9 +1,25 @@
-import { timeStampToDate } from './fetch-time';
+import { timeStampToDate , googleDriveFileTimestampToData} from './fetch-time';
 
 export const groupByTime = (video_array) => {
     try {
         let temp_array = video_array.reduce((r, a) => {
             let dateTime = timeStampToDate(a.creationTime);
+            r[dateTime] = [...r[dateTime] || [], a];
+            return r;
+        }, {});
+
+        return temp_array;
+    }
+    catch(err){
+       console.log(err);
+    }
+
+}
+
+export const groupGoogleFilesByTime = (video_array) => {
+    try {
+        let temp_array = video_array.reduce((r, a) => {
+            let dateTime =  googleDriveFileTimestampToData(a.createdTime);
             r[dateTime] = [...r[dateTime] || [], a];
             return r;
         }, {});

@@ -17,7 +17,7 @@ const GoogleVideoCard = ({ file, deleteDriveFile }) => {
             <Card.Cover source={{ uri: file.thumbnailLink }} style={[GlobalStyles.borderRounded]} />
             <Card.Content>
                 <View style={[GlobalStyles.marginYsm]}>
-                    <Text variant='titleMedium'>Trip - {file.createdTime}</Text>
+                    
                     <Text variant='labelMedium'>
                         Created: {file.createdTime}
                     </Text>
@@ -29,7 +29,7 @@ const GoogleVideoCard = ({ file, deleteDriveFile }) => {
                         Size: {calculateFileSizeString( file.size)}
                     </Text>
                 </View>
-                <View style={[GlobalStyles.rowContainer, GlobalStyles.marginYsm]}>
+                <View style={[GlobalStyles.rowContainerWrap, GlobalStyles.marginYsm]}>
                     <View style={GlobalStyles.buttonContainer}>
                         <Button style={[GlobalStyles.buttonMain, GlobalStyles.button]} icon="eye" mode="contained" onPress={openBrowser} >View</Button>
                     </View>
@@ -39,7 +39,7 @@ const GoogleVideoCard = ({ file, deleteDriveFile }) => {
                 </View>
                 <View style={[GlobalStyles.divLine, GlobalStyles.marginYsm]} />
                 <View style={[GlobalStyles.marginYsm]}>
-                    <Button style={GlobalStyles.button} icon="delete" mode="outlined" onPress={() => deleteDriveFile(file)} > Delete</Button>
+                    <Button style={[GlobalStyles.buttonDangerOutline]} icon="delete" mode="outlined" onPress={() => deleteDriveFile(file)} > Delete</Button>
                 </View>
             </Card.Content>
         </Card>

@@ -1,12 +1,11 @@
 import { Card, Button, Text, DataTable, List, Searchbar } from 'react-native-paper';
-import { View, ScrollView, Alert } from 'react-native';
+import { View, ScrollView, Alert, Image } from 'react-native';
 import { useEffect, useState, useContext } from 'react';
 import * as MediaLibrary from 'expo-media-library';
 import { ALBUM_NAME, AMD_SETTINGS } from '../constants';
-import { groupByTime, sortByLengthShortToLong, sortByLengthLongToShort, sortByTimeRecentToOldest, sortByTimeOldestToRecent } from '../utils/sorting-video-assets';
+import { groupByTime, groupGoogleFilesByTime, sortByLengthShortToLong, sortByLengthLongToShort, sortByTimeRecentToOldest, sortByTimeOldestToRecent } from '../utils/sorting-video-assets';
 import { getDashcamVideos, deleteGoogleDriveFile } from '../services/googleDriveService';
 import { AccessContext } from '../context/accessTokenContext';
-
 import GoogleVideoCard from '../widget/googleVideoCard';
 import GlobalStyles from '../styles/global-styles';
 import LocalVideoCard from '../widget/localVideoCard';
@@ -110,12 +109,17 @@ export default function RecordingsScreen({ navigation }) {
   const getDriveFiles = async () => {
     const response = await getDashcamVideos(accessTokenContextValue);
     if (response.status === 200) {
-      setGoogleDriveFiles(response.data.files)
+      let tempList = response.data.files;
+      tempList = tempList.filter((videoFile) => videoFile.fileExtension === "MP4" || videoFile.fileExtension === "mp4");
+      const groupedArray = groupGoogleFilesByTime(tempList);
+      setGoogleDriveFiles(groupedArray)
+
     }
   };
   const deleteDriveFile = async (file) => {
     const response = await deleteGoogleDriveFile(accessTokenContextValue, file.id);
     if (response.status === 204) {
+      
       let tempList = googleDriveFiles;
       tempList = tempList.filter(item => item.id !== file.id);
       setGoogleDriveFiles([...tempList])
@@ -125,12 +129,38 @@ export default function RecordingsScreen({ navigation }) {
 
 
 
-  const renderListItem = (key, value) =>{
+  const renderGoogleListItem = (key, value) => {
     const titleMessage = `${key}  ${value.length} video(s)`
     if (titleMessage.includes(searchQuery)) {
       return <View key={key}>
         <List.Accordion
-         style={[ GlobalStyles.divWhite]}
+          style={[GlobalStyles.divWhite]}
+          title={titleMessage}
+          left={props => <List.Icon {...props} icon="folder" />}>
+          <View style={[GlobalStyles.rowContainerWrap, GlobalStyles.marginYsm]}>
+            {
+              value.map((file) => (
+                ((file.fileExtension === "MP4" || file.fileExtension === "mp4" || file.fileExtension === 'jpg') &&
+                <GoogleVideoCard key={file.id} file={file} deleteDriveFile={deleteDriveFile} />
+              )
+              ))
+            }
+          </View>
+        </List.Accordion>
+      </View>
+    }
+    else {
+      return null;
+    }
+  }
+
+
+  const renderListItem = (key, value) => {
+    const titleMessage = `${key}  ${value.length} video(s)`
+    if (titleMessage.includes(searchQuery)) {
+      return <View key={key}>
+        <List.Accordion
+          style={[GlobalStyles.divWhite]}
           title={titleMessage}
           left={props => <List.Icon {...props} icon="folder" />}>
           <View style={[GlobalStyles.rowContainerWrap, GlobalStyles.marginYsm]}>
@@ -144,7 +174,7 @@ export default function RecordingsScreen({ navigation }) {
 
       </View>
     }
-    else{
+    else {
       return null;
     }
   }
@@ -153,15 +183,6 @@ export default function RecordingsScreen({ navigation }) {
     if (selectedMenu === 0) {
       return (
         <View>
-
-          <Searchbar
-            placeholder="Search"
-            onChangeText={onChangeSearch}
-            value={searchQuery}
-            style={[GlobalStyles.borderRounded, GlobalStyles.divWhite]}
-          />
-
-
           <List.Section title="Recordings">
             {Object.entries(videos).map(([key, value]) => {
               return (
@@ -175,12 +196,15 @@ export default function RecordingsScreen({ navigation }) {
     }
     else {
       return (
-        <View style={GlobalStyles.marginYsm}>
-          {googleDriveFiles.map((file) =>
-          ((file.fileExtension === "MP4" || file.fileExtension === "mp4" || file.fileExtension === 'jpg') &&
-            <GoogleVideoCard key={file.id} file={file} deleteDriveFile={deleteDriveFile} />
-          )
-          )}
+        <View>
+          <List.Section title="Google Drive Recordings">
+            {Object.entries(googleDriveFiles).map(([key, value]) => {
+              return (
+                renderGoogleListItem(key, value)
+              );
+            })}
+
+          </List.Section>    
         </View>
       )
     }
@@ -196,7 +220,17 @@ export default function RecordingsScreen({ navigation }) {
           <Button style={GlobalStyles.button} icon="filter" mode="elevated" onPress={() => selectedMenu === 0 ? setSelectedMenu(1) : setSelectedMenu(0)} >{selectedMenu === 0 ? 'Cloud Videos' : 'Local Videos'}</Button>
         }
       </View>
+
+
+
       <View style={GlobalStyles.flex5}>
+
+        <Searchbar
+          placeholder="Search"
+          onChangeText={onChangeSearch}
+          value={searchQuery}
+          style={[GlobalStyles.borderRounded, GlobalStyles.divWhite]}
+        />
         {videoWidgets()}
       </View>
     </ScrollView>

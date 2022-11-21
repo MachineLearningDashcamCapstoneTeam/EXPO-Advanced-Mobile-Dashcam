@@ -7,7 +7,7 @@ const UserCard = ({ user }) => {
   return (
     <View style={[GlobalStyles.divDark, GlobalStyles.attention, GlobalStyles.flex3]}>
 
-      <View style={[GlobalStyles.rowContainer, GlobalStyles.marginYsm]}>
+      <View style={[GlobalStyles.rowContainerWrap, GlobalStyles.marginYsm]}>
         <View style={GlobalStyles.avatarImg}>
           <Avatar.Image style={[GlobalStyles.marginYsm]} size={64} source={{ uri: user.picture }} />
         </View>
