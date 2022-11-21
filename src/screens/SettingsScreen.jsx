@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Card, Button, Title, Text, Snackbar, SegmentedButtons, Divider } from 'react-native-paper';
 import GlobalStyles from '../styles/global-styles';
 import { DEFAULT_CAMERA_SETTINGS } from '../constants';
+import SettingOptionItem from '../widget/settingOptionItem';
 
 export default function SettingsScreen({ navigation }) {
 
@@ -131,7 +132,7 @@ export default function SettingsScreen({ navigation }) {
               Camera Settings
             </Text>
 
-            <View style={[GlobalStyles.marginYsm]}>
+            {/* <View style={[GlobalStyles.marginYsm]}>
               <Text style={[GlobalStyles.paddingBsm]} variant='labelMedium'>
               Load Camera when Application Starts
               </Text>
@@ -140,7 +141,11 @@ export default function SettingsScreen({ navigation }) {
                 onValueChange={(loadCameraWhenApplicationStarts) => updateSetting({ 'loadCameraWhenApplicationStarts': loadCameraWhenApplicationStarts })}
                 buttons={loadCameraWhenApplicationStarts}
               />
-            </View>
+            </View> */}
+
+            <SettingOptionItem title={'load Camera When Application Starts'} settings={settings} settingValue={loadCameraWhenApplicationStarts} settingKey={'loadCameraWhenApplicationStarts'} buttonsArray={loadCameraWhenApplicationStarts}>
+
+            </SettingOptionItem>
 
             <View style={[GlobalStyles.marginYsm]}>
               <Text style={[GlobalStyles.paddingBsm]} variant='labelMedium'>
