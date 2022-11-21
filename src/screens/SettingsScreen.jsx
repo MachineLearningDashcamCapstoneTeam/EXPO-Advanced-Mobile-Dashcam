@@ -85,10 +85,11 @@ export default function SettingsScreen({ navigation }) {
     setInitialValues();
   }, [])
 
-  const updateSetting = (updatedValue) => {
+  const updateSetting = (key, updatedValue) => {
+    console.log (key)
     const tempSettings = {
       ...settings,
-      ...updatedValue
+      ...{key: updatedValue}
     }
     setSettings(tempSettings);
     saveSetting(tempSettings);
@@ -132,16 +133,6 @@ export default function SettingsScreen({ navigation }) {
               Camera Settings
             </Text>
 
-            {/* <View style={[GlobalStyles.marginYsm]}>
-              <Text style={[GlobalStyles.paddingBsm]} variant='labelMedium'>
-              Load Camera when Application Starts
-              </Text>
-              <SegmentedButtons
-                value={settings.loadCameraWhenApplicationStarts}
-                onValueChange={(loadCameraWhenApplicationStarts) => updateSetting({ 'loadCameraWhenApplicationStarts': loadCameraWhenApplicationStarts })}
-                buttons={loadCameraWhenApplicationStarts}
-              />
-            </View> */}
 
             <SettingOptionItem title={'load Camera When Application Starts'} settings={settings} settingValue={loadCameraWhenApplicationStarts} settingKey={'loadCameraWhenApplicationStarts'} buttonsArray={loadCameraWhenApplicationStarts} updateSetting={updateSetting}>
 

@@ -16,7 +16,7 @@ return (
               </Text>
               <SegmentedButtons
                 value={settings[settingKey]}
-                onValueChange={(settingValue) => updateSetting({ settingKey: settingValue })}
+                onValueChange={(settingValue) => updateSetting( settingKey, settingValue )}
                 buttons={buttonsArray}
               />
             </View>
