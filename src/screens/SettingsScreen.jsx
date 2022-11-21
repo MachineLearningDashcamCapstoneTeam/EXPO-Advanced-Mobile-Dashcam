@@ -134,7 +134,7 @@ export default function SettingsScreen({ navigation }) {
             </Text>
 
 
-            <SettingOptionItem title={'load Camera When Application Starts'} settings={settings} settingValue={loadCameraWhenApplicationStarts} settingKey={'loadCameraWhenApplicationStarts'} buttonsArray={loadCameraWhenApplicationStarts} updateSetting={updateSetting}>
+            <SettingOptionItem key={settings} title={'load Camera When Application Starts'} settings={settings} settingValue={loadCameraWhenApplicationStarts} settingKey={'loadCameraWhenApplicationStarts'} buttonsArray={loadCameraWhenApplicationStarts} updateSetting={updateSetting}>
 
             </SettingOptionItem>
 
