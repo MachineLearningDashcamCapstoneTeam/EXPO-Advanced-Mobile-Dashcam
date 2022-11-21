@@ -6,7 +6,7 @@ import { Card, Button, Title, Text, Snackbar, SegmentedButtons, Divider } from '
 import GlobalStyles from '../styles/global-styles';
 import { DEFAULT_CAMERA_SETTINGS } from '../constants';
 
-const SettingOptionItem = ({title, settings, settingValue, settingKey, buttonsArray}) =>  {
+const SettingOptionItem = ({title, settings, settingValue, settingKey, buttonsArray, updateSetting}) =>  {
 
 return ( 
 
