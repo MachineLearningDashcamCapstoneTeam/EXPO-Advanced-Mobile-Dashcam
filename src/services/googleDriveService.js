@@ -4,84 +4,184 @@ import { getObjectsWhereKeyEqualsValue } from '../utils/filter-data';
 import { GOOGLE_FOLDER_URL, GOOGLE_QUERY_URL, GOOGLE_FILE_URL, GOOGLE_UPLOAD_URL } from '../constants';
 import { Buffer } from "buffer";
 import { timestampToDateTimeString } from '../utils/fetch-time';
-import { CONSTANTS } from '@firebase/util';
-
-export const axiosUtility = async (config) => {
-    try {
-        const promise = await axios(config);
-        return promise;
-    } catch (error) {
-        if (error.response) {
-            return error.response.status;
-        } if (error.request) {
-            return error.request;
-        }
-        return error.message;
-    }
-};
 
 export const getGoogleDriveFolders = async (accessToken) => {
     try {
-        const promise = await axios.get(GOOGLE_FOLDER_URL, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        });
-        return promise;
+      const config = {
+        method: 'get',
+        url: GOOGLE_FOLDER_URL,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      };
+      const promise = await axios(config);
+      return promise;
     } catch (error) {
-        if (error.response) {
-            return error.response.status;
-        } if (error.request) {
-            return error.request;
-        }
-        return error.message;
+      if (error.response) {
+        return error.response.status;
+      } if (error.request) {
+        return error.request;
+      }
+      return error.message;
     }
-};
-
-export const getGoogleDriveFiles = async (accessToken, folderId) => {
+  };
+  
+  export const getGoogleDriveFiles = async (accessToken, folderId) => {
     try {
-        const customUrl = `${GOOGLE_QUERY_URL}'${folderId}'+in+parents&trashed=false&fields=files(*)`;
-        const promise = await axios.get(customUrl, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        });
-        return promise;
+      const customUrl = `${GOOGLE_QUERY_URL}'${folderId}'+in+parents&trashed=false&fields=files(*)`;
+      const config = {
+        method: 'get',
+        url: customUrl,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      };
+  
+      const promise = await axios(config);
+      return promise;
     } catch (error) {
-        if (error.response) {
-            return error.response.status;
-        } if (error.request) {
-            return error.request;
-        }
-        return error.message;
+      if (error.response) {
+        return error.response.status;
+      } if (error.request) {
+        return error.request;
+      }
+      return error.message;
     }
-};
-
-//* Using the access token and file url, delete the file
-export const deleteGoogleDriveFile = async (accessToken, fileId) => {
+  };
+  
+  export const verifyAndAddPermissions = async (accessToken, fileId) => {
     try {
-
-        const customUrl = `${GOOGLE_FILE_URL}${fileId}`;
-        let config = {
-            method: 'delete',
-            url: customUrl,
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-                'Content-Type': 'application/json'
-            }
-        };
-
-        return axiosUtility(config);
+      const url = `${GOOGLE_FILE_URL}/${fileId}/permissions`;
+      const data = JSON.stringify({
+        role: 'writer',
+        type: 'anyone',
+      });
+      const config = {
+        method: 'post',
+        url,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        data,
+      };
+      const promise = await axios(config);
+      return promise;
     } catch (error) {
-        if (error.response) {
-            return error.response.status;
-        } if (error.request) {
-            return error.request;
-        }
-        return error.message;
+      if (error.response) {
+        return error.response.status;
+      } if (error.request) {
+        return error.request;
+      }
+      return error.message;
     }
-};
+  };
+  
+  // Using the access token and file url, delete the file
+  export const deleteGoogleDriveFile = async (accessToken, fileId) => {
+    try {
+      const customUrl = `${GOOGLE_FILE_URL}/${fileId}`;
+      const config = {
+        method: 'delete',
+        url: customUrl,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      };
+  
+      const promise = await axios(config);
+      return promise;
+    } catch (error) {
+      if (error.response) {
+        return error.response.status;
+      } if (error.request) {
+        return error.request;
+      }
+      return error.message;
+    }
+  };
 
+
+
+export const getGoogleDriveFile = async (accessToken, fileId) => {
+    try {
+      const customUrl = `${GOOGLE_FILE_URL}/${fileId}`;
+      const config = {
+        method: 'get',
+        url: customUrl,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      };
+      const promise = await axios(config);
+      return promise;
+    } catch (error) {
+      if (error.response) {
+        return error.response.status;
+      } if (error.request) {
+        return error.request;
+      }
+      return error.message;
+    }
+  };
+
+export const createDashcamFolder = async (accessToken) => {
+    try {
+      const config = {
+        method: 'POST',
+        url: GOOGLE_FILE_URL,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        data: JSON.stringify({
+          mimeType: 'application/vnd.google-apps.folder',
+          name: 'Dashcam',
+        }),
+      };
+  
+      const promise = await axios(config);
+      return promise;
+    } catch (error) {
+      if (error.response) {
+        return error.response.status;
+      } if (error.request) {
+        return error.request;
+      }
+      return error.message;
+    }
+  };
+  
+  export const getDashcamVideos = async (accessToken) => {
+    try {
+      const response = await getGoogleDriveFolders(accessToken);
+      if (response.status === 200) {
+        const cameraFolder = getObjectsWhereKeyEqualsValue(response.data.files, 'name', 'Dashcam')[0];
+        if (cameraFolder) {
+          const documentsResponse = await getGoogleDriveFiles(accessToken, cameraFolder.id);
+          return documentsResponse;
+        }
+        const createResponse = await createDashcamFolder(accessToken);
+        if (createResponse === 200) {
+          getDashcamVideos(accessToken);
+        } else {
+          return createResponse;
+        }
+      }
+      return response;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  };
+
+
+
+
+
+  
 
 export const uploadGoogleDriveGeojsonFilePost = async (accessToken, metadata) => {
     try {
@@ -264,24 +364,5 @@ export const uploadDashcamVideos = async (accessToken, videoAsset, videoAssetDat
     }
 }
 
-
-export const getDashcamVideos = async (accessToken) => {
-    try {
-        const response = await getGoogleDriveFolders(accessToken);
-        if (response.status === 200) {
-            const cameraFolders = getObjectsWhereKeyEqualsValue(response.data.files, 'name', 'Dashcam');
-            if (cameraFolders && cameraFolders.length >= 1) {
-                const documentsResponse = await getGoogleDriveFiles(accessToken, cameraFolders[0].id);
-                return documentsResponse;
-            }
-            else {
-                throw 'Dashcam folder not found in Google Drive'
-            }
-        }
-        return response;
-    } catch (error) {
-        return error;
-    }
-};
 
 export default getGoogleDriveFiles;
