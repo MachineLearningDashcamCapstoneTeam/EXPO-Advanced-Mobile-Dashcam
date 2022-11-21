@@ -74,31 +74,36 @@ export default function VideoPlayerScreen({ route, navigation }) {
   }
 
 
-  const shareWithGoogleDrive = async () => {
+  const saveToGoogleDrive = async () => {
 
-    //! check internet stuff here
+    let connection = await NetInfo.fetch();
+    if (connection.type === 'wifi' || settings.allowUploadWithMobileData) {
 
-    //* Get the video
-    const videoAssetData = await FileSystem.readAsStringAsync(videoAsset.uri, {
-      encoding: FileSystem.EncodingType.Base64,
-    });
-    const videoAssetInfo = await FileSystem.getInfoAsync(videoAsset.uri);
+      //* Get the video
+      const videoAssetData = await FileSystem.readAsStringAsync(videoAsset.uri, {
+        encoding: FileSystem.EncodingType.UTF8,
+      });
+      const videoAssetInfo = await FileSystem.getInfoAsync(videoAsset.uri);
 
-    //* Get the text file 
-    const filename = `${FileSystem.documentDirectory}${videoAsset.filename}.txt`;
-    const GeoJSON = await FileSystem.readAsStringAsync(filename, {
-      encoding: FileSystem.EncodingType.UTF8
-    });
+      //* Get the text file 
+      const filename = `${FileSystem.documentDirectory}${videoAsset.filename}.txt`;
+      const GeoJSON = await FileSystem.readAsStringAsync(filename, {
+        encoding: FileSystem.EncodingType.UTF8
+      });
 
 
-    shareAsync(videoAsset.uri);
+      const response = await uploadDashcamVideos(accessTokenContextValue, videoAsset, videoAssetData, GeoJSON)
+      if (response.status === 200) {
+        Alert.alert("Successfully uploaded video to Google Drive");
+      }
+      else {
+        console.log(response)
+        Alert.alert('Unable to upload');
+      }
 
-    const response = uploadDashcamVideos(accessTokenContextValue, videoAsset, videoAssetData, videoAssetInfo.fileSize, GeoJSON)
-    if (response.status === 200) {
-      Alert.alert("Successfully uploaded video to Google Drive");
     }
     else {
-      Alert.alert(response.message);
+      Alert.alert(`You are currently on a ${connection.type}! Your settings only allow uploading on a WIFI network.`);
     }
 
 
@@ -232,7 +237,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
 
             <View style={[GlobalStyles.rowContainerWrap, GlobalStyles.marginYsm]}>
               {accessTokenContextValue && <View style={GlobalStyles.buttonContainer}>
-                <Button style={[GlobalStyles.buttonMain, GlobalStyles.button]} icon="share" mode="contained" onPress={shareVideo} >Save to Google Drive</Button>
+                <Button style={[GlobalStyles.buttonMain, GlobalStyles.button]} icon="share" mode="contained" onPress={saveToGoogleDrive} >Save to Google Drive</Button>
               </View>}
 
               <View style={GlobalStyles.buttonContainer}>

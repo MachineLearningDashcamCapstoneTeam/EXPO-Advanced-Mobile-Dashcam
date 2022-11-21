@@ -4,215 +4,146 @@ import { getObjectsWhereKeyEqualsValue } from '../utils/filter-data';
 import { GOOGLE_FOLDER_URL, GOOGLE_QUERY_URL, GOOGLE_FILE_URL, GOOGLE_UPLOAD_URL } from '../constants';
 import { Buffer } from "buffer";
 import { timestampToDateTimeString } from '../utils/fetch-time';
+import * as mime from 'mime';
 
 export const getGoogleDriveFolders = async (accessToken) => {
     try {
-      const config = {
-        method: 'get',
-        url: GOOGLE_FOLDER_URL,
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      };
-      const promise = await axios(config);
-      return promise;
+        const config = {
+            method: 'get',
+            url: GOOGLE_FOLDER_URL,
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        };
+        const promise = await axios(config);
+        return promise;
     } catch (error) {
-      if (error.response) {
-        return error.response.status;
-      } if (error.request) {
-        return error.request;
-      }
-      return error.message;
+        if (error.response) {
+            return error.response.status;
+        } if (error.request) {
+            return error.request;
+        }
+        return error.message;
     }
-  };
-  
-  export const getGoogleDriveFiles = async (accessToken, folderId) => {
+};
+
+export const getGoogleDriveFiles = async (accessToken, folderId) => {
     try {
-      const customUrl = `${GOOGLE_QUERY_URL}'${folderId}'+in+parents&trashed=false&fields=files(*)`;
-      const config = {
-        method: 'get',
-        url: customUrl,
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      };
-  
-      const promise = await axios(config);
-      return promise;
+        const customUrl = `${GOOGLE_QUERY_URL}'${folderId}'+in+parents&trashed=false&fields=files(*)`;
+        const config = {
+            method: 'get',
+            url: customUrl,
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        };
+
+        const promise = await axios(config);
+        return promise;
     } catch (error) {
-      if (error.response) {
-        return error.response.status;
-      } if (error.request) {
-        return error.request;
-      }
-      return error.message;
+        if (error.response) {
+            return error.response.status;
+        } if (error.request) {
+            return error.request;
+        }
+        return error.message;
     }
-  };
-  
-  export const verifyAndAddPermissions = async (accessToken, fileId) => {
+};
+
+export const verifyAndAddPermissions = async (accessToken, fileId) => {
     try {
-      const url = `${GOOGLE_FILE_URL}/${fileId}/permissions`;
-      const data = JSON.stringify({
-        role: 'writer',
-        type: 'anyone',
-      });
-      const config = {
-        method: 'post',
-        url,
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-        data,
-      };
-      const promise = await axios(config);
-      return promise;
+        const url = `${GOOGLE_FILE_URL}/${fileId}/permissions`;
+        const data = JSON.stringify({
+            role: 'writer',
+            type: 'anyone',
+        });
+        const config = {
+            method: 'post',
+            url,
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                'Content-Type': 'application/json',
+            },
+            data,
+        };
+        const promise = await axios(config);
+        return promise;
     } catch (error) {
-      if (error.response) {
-        return error.response.status;
-      } if (error.request) {
-        return error.request;
-      }
-      return error.message;
+        if (error.response) {
+            return error.response.status;
+        } if (error.request) {
+            return error.request;
+        }
+        return error.message;
     }
-  };
-  
-  // Using the access token and file url, delete the file
-  export const deleteGoogleDriveFile = async (accessToken, fileId) => {
+};
+
+// Using the access token and file url, delete the file
+export const deleteGoogleDriveFile = async (accessToken, fileId) => {
     try {
-      const customUrl = `${GOOGLE_FILE_URL}/${fileId}`;
-      const config = {
-        method: 'delete',
-        url: customUrl,
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-      };
-  
-      const promise = await axios(config);
-      return promise;
+        const customUrl = `${GOOGLE_FILE_URL}/${fileId}`;
+        const config = {
+            method: 'delete',
+            url: customUrl,
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                'Content-Type': 'application/json',
+            },
+        };
+
+        const promise = await axios(config);
+        return promise;
     } catch (error) {
-      if (error.response) {
-        return error.response.status;
-      } if (error.request) {
-        return error.request;
-      }
-      return error.message;
+        if (error.response) {
+            return error.response.status;
+        } if (error.request) {
+            return error.request;
+        }
+        return error.message;
     }
-  };
+};
 
 
 
 export const getGoogleDriveFile = async (accessToken, fileId) => {
     try {
-      const customUrl = `${GOOGLE_FILE_URL}/${fileId}`;
-      const config = {
-        method: 'get',
-        url: customUrl,
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-      };
-      const promise = await axios(config);
-      return promise;
+        const customUrl = `${GOOGLE_FILE_URL}/${fileId}`;
+        const config = {
+            method: 'get',
+            url: customUrl,
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                'Content-Type': 'application/json',
+            },
+        };
+        const promise = await axios(config);
+        return promise;
     } catch (error) {
-      if (error.response) {
-        return error.response.status;
-      } if (error.request) {
-        return error.request;
-      }
-      return error.message;
+        if (error.response) {
+            return error.response.status;
+        } if (error.request) {
+            return error.request;
+        }
+        return error.message;
     }
-  };
+};
 
 export const createDashcamFolder = async (accessToken) => {
     try {
-      const config = {
-        method: 'POST',
-        url: GOOGLE_FILE_URL,
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-        data: JSON.stringify({
-          mimeType: 'application/vnd.google-apps.folder',
-          name: 'Dashcam',
-        }),
-      };
-  
-      const promise = await axios(config);
-      return promise;
-    } catch (error) {
-      if (error.response) {
-        return error.response.status;
-      } if (error.request) {
-        return error.request;
-      }
-      return error.message;
-    }
-  };
-  
-  export const getDashcamVideos = async (accessToken) => {
-    try {
-      const response = await getGoogleDriveFolders(accessToken);
-      if (response.status === 200) {
-        const cameraFolder = getObjectsWhereKeyEqualsValue(response.data.files, 'name', 'Dashcam')[0];
-        if (cameraFolder) {
-          const documentsResponse = await getGoogleDriveFiles(accessToken, cameraFolder.id);
-          return documentsResponse;
-        }
-        const createResponse = await createDashcamFolder(accessToken);
-        if (createResponse === 200) {
-          getDashcamVideos(accessToken);
-        } else {
-          return createResponse;
-        }
-      }
-      return response;
-    } catch (error) {
-      console.log(error);
-      return error;
-    }
-  };
-
-
-
-
-
-  
-
-export const uploadGoogleDriveGeojsonFilePost = async (accessToken, metadata) => {
-    try {
-      
-        return axiosUtility(config);
-
-    } catch (error) {
-        if (error.response) {
-            return error.response.status;
-        } if (error.request) {
-            return error.request;
-        }
-        return error.message;
-    }
-}
-
-
-export const uploadGoogleDriveGeojsonFilePut = async (accessToken, geojson, location) => {
-    try {
-        const data = Buffer.from(geojson);
-        const fileSize = data.length;
-        const promise = await axios({
-            method: "PUT",
-            url: location,
+        const config = {
+            method: 'POST',
+            url: GOOGLE_FILE_URL,
             headers: {
                 Authorization: `Bearer ${accessToken}`,
-                "Content-Length": `bytes ${fileSize}`
+                'Content-Type': 'application/json',
             },
-            data: data,
-        });
+            data: JSON.stringify({
+                mimeType: 'application/vnd.google-apps.folder',
+                name: 'Dashcam',
+            }),
+        };
 
+        const promise = await axios(config);
         return promise;
     } catch (error) {
         if (error.response) {
@@ -222,139 +153,117 @@ export const uploadGoogleDriveGeojsonFilePut = async (accessToken, geojson, loca
         }
         return error.message;
     }
-}
+};
 
-export const uploadGoogleDriveVideoFilePost = async (accessToken, metadata) => {
-    try {
-
-        const promise = await axios({
-            method: "POST",
-            url: GOOGLE_UPLOAD_URL,
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-                "Content-Type": "application/json",
-            },
-            data: JSON.stringify(metadata),
-        });
-
-        return promise;
-    } catch (error) {
-        if (error.response) {
-            return error.response.status;
-        } if (error.request) {
-            return error.request;
-        }
-        return error.message;
-    }
-}
-
-
-export const simpleUpload = async (accessToken, videoAssetData, fileSize) => {
-    try {
-
-        const promise = await axios({
-            method: "POST",
-            url: 'https://www.googleapis.com/upload/drive/v3/files?uploadType=media',
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-                'Content-Type': 'video/mp4',
-                "Content-Length": `bytes ${fileSize}`,
-            },
-            data: videoAssetData,
-        })
-
-        return promise;
-    } catch (error) {
-        if (error.response) {
-            return error.response.status;
-        } if (error.request) {
-            return error.request;
-        }
-        return error.message;
-    }
-}
-
-
-export const uploadGoogleDriveVideoFilePut = async (accessToken, videoAssetData, fileSize, location) => {
-    try {
-
-        const promise = await axios({
-            method: "PUT",
-            url: location,
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-                'Content-Type': 'video/mp4',
-                "Content-Length": `bytes ${fileSize}`,
-            },
-            data: videoAssetData,
-        })
-
-        return promise;
-    } catch (error) {
-        if (error.response) {
-            return error.response.status;
-        } if (error.request) {
-            return error.request;
-        }
-        return error.message;
-    }
-}
-
-export const uploadDashcamVideos = async (accessToken, videoAsset, videoAssetData, fileSize, geojson) => {
+export const getDashcamVideos = async (accessToken) => {
     try {
         const response = await getGoogleDriveFolders(accessToken);
         if (response.status === 200) {
-            const cameraFolders = getObjectsWhereKeyEqualsValue(response.data.files, 'name', 'Dashcam');
+            const cameraFolder = getObjectsWhereKeyEqualsValue(response.data.files, 'name', 'Dashcam')[0];
+            if (cameraFolder) {
+                const documentsResponse = await getGoogleDriveFiles(accessToken, cameraFolder.id);
+                return documentsResponse;
+            }
+            const createResponse = await createDashcamFolder(accessToken);
+            if (createResponse === 200) {
+                getDashcamVideos(accessToken);
+            } else {
+                return createResponse;
+            }
+        }
+        return response;
+    } catch (error) {
+        console.log(error);
+        return error;
+    }
+};
 
-            if (cameraFolders && cameraFolders.length >= 1) {
 
-                // const res = await simpleUpload(accessToken, videoAssetData, fileSize)
 
-                // let videoMetaData = {
-                //     'name': `${timestampToDateTimeString(videoAsset.creationTime)}.mp4`, // Filename at Google Drive
-                //     'mimeType': 'video/mp4', // mimeType at Google Drive
-                //     'parents': [`${cameraFolders[0].id}`], // Folder ID at Google Drive
+export const uploadDashcamVideos = async (accessToken, videoAsset, videoAssetData, geojson) => {
+    try {
+        const response = await getGoogleDriveFolders(accessToken);
+        if (response.status === 200) {
+            const cameraFolder = getObjectsWhereKeyEqualsValue(response.data.files, 'name', 'Dashcam')[0];
+            if (cameraFolder) {
+                const mimeType = mime.getType(videoAsset) 
+                console.log(videoAssetData);
+
+           
+                // //* Prepare the Video Data
+                // let videoData = {
+                //     'name': `${timestampToDateTimeString(videoAsset.creationTime)}.mp4`,
+                //     'mimeType': 'video/mp4',
+                //     'parents': [`${cameraFolder.id}`],
                 // };
-                // const uploadResponseVideoPost = await uploadGoogleDriveVideoFilePost(accessToken, videoMetaData);
 
-                // if(uploadResponseVideoPost.status === 200){
-                //     console.log('test test test')
-                //     const uploadResponseVideoPut = await uploadGoogleDriveVideoFilePut(accessToken,videoAssetData, fileSize, uploadResponseVideoPost.request.responseHeaders.location)
-                //     console.log(uploadResponseVideoPut)
-                // }
+                // //* Create Resumable Post
+                // const uploadResponseVideoPost = await axios({
+                //     method: 'POST',
+                //     url: GOOGLE_UPLOAD_URL,
+                //     headers: {
+                //         Authorization: `Bearer ${accessToken}`,
+                //         'Content-Type': 'application/json'
+                //     },
+                //     data: JSON.stringify(videoData),
+                // });
+                // const videoLocation = uploadResponseVideoPost.request.responseHeaders.location;
 
 
-                //* Prepare the Geojson File
-                let metadata = {
-                    'name': `${timestampToDateTimeString(videoAsset.creationTime)}.geojson`, 
+                // const uploadResponseVideoPut = await axios({
+                //     method: "PUT",
+                //     url: videoLocation,
+                //     headers: {
+                //         Authorization: `Bearer ${accessToken}`,
+                //         "Content-Length": `bytes ${videoAssetData.length}`
+                //     },
+                //     data: videoAssetData,
+                // });
+              
+                // console.log(uploadResponseVideoPut);
+
+         
+               
+
+                //* Prepare the Geojson Data
+                let geojsonData = {
+                    'name': `${timestampToDateTimeString(videoAsset.creationTime)}.geojson`,
                     'mimeType': 'text/json',
-                    'parents': [`${cameraFolders[0].id}`],
+                    'parents': [`${cameraFolder.id}`],
                 };
 
-                const customUrl = `${GOOGLE_UPLOAD_URL}`;
-                let config = {
+                //* Create Resumable Post
+                const uploadResponseGeojsonPost = await axios({
                     method: 'POST',
-                    url: customUrl,
+                    url: GOOGLE_UPLOAD_URL,
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                         'Content-Type': 'application/json'
                     },
-                    data: JSON.stringify(metadata),
-                };
-        
+                    data: JSON.stringify(geojsonData),
+                });
+                const geojsonLocation = uploadResponseGeojsonPost.request.responseHeaders.location;
 
-                const uploadResponseGeojsonPost = await axiosUtility(config);
-                if (uploadResponseGeojsonPost.status === 200) {
-                    const uploadResponsePut = await uploadGoogleDriveGeojsonFilePut(accessToken, geojson, uploadResponseGeojsonPost.request.responseHeaders.location)
-                    return uploadResponsePut;
-                }
-                else {
-                    throw 'Unable to create file to store GPS Data'
-                }
+                //* Create resumable put
+                const uploadResponseGeojsonPut = await axios({
+                    method: "PUT",
+                    url: geojsonLocation,
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        "Content-Length": `bytes ${geojsonData.length}`
+                    },
+                    data: Buffer.from(geojson),
+                });
 
+
+                return uploadResponseGeojsonPut;
             }
-            else {
-                throw 'Dashcam folder not found in Google Drive'
+
+            const createResponse = await createDashcamFolder(accessToken);
+            if (createResponse === 200) {
+                getDashcamVideos(accessToken);
+            } else {
+                return createResponse;
             }
         }
         return response;
