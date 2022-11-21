@@ -13,7 +13,7 @@ import { uploadDashcamVideos, uploadGoogleDriveFile } from '../services/googleDr
 import { AccessContext } from '../context/accessTokenContext';
 import { useContext } from 'react';
 import NetInfo from "@react-native-community/netinfo";
-import { DEFAULT_CAMERA_SETTINGS, ALBUM_NAME , AMD_SETTINGS, FAVORITE_VIDEOS_IDS} from '../constants';
+import { DEFAULT_CAMERA_SETTINGS, ALBUM_NAME, AMD_SETTINGS, FAVORITE_VIDEOS_IDS } from '../constants';
 
 export default function VideoPlayerScreen({ route, navigation }) {
   const { accessTokenContextValue, setAccessTokenContextValue } = useContext(AccessContext);
@@ -35,7 +35,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
       loadFavorites();
       setInitialValues();
     }
-    else{
+    else {
       Alert.alert('Media Library Permission is not granted')
     }
   }
@@ -107,43 +107,21 @@ export default function VideoPlayerScreen({ route, navigation }) {
   const shareWithSimpleShare = async () => {
     try {
 
-      //! Simple share stuff. Share video with email, etc.
+      let connection = await NetInfo.fetch();
+      if (connection.type === 'wifi' || settings.allowUploadWithMobileData) {
+        shareAsync(videoAsset.uri);
+      }
+      else {
+        Alert.alert(`You are currently on a ${connection.type}! Your settings only allow uploading on a WIFI network.`);
+      }
 
-      shareAsync([videoAsset.uri]);
     }
     catch (err) {
       Alert.alert(err);
     }
   }
 
-  const shareVideo = async () => {
 
-
-    let connection = await NetInfo.fetch();
-    console.log("Connection type", connection.type);
-    console.log("Is connected?", connection.isConnected);
-
-    if (connection.type === 'wifi') {
-      console.log('sharing');
-      if (accessTokenContextValue) {
-        shareWithGoogleDrive();
-      }
-      else {
-        shareWithSimpleShare();
-      }
-
-    }
-
-    if (connection.type === 'cellular') {
-      if (settings.allowUploadWithMobileData) {
-        console.log('Sharing with a cellular network');
-        //shareWithGoogleDrive();
-      }
-      else {
-        console.log('Settings does not permit sharing with a Cellular Network');
-      }
-    }
-  };
   const saveVideoToSavedVideoIds = async (videoAsset, isLocked = null) => {
     if (isLocked === null) {
       isLocked = savedFavoriteVideosIds.includes(videoAsset.id);
@@ -199,7 +177,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
   return (
     <ScrollView style={GlobalStyles.container}>
       <View style={[GlobalStyles.divDark, GlobalStyles.header, GlobalStyles.flex2]}>
-        
+
         <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant='titleMedium'>
           Created on: {timeStampToDate(video.creationTime)}
         </Text>
@@ -210,6 +188,16 @@ export default function VideoPlayerScreen({ route, navigation }) {
         <Card key={video.id} mode="elevated" style={[GlobalStyles.borderRounded, GlobalStyles.marginYsm]}>
           <Card.Content>
 
+
+
+            <View style={[GlobalStyles.rowContainerWrap, GlobalStyles.marginYsm]}>
+              <View style={GlobalStyles.buttonContainer}>
+                <LockButton savedFavoriteVideosIds={savedFavoriteVideosIds} videoAsset={video} deleteVideoFromFavoriteVideos={deleteVideoFromFavoriteVideos} saveVideoToSavedVideoIds={saveVideoToSavedVideoIds} />
+              </View>
+              <View style={GlobalStyles.buttonContainer}>
+                <Button style={[GlobalStyles.buttonMain, GlobalStyles.button]} icon="share" mode="contained" onPress={shareWithSimpleShare}>Share Video</Button>
+              </View>
+            </View>
 
             <Video
               ref={videoPlayer}
@@ -222,7 +210,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
             />
 
             <View style={[GlobalStyles.marginYsm]}>
-              
+
               <Text variant='labelMedium'>
                 Duration: {video.duration}s
               </Text>
@@ -243,14 +231,10 @@ export default function VideoPlayerScreen({ route, navigation }) {
             </View>
 
             <View style={[GlobalStyles.rowContainerWrap, GlobalStyles.marginYsm]}>
-              <View style={GlobalStyles.buttonContainer}>
+              {accessTokenContextValue && <View style={GlobalStyles.buttonContainer}>
+                <Button style={[GlobalStyles.buttonMain, GlobalStyles.button]} icon="share" mode="contained" onPress={shareVideo} >Save to Google Drive</Button>
+              </View>}
 
-                <LockButton  savedFavoriteVideosIds={savedFavoriteVideosIds} videoAsset={video} deleteVideoFromFavoriteVideos={deleteVideoFromFavoriteVideos} saveVideoToSavedVideoIds={saveVideoToSavedVideoIds} />
-
-              </View>
-              <View style={GlobalStyles.buttonContainer}>
-                <Button style={[GlobalStyles.buttonMain, GlobalStyles.button]} icon="share" mode="contained" onPress={shareVideo} >Share</Button>
-              </View>
               <View style={GlobalStyles.buttonContainer}>
                 <Button style={[GlobalStyles.button]} icon="map" mode="outlined" onPress={() => navigation.navigate('Map', { videoAsset: video })} >Map</Button>
               </View>
