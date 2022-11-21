@@ -9,6 +9,7 @@ import { AccessContext } from '../context/accessTokenContext';
 import GoogleVideoCard from '../widget/googleVideoCard';
 import GlobalStyles from '../styles/global-styles';
 import LocalVideoCard from '../widget/localVideoCard';
+import RenderGoogleListItem from '../widget/googleVideoListItem';
 
 export default function RecordingsScreen({ navigation }) {
   const { accessTokenContextValue, setAccessTokenContextValue } = useContext(AccessContext);
@@ -129,30 +130,30 @@ export default function RecordingsScreen({ navigation }) {
 
 
 
-  const renderGoogleListItem = (key, value) => {
-    const titleMessage = `${key}  ${value.length} video(s)`
-    if (titleMessage.includes(searchQuery)) {
-      return <View key={key}>
-        <List.Accordion
-          style={[GlobalStyles.divWhite]}
-          title={titleMessage}
-          left={props => <List.Icon {...props} icon="folder" />}>
-          <View style={[GlobalStyles.rowContainerWrap, GlobalStyles.marginYsm]}>
-            {
-              value.map((file) => (
-                ((file.fileExtension === "MP4" || file.fileExtension === "mp4" || file.fileExtension === 'jpg') &&
-                <GoogleVideoCard key={file.id} file={file} deleteDriveFile={deleteDriveFile} />
-              )
-              ))
-            }
-          </View>
-        </List.Accordion>
-      </View>
-    }
-    else {
-      return null;
-    }
-  }
+  // const renderGoogleListItem = (key, value) => {
+  //   const titleMessage = `${key}  ${value.length} video(s)`
+  //   if (titleMessage.includes(searchQuery)) {
+  //     return <View key={key}>
+  //       <List.Accordion
+  //         style={[GlobalStyles.divWhite]}
+  //         title={titleMessage}
+  //         left={props => <List.Icon {...props} icon="folder" />}>
+  //         <View style={[GlobalStyles.rowContainerWrap, GlobalStyles.marginYsm]}>
+  //           {
+  //             value.map((file) => (
+  //               ((file.fileExtension === "MP4" || file.fileExtension === "mp4" || file.fileExtension === 'jpg') &&
+  //               <GoogleVideoCard key={file.id} file={file} deleteDriveFile={deleteDriveFile} />
+  //             )
+  //             ))
+  //           }
+  //         </View>
+  //       </List.Accordion>
+  //     </View>
+  //   }
+  //   else {
+  //     return null;
+  //   }
+  // }
 
 
   const renderListItem = (key, value) => {
@@ -200,7 +201,7 @@ export default function RecordingsScreen({ navigation }) {
           <List.Section title="Google Drive Recordings">
             {Object.entries(googleDriveFiles).map(([key, value]) => {
               return (
-                renderGoogleListItem(key, value)
+                RenderGoogleListItem(key, value)
               );
             })}
 
