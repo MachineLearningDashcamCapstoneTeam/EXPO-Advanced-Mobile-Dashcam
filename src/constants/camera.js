@@ -9,3 +9,12 @@ export const DEFAULT_CAMERA_SETTINGS = {
     'allowUploadWithMobileData': false,
 
 };
+
+const [loadCamera, setLoadCamera] = useState();
+const [selectedResolution, setSelectedResolution] = useState();
+const [selectedCameraType, setSelectedCameraType] = useState();
+const [selectedZoom, setSelectedZoom] = useState();
+const [selectedRecLength, setSelectedRecLength] = useState();
+const [selectedMaxSize, setSelectedMaxSize] = useState();
+const [selectedAutoRec, setSelectedAutoRec] = useState();
+const [selectedMobileData, setSelectedMobileData] = useState();
