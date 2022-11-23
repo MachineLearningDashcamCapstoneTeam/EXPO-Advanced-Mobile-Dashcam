@@ -11,6 +11,14 @@ export default function SettingsScreen({ navigation }) {
 
 
   const [settings, setSettings] = useState(DEFAULT_CAMERA_SETTINGS);
+  const [loadCamera, setLoadCamera] = useState();
+  const [selectedResolution, setSelectedResolution] = useState();
+  const [selectedCameraType, setSelectedCameraType] = useState();
+  const [selectedZoom, setSelectedZoom] = useState();
+  const [selectedRecLength, setSelectedRecLength] = useState();
+  const [selectedMaxSize, setSelectedMaxSize] = useState();
+  const [selectedAutoRec, setSelectedAutoRec] = useState();
+  const [selectedMobileData, setSelectedMobileData] = useState();
 
   const [loadCameraWhenApplicationStarts, setLoadCameraWhenApplicationStarts] = useState([
     { label: 'No', value: false },
@@ -83,10 +91,19 @@ export default function SettingsScreen({ navigation }) {
 
   useEffect(() => {
     setInitialValues();
+    setLoadCamera(settings.loadCameraWhenApplicationStarts);
+    setSelectedResolution(settings.resolution);
+    setSelectedCameraType(settings.cameraType);
+    setSelectedZoom(settings.zoomLevel);
+    setSelectedRecLength(settings.recordingLength);
+    setSelectedMaxSize(settings.maxVideoFileSize);
+    setSelectedAutoRec(settings.automaticRecording);
+    setSelectedMobileData(settings.allowUploadWithMobileData);
   }, [])
 
   const updateSetting = (key, updatedValue) => {
     console.log (key)
+    console.log(updatedValue)
     // const tempSettings = {
     //   ...settings,
     //   ...{key: updatedValue}
@@ -146,8 +163,8 @@ export default function SettingsScreen({ navigation }) {
                 Resolution
               </Text>
               <SegmentedButtons
-                value={settings.resolution}
-                onValueChange={(resolution) => updateSetting({ 'resolution': resolution })}
+                value={selectedResolution}
+                onValueChange={(resolution) => {updateSetting('resolution', resolution); setSelectedResolution(resolution)}}
                 buttons={resolutions}
               />
             </View>
@@ -157,7 +174,7 @@ export default function SettingsScreen({ navigation }) {
               </Text>
               <SegmentedButtons
                 value={settings.cameraType}
-                onValueChange={(cameraType) => updateSetting({ 'cameraType': cameraType })}
+                onValueChange={(cameraType) => {updateSetting( 'cameraType', cameraType ); setSelectedCameraType(cameraType)}}
                 buttons={cameraTypes}
               />
             </View>
