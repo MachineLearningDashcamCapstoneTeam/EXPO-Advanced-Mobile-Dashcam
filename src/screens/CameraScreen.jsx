@@ -1,5 +1,5 @@
 import { StyleSheet, View, TouchableOpacity, Settings } from 'react-native';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Camera, CameraType } from 'expo-camera';
 import { Video } from 'expo-av';
@@ -14,7 +14,7 @@ import { Button, Text, Snackbar, IconButton, MD3Colors, Avatar } from 'react-nat
 import { useKeepAwake, activateKeepAwake, deactivateKeepAwake } from 'expo-keep-awake';
 import GlobalStyles from '../styles/global-styles';
 import ErrorCameraCard from '../widget/errorCameraCard';
-import { useIsFocused } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 
 const CameraScreen = ({ navigation }) => {
   const isFocused = useIsFocused()
@@ -98,7 +98,7 @@ const CameraScreen = ({ navigation }) => {
     setHasLocationPermission(locationPermission.status === "granted");
 
 
-    setInitialValues();
+    // setInitialValues();
   }
 
   const setInitialValues = async () => {
@@ -117,14 +117,37 @@ const CameraScreen = ({ navigation }) => {
     }
   };
 
-  const updateSetting = (updatedValue) => {
-    setSettings(settings => ({
-      ...settings,
-      ...updatedValue
-    }));
+  const saveSetting = async (tempSettings) => {
+    try {
+      await AsyncStorage.setItem('AMD_Settings', JSON.stringify(tempSettings))
+    } catch (e) {
+      Alert.alert("Unable to save Settings");
+    }
   }
 
+  const updateSetting = (updatedAttribute) => {
+    const key = Object.keys(updatedAttribute)[0];
+    const updatedValue = updatedAttribute[key];
+    const tempSettings = settings;
+    tempSettings[key] = updatedValue;
+    console.log(tempSettings);
+    setSettings(settings => ({
+      ...settings,
+      ...updatedAttribute
+    }));
+    // setSettings(tempSettings);
+    saveSetting(tempSettings);
+    console.log(settings);
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      setInitialValues();
+    }, [])
+  );
+
   useEffect(() => {
+    console.log("Acquiring Camera Setting...")
     setPermissions();
 
     const unsubscribe = navigation.addListener('focus', () => {
@@ -139,7 +162,7 @@ const CameraScreen = ({ navigation }) => {
       setHasLocationPermission(null);
       setIsRecording(false);
       setVideo(null);
-      setSettings(DEFAULT_CAMERA_SETTINGS);
+      // setSettings(DEFAULT_CAMERA_SETTINGS);
       //* Deactivate keep awake so the system never keeps running
       deactivateKeepAwake();
       cameraRef = null;

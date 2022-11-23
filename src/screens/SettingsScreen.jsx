@@ -6,6 +6,8 @@ import { Card, Button, Title, Text, Snackbar, SegmentedButtons, Divider } from '
 import GlobalStyles from '../styles/global-styles';
 import { DEFAULT_CAMERA_SETTINGS } from '../constants';
 import SettingOptionItem from '../widget/settingOptionItem';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 
 export default function SettingsScreen({ navigation }) {
 
@@ -81,6 +83,12 @@ export default function SettingsScreen({ navigation }) {
       Alert.alert('Unable to load Settings')
     }
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      setInitialValues();
+    }, [])
+  );
 
   useEffect(() => {
     setInitialValues();
