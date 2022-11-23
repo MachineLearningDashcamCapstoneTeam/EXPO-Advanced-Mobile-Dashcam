@@ -87,10 +87,13 @@ export default function SettingsScreen({ navigation }) {
 
   const updateSetting = (key, updatedValue) => {
     console.log (key)
-    const tempSettings = {
-      ...settings,
-      ...{key: updatedValue}
-    }
+    // const tempSettings = {
+    //   ...settings,
+    //   ...{key: updatedValue}
+    // }
+    const tempSettings = settings;
+    tempSettings[key] = updatedValue;
+    console.log(tempSettings);
     setSettings(tempSettings);
     saveSetting(tempSettings);
   }
