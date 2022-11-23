@@ -11,14 +11,7 @@ export default function SettingsScreen({ navigation }) {
 
 
   const [settings, setSettings] = useState(DEFAULT_CAMERA_SETTINGS);
-  const [loadCamera, setLoadCamera] = useState();
-  const [selectedResolution, setSelectedResolution] = useState();
-  const [selectedCameraType, setSelectedCameraType] = useState();
-  const [selectedZoom, setSelectedZoom] = useState();
-  const [selectedRecLength, setSelectedRecLength] = useState();
-  const [selectedMaxSize, setSelectedMaxSize] = useState();
-  const [selectedAutoRec, setSelectedAutoRec] = useState();
-  const [selectedMobileData, setSelectedMobileData] = useState();
+  const [arbTrigger, setArbTrigger] = useState();
 
   const [loadCameraWhenApplicationStarts, setLoadCameraWhenApplicationStarts] = useState([
     { label: 'No', value: false },
@@ -91,14 +84,6 @@ export default function SettingsScreen({ navigation }) {
 
   useEffect(() => {
     setInitialValues();
-    setLoadCamera(settings.loadCameraWhenApplicationStarts);
-    setSelectedResolution(settings.resolution);
-    setSelectedCameraType(settings.cameraType);
-    setSelectedZoom(settings.zoomLevel);
-    setSelectedRecLength(settings.recordingLength);
-    setSelectedMaxSize(settings.maxVideoFileSize);
-    setSelectedAutoRec(settings.automaticRecording);
-    setSelectedMobileData(settings.allowUploadWithMobileData);
   }, [])
 
   const updateSetting = (key, updatedValue) => {
@@ -154,17 +139,28 @@ export default function SettingsScreen({ navigation }) {
             </Text>
 
 
-            <SettingOptionItem key={settings} title={'load Camera When Application Starts'} settings={settings} settingValue={loadCameraWhenApplicationStarts} settingKey={'loadCameraWhenApplicationStarts'} buttonsArray={loadCameraWhenApplicationStarts} updateSetting={updateSetting}>
+            {/* <SettingOptionItem key={settings} title={'load Camera When Application Starts'} settings={settings} settingValue={loadCameraWhenApplicationStarts} settingKey={'loadCameraWhenApplicationStarts'} buttonsArray={loadCameraWhenApplicationStarts} updateSetting={updateSetting}>
 
-            </SettingOptionItem>
+            </SettingOptionItem> */}
+
+            <View style={[GlobalStyles.marginYsm]}>
+              <Text style={[GlobalStyles.paddingBsm]} variant='labelMedium'>
+              Load Camera When Application Starts
+              </Text>
+              <SegmentedButtons
+                value={settings.loadCameraWhenApplicationStarts}
+                onValueChange={(loadCamera) => {updateSetting( 'loadCameraWhenApplicationStarts', loadCamera); setArbTrigger(loadCamera)}}
+                buttons={loadCameraWhenApplicationStarts}
+              />
+            </View>
 
             <View style={[GlobalStyles.marginYsm]}>
               <Text style={[GlobalStyles.paddingBsm]} variant='labelMedium'>
                 Resolution
               </Text>
               <SegmentedButtons
-                value={selectedResolution}
-                onValueChange={(resolution) => {updateSetting('resolution', resolution); setSelectedResolution(resolution)}}
+                value={settings.resolution}
+                onValueChange={(resolution) => {updateSetting('resolution', resolution); setArbTrigger(resolution)}}
                 buttons={resolutions}
               />
             </View>
@@ -174,7 +170,7 @@ export default function SettingsScreen({ navigation }) {
               </Text>
               <SegmentedButtons
                 value={settings.cameraType}
-                onValueChange={(cameraType) => {updateSetting( 'cameraType', cameraType ); setSelectedCameraType(cameraType)}}
+                onValueChange={(cameraType) => {updateSetting( 'cameraType', cameraType ); setArbTrigger(cameraType)}}
                 buttons={cameraTypes}
               />
             </View>
@@ -184,7 +180,7 @@ export default function SettingsScreen({ navigation }) {
               </Text>
               <SegmentedButtons
                 value={settings.zoomLevel}
-                onValueChange={(zoomLevel) => updateSetting({ 'zoomLevel': zoomLevel })}
+                onValueChange={(zoomLevel) => {updateSetting( 'zoomLevel', zoomLevel ), setArbTrigger(zoomLevel)}}
                 buttons={zooms}
               />
             </View>
@@ -196,7 +192,7 @@ export default function SettingsScreen({ navigation }) {
               </Text>
               <SegmentedButtons
                 value={settings.automaticRecording}
-                onValueChange={(automaticRecording) => updateSetting({ 'automaticRecording': automaticRecording })}
+                onValueChange={(automaticRecording) => {updateSetting( 'automaticRecording', automaticRecording ), setArbTrigger(automaticRecording)}}
                 buttons={automaticRecordings}
 
               />
@@ -207,7 +203,7 @@ export default function SettingsScreen({ navigation }) {
               </Text>
               <SegmentedButtons
                 value={settings.recordingLength}
-                onValueChange={(recordingLength) => updateSetting({ 'recordingLength': recordingLength })}
+                onValueChange={(recordingLength) => {updateSetting( 'recordingLength', recordingLength ), setArbTrigger(recordingLength)}}
                 buttons={recordingLengths}
 
               />
@@ -218,7 +214,7 @@ export default function SettingsScreen({ navigation }) {
               </Text>
               <SegmentedButtons
                 value={settings.maxVideoFileSize}
-                onValueChange={(maxVideoFileSize) => updateSetting({ 'maxVideoFileSize': maxVideoFileSize })}
+                onValueChange={(maxVideoFileSize) => {updateSetting( 'maxVideoFileSize', maxVideoFileSize ), setArbTrigger(maxVideoFileSize)}}
                 buttons={maxVideoFileSizes}
               />
             </View>
@@ -237,7 +233,7 @@ export default function SettingsScreen({ navigation }) {
               </Text>
               <SegmentedButtons
                 value={settings.allowUploadWithMobileData}
-                onValueChange={(allowUploadWithMobileData) => updateSetting({ 'allowUploadWithMobileData': allowUploadWithMobileData })}
+                onValueChange={(allowUploadWithMobileData) => {updateSetting( 'allowUploadWithMobileData', allowUploadWithMobileData ); setArbTrigger(allowUploadWithMobileData)}}
                 buttons={allowUploadWithMobileData}
               />
             </View>
