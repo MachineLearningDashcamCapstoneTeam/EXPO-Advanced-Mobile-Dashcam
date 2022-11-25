@@ -5,7 +5,7 @@ import { useEffect, useState, useContext } from 'react';
 
 const RenderGoogleListItem = ({key, value}) => {
     const titleMessage = `${key}  ${value.length} video(s)`
-    if (titleMessage.includes(searchQuery)) {
+  
       return <View key={key}>
         <List.Accordion
           style={[GlobalStyles.divWhite]}
@@ -22,9 +22,6 @@ const RenderGoogleListItem = ({key, value}) => {
           </View>
         </List.Accordion>
       </View>
-    }
-    else {
-      return null;
-    }
+ 
   }
   export default RenderGoogleListItem;

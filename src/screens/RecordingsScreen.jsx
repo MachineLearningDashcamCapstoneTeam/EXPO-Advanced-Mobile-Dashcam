@@ -48,7 +48,7 @@ export default function RecordingsScreen({ navigation }) {
     }).catch((error) => {
       Alert.alert("Unable to load Album");
     });
-    if (accessTokenContextValue && googleDriveFiles.length <= 0) {
+    if (accessTokenContextValue) {
       getDriveFiles();
     }
   }
@@ -110,6 +110,7 @@ export default function RecordingsScreen({ navigation }) {
   const getDriveFiles = async () => {
     const response = await getDashcamVideos(accessTokenContextValue);
     if (response.status === 200) {
+      console.log(response);
       let tempList = response.data.files;
       tempList = tempList.filter((videoFile) => videoFile.fileExtension === "MP4" || videoFile.fileExtension === "mp4");
       const groupedArray = groupGoogleFilesByTime(tempList);
@@ -130,30 +131,30 @@ export default function RecordingsScreen({ navigation }) {
 
 
 
-  // const renderGoogleListItem = (key, value) => {
-  //   const titleMessage = `${key}  ${value.length} video(s)`
-  //   if (titleMessage.includes(searchQuery)) {
-  //     return <View key={key}>
-  //       <List.Accordion
-  //         style={[GlobalStyles.divWhite]}
-  //         title={titleMessage}
-  //         left={props => <List.Icon {...props} icon="folder" />}>
-  //         <View style={[GlobalStyles.rowContainerWrap, GlobalStyles.marginYsm]}>
-  //           {
-  //             value.map((file) => (
-  //               ((file.fileExtension === "MP4" || file.fileExtension === "mp4" || file.fileExtension === 'jpg') &&
-  //               <GoogleVideoCard key={file.id} file={file} deleteDriveFile={deleteDriveFile} />
-  //             )
-  //             ))
-  //           }
-  //         </View>
-  //       </List.Accordion>
-  //     </View>
-  //   }
-  //   else {
-  //     return null;
-  //   }
-  // }
+  const renderGoogleListItem = (key, value) => {
+    const titleMessage = `${key}  ${value.length} video(s)`
+    if (titleMessage.includes(searchQuery)) {
+      return <View key={key}>
+        <List.Accordion
+          style={[GlobalStyles.divWhite]}
+          title={titleMessage}
+          left={props => <List.Icon {...props} icon="folder" />}>
+          <View style={[GlobalStyles.rowContainerWrap, GlobalStyles.marginYsm]}>
+            {
+              value.map((file) => (
+                ((file.fileExtension === "MP4" || file.fileExtension === "mp4" || file.fileExtension === 'jpg') &&
+                <GoogleVideoCard key={file.id} file={file} deleteDriveFile={deleteDriveFile} />
+              )
+              ))
+            }
+          </View>
+        </List.Accordion>
+      </View>
+    }
+    else {
+      return null;
+    }
+  }
 
 
   const renderListItem = (key, value) => {
@@ -201,7 +202,7 @@ export default function RecordingsScreen({ navigation }) {
           <List.Section title="Google Drive Recordings">
             {Object.entries(googleDriveFiles).map(([key, value]) => {
               return (
-                RenderGoogleListItem(key, value)
+                renderGoogleListItem(key, value)
               );
             })}
 

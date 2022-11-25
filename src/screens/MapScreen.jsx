@@ -29,25 +29,37 @@ const MapScreen = ({ route, navigation }) => {
             const result = await FileSystem.readAsStringAsync(filename, {
                 encoding: FileSystem.EncodingType.UTF8
             });
+            if (result) {
+                //* Get the gps data from json and set the initial map location
+                const gpsData = JSON.parse(result);
+                if (gpsData) {
+                    setMapRegion({
+                        latitude: gpsData.features[0].geometry.coordinates[1],
+                        longitude: gpsData.features[0].geometry.coordinates[0],
+                        latitudeDelta: 0.0922,
+                        longitudeDelta: 0.0421,
+                    })
 
-            //* Get the gps data from json and set the initial map location
-            const gpsData = JSON.parse(result);
-            setMapRegion({
-                latitude: gpsData.features[0].geometry.coordinates[1],
-                longitude: gpsData.features[0].geometry.coordinates[0],
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-            })
+                    //* Create the google gps markers using the gps data
+                    const gpsMarkers = gpsJsonToGoogleMarkers(gpsData);
+                    const polylines = gpsJsonToPolyline(gpsData);
+                    setGeojsonData(gpsData);
+                    setLines(polylines);
+                    setMarkers(gpsMarkers);
+                }
+                else {
+                    throw 'No GPS Data exists'
+                }
 
-            //* Create the google gps markers using the gps data
-            const gpsMarkers = gpsJsonToGoogleMarkers(gpsData);
-            const polylines = gpsJsonToPolyline(gpsData);
-            setGeojsonData(gpsData);
-            setLines(polylines);
-            setMarkers(gpsMarkers);
+            }
+            else {
+                throw 'No GPS Data file exists'
+            }
+
+
         }
         catch (error) {
-            Alert.alert(error);
+            Alert.alert('No GPS Data/file exists');
         }
     };
 
@@ -82,10 +94,10 @@ const MapScreen = ({ route, navigation }) => {
                     showsCompass={true}
                     toolbarEnabled={true}>
 
-                    {markers &&
+                    {markers.length &&
                         <Polyline
                             coordinates={lines.lines}
-                            strokeColor="#000" // fallback for when `strokeColors` is not supported by the map-provider
+                            strokeColor="#000"
                             strokeColors={lines.colors}
                             strokeWidth={5}
                         />
@@ -93,7 +105,7 @@ const MapScreen = ({ route, navigation }) => {
                     }
 
 
-                    {markers &&
+                    {markers.length &&
                         markers.map((marker, index) => (
                             <Marker
                                 key={index}
@@ -137,7 +149,9 @@ const MapScreen = ({ route, navigation }) => {
                                 </Callout>
 
                             </Marker>
-                        ))}
+                        )
+                        )
+                    }
                 </MapView>
             </View>
         </View>
