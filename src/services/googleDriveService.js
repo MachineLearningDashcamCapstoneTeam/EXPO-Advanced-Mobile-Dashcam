@@ -179,24 +179,28 @@ export const getDashcamVideos = async (accessToken) => {
 };
 
 
+const getContentLengthUsingRequestAndBase64 = (base64String) => {
+    return Buffer.byteLength(base64String, 'base64');
+}
 
-export const uploadDashcamVideos = async (accessToken, videoAsset, videoAssetData, videoAssetInfo, geojson) => {
+
+export const uploadDashcamVideos = async (accessToken, videoAsset, videoAssetData, geojson) => {
     try {
         const response = await getGoogleDriveFolders(accessToken);
         if (response.status === 200) {
             const cameraFolder = getObjectsWhereKeyEqualsValue(response.data.files, 'name', 'Dashcam')[0];
             if (cameraFolder) {
-                const mimeType = mime.getType(videoAsset) 
+
+                // console.log("videoAssetData", videoAssetData);
                 console.log(accessToken);
 
-           
-              let videoData = {
-                    'name': `${timestampToDateTimeString(videoAsset.creationTime)}.jpeg`,
-                    'mimeType': 'image/jpeg',
+                
+                let videoData = {
+                    'name': `${timestampToDateTimeString(videoAsset.creationTime)}.mp4`,
+                    'mimeType': 'video/mp4',
                     'parents': [`${cameraFolder.id}`],
                 };
 
-                
 
                 //* Create Resumable Post
                 const uploadResponseVideoPost = await axios({
@@ -208,23 +212,25 @@ export const uploadDashcamVideos = async (accessToken, videoAsset, videoAssetDat
                     },
                     data: JSON.stringify(videoData),
                 });
-                const videoLocation = uploadResponseVideoPost.request.responseHeaders.location;
-                console.log(videoLocation)
+                const videoLocation = uploadResponseVideoPost.headers.location
 
-                const fileSize = videoAssetData.length;
+                videoAssetData = Buffer.from(videoAssetData, 'base64')
+                const fileSize = getContentLengthUsingRequestAndBase64(videoAssetData)
+                console.log("videoLocation", videoLocation);
+                console.log("fileSize", fileSize);
+                
                 const uploadResponseVideoPut = await axios({
                     method: "PUT",
                     url: videoLocation,
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                        'content-type' : 'image/jpeg',
-                        "Content-Length": `bytes 0-${fileSize - 1}/${fileSize}`
+                    headers: { 
+                        "Content-Length": fileSize,
+                       
                     },
-                    data:  videoAssetData,
+                    data: videoAssetData,
                 });
-              
-              
-               
+
+
+                
 
                 //* Prepare the Geojson Data
                 let geojsonData = {
