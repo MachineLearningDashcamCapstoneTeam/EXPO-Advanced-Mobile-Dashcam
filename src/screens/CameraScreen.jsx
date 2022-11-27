@@ -31,26 +31,43 @@ const CameraScreen = ({ navigation }) => {
 
 
   const saveVideoData = async (recordedVideo, gpsLocations) => {
-    const expoAlbum = await MediaLibrary.getAlbumAsync(ALBUM_NAME)
-    const video_asset = await MediaLibrary.createAssetAsync(recordedVideo.uri);
-    const filename = `${FileSystem.documentDirectory}${video_asset.filename}.txt`;
-    const gpsData = gpsJsonToGeojson(gpsLocations)
-    await FileSystem.writeAsStringAsync(filename, JSON.stringify(gpsData), {
-      encoding: FileSystem.EncodingType.UTF8
-    });
-    if (expoAlbum) {
-      await MediaLibrary.addAssetsToAlbumAsync([video_asset], expoAlbum.id).then((result) => {
-        console.log(result)
-      });
-    } else {
-      await MediaLibrary.createAlbumAsync(ALBUM_NAME, video_asset).then((result) => {
-        console.log(result)
-      });
+
+    try {
+      //* Get The album and video asset
+      const expoAlbum = await MediaLibrary.getAlbumAsync(ALBUM_NAME)
+      const videoAsset = await MediaLibrary.createAssetAsync(recordedVideo.uri);
+
+
+      //* Create the gps data file
+      const gpsData = gpsJsonToGeojson(gpsLocations)
+      const fileUri = `${FileSystem.documentDirectory}${videoAsset.filename}.txt`;
+      await FileSystem.writeAsStringAsync(fileUri, JSON.stringify(gpsData), { encoding: FileSystem.EncodingType.UTF8 });
+     
+      if (expoAlbum) {
+        await MediaLibrary.addAssetsToAlbumAsync([videoAsset], expoAlbum.id).then((result) => {
+          console.log(result)
+        });
+
+     
+      } else {
+        await MediaLibrary.createAlbumAsync(ALBUM_NAME, videoAsset).then((result) => {
+          console.log(result)
+        });
+
+       
+      }
+
+
+      setVideo(null);
+      if (settings.automaticRecording === true) {
+        recordVideo();
+      }
     }
-    setVideo(null);
-    if (settings.automaticRecording === true) {
-      recordVideo();
+    catch (err) {
+      console.error(err);
     }
+
+
   };
 
   let recordVideo = async () => {

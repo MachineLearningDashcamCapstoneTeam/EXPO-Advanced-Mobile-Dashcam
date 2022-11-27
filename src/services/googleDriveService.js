@@ -179,6 +179,10 @@ export const getDashcamVideos = async (accessToken) => {
 };
 
 
+const getContentLengthUsingRequestAndBase64 = (base64String) => {
+    return Buffer.byteLength(base64String, 'base64');
+}
+
 
 export const uploadDashcamVideos = async (accessToken, videoAsset, videoAssetData, geojson) => {
     try {
@@ -186,44 +190,47 @@ export const uploadDashcamVideos = async (accessToken, videoAsset, videoAssetDat
         if (response.status === 200) {
             const cameraFolder = getObjectsWhereKeyEqualsValue(response.data.files, 'name', 'Dashcam')[0];
             if (cameraFolder) {
-                const mimeType = mime.getType(videoAsset) 
-                console.log(videoAssetData);
 
-           
-                // //* Prepare the Video Data
-                // let videoData = {
-                //     'name': `${timestampToDateTimeString(videoAsset.creationTime)}.mp4`,
-                //     'mimeType': 'video/mp4',
-                //     'parents': [`${cameraFolder.id}`],
-                // };
+                // console.log("videoAssetData", videoAssetData);
+                console.log(accessToken);
 
-                // //* Create Resumable Post
-                // const uploadResponseVideoPost = await axios({
-                //     method: 'POST',
-                //     url: GOOGLE_UPLOAD_URL,
-                //     headers: {
-                //         Authorization: `Bearer ${accessToken}`,
-                //         'Content-Type': 'application/json'
-                //     },
-                //     data: JSON.stringify(videoData),
-                // });
-                // const videoLocation = uploadResponseVideoPost.request.responseHeaders.location;
+                
+                let videoData = {
+                    'name': `${timestampToDateTimeString(videoAsset.creationTime)}.mp4`,
+                    'mimeType': 'video/mp4',
+                    'parents': [`${cameraFolder.id}`],
+                };
 
 
-                // const uploadResponseVideoPut = await axios({
-                //     method: "PUT",
-                //     url: videoLocation,
-                //     headers: {
-                //         Authorization: `Bearer ${accessToken}`,
-                //         "Content-Length": `bytes ${videoAssetData.length}`
-                //     },
-                //     data: videoAssetData,
-                // });
-              
-                // console.log(uploadResponseVideoPut);
+                //* Create Resumable Post
+                const uploadResponseVideoPost = await axios({
+                    method: 'POST',
+                    url: GOOGLE_UPLOAD_URL,
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    data: JSON.stringify(videoData),
+                });
+                const videoLocation = uploadResponseVideoPost.headers.location
 
-         
-               
+                videoAssetData = Buffer.from(videoAssetData, 'base64')
+                const fileSize = getContentLengthUsingRequestAndBase64(videoAssetData)
+                console.log("videoLocation", videoLocation);
+                console.log("fileSize", fileSize);
+                
+                const uploadResponseVideoPut = await axios({
+                    method: "PUT",
+                    url: videoLocation,
+                    headers: { 
+                        "Content-Length": fileSize,
+                       
+                    },
+                    data: videoAssetData,
+                });
+
+
+                
 
                 //* Prepare the Geojson Data
                 let geojsonData = {

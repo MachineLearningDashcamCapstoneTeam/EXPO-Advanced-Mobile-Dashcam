@@ -3,6 +3,7 @@ export default {
   "expo": {
     "name": "advanced-mobile-dashcam",
     "slug": "advanced-mobile-dashcam",
+    "scheme" : "com.canaleal.capstone",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -25,6 +26,7 @@ export default {
     },
     "android": {
       "package": "com.canaleal.capstone",
+      "permissions": ["READ_EXTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE", "NOTIFICATIONS"],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"

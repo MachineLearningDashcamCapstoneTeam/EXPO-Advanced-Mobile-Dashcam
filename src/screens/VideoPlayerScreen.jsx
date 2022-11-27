@@ -14,6 +14,8 @@ import { AccessContext } from '../context/accessTokenContext';
 import { useContext } from 'react';
 import NetInfo from "@react-native-community/netinfo";
 import { DEFAULT_CAMERA_SETTINGS, ALBUM_NAME, AMD_SETTINGS, FAVORITE_VIDEOS_IDS } from '../constants';
+import * as Sharing from "expo-sharing";
+import {decode as atob, encode as btoa} from 'base-64'
 
 export default function VideoPlayerScreen({ route, navigation }) {
   const { accessTokenContextValue, setAccessTokenContextValue } = useContext(AccessContext);
@@ -74,16 +76,15 @@ export default function VideoPlayerScreen({ route, navigation }) {
   }
 
 
+
+
   const saveToGoogleDrive = async () => {
 
     let connection = await NetInfo.fetch();
     if (connection.type === 'wifi' || settings.allowUploadWithMobileData) {
 
       //* Get the video
-      const videoAssetData = await FileSystem.readAsStringAsync(videoAsset.uri, {
-        encoding: FileSystem.EncodingType.UTF8,
-      });
-      const videoAssetInfo = await FileSystem.getInfoAsync(videoAsset.uri);
+      let videoAssetData = await FileSystem.readAsStringAsync(videoAsset.uri , { encoding: FileSystem.EncodingType.Base64 });
 
       //* Get the text file 
       const filename = `${FileSystem.documentDirectory}${videoAsset.filename}.txt`;
@@ -92,6 +93,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
       });
 
 
+      //* Upload the video
       const response = await uploadDashcamVideos(accessTokenContextValue, videoAsset, videoAssetData, GeoJSON)
       if (response.status === 200) {
         Alert.alert("Successfully uploaded video to Google Drive");
@@ -114,7 +116,8 @@ export default function VideoPlayerScreen({ route, navigation }) {
 
       let connection = await NetInfo.fetch();
       if (connection.type === 'wifi' || settings.allowUploadWithMobileData) {
-        shareAsync(videoAsset.uri);
+        const UTI = 'public.item';
+        await  Sharing.shareAsync(videoAsset.uri, {UTI});
       }
       else {
         Alert.alert(`You are currently on a ${connection.type}! Your settings only allow uploading on a WIFI network.`);
