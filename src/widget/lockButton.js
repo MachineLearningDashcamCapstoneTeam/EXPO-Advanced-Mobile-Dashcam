@@ -8,12 +8,12 @@ import GlobalStyles from '../styles/global-styles';
 const LockButton = ({savedFavoriteVideosIds, videoAsset, deleteVideoFromFavoriteVideos, saveVideoToSavedVideoIds}) => {
     const result = savedFavoriteVideosIds.includes(videoAsset.id);
     if (result) {
-      return (<IconButton size={22} icon="heart-outline" iconColor={MD3Colors.neutral100} onPress={() => deleteVideoFromFavoriteVideos(videoAsset)}>
+      return (<IconButton size={22} icon="heart" iconColor={MD3Colors.neutral100} onPress={() => deleteVideoFromFavoriteVideos(videoAsset)}>
         Unfavorite
       </IconButton>)
     }
     else {
-      return (<IconButton size={22} icon="heart"  iconColor={MD3Colors.neutral100} onPress={() => saveVideoToSavedVideoIds(videoAsset)}>
+      return (<IconButton size={22} icon="heart-outline"  iconColor={MD3Colors.neutral100} onPress={() => saveVideoToSavedVideoIds(videoAsset)}>
         Favorite
       </IconButton>)
     }

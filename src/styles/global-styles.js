@@ -8,7 +8,7 @@ const black = 'rgb(0,0,0)';
 const error = "#DF2935";
 const success = "#679436";
 const warning = "#FC9E4F";
-const smoke =  'rgb(250, 250, 250)';
+const smoke = 'rgb(250, 250, 250)';
 const navbarBlackTrans = 'rgba(0,0,0, 0.4)'
 const navbarBlack = '#000000';
 const small = 10;
@@ -48,11 +48,24 @@ const GlobalStyles = StyleSheet.create({
         color: warning,
     },
 
-
+    styleCard:{
+        height: 50,
+        width: 50,
+        borderRadius: 50,
+        
+    },
 
 
     height100: {
         height: 90,
+    },
+
+    height50: {
+        height: 50,
+    },
+
+    width50: {
+        width: 50,
     },
 
     marginBsm: {
@@ -80,7 +93,7 @@ const GlobalStyles = StyleSheet.create({
         padding: medium,
     },
     flex6: {
-    
+
         flex: 6,
         padding: medium,
     },
@@ -89,17 +102,17 @@ const GlobalStyles = StyleSheet.create({
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.8,
-        shadowRadius: 1, 
-       
+        shadowRadius: 1,
+
         elevation: 5
     },
 
-    roundedTop:{
+    roundedTop: {
         borderTopLeftRadius: border,
         borderTopRightRadius: border,
     },
 
-    roundedBottom:{
+    roundedBottom: {
         borderBottomLeftRadius: border,
         borderBottomRightRadius: border,
     },
@@ -137,7 +150,7 @@ const GlobalStyles = StyleSheet.create({
         justifyContent: 'center',
     },
 
-   
+
     marginYsm: {
         marginVertical: 10,
     },
@@ -165,13 +178,13 @@ const GlobalStyles = StyleSheet.create({
     divSpaceBetween: {
         justifyContent: 'space-between',
     },
-   
+
 
     rowContainerWrap: {
         flexWrap: 'wrap',
         display: 'flex',
         flexDirection: 'row',
-        
+
         marginHorizontal: "auto",
     },
 
@@ -193,9 +206,9 @@ const GlobalStyles = StyleSheet.create({
     buttonWarning: {
         backgroundColor: warning,
     },
-  
+
     divCenter: {
-       
+
         justifyContent: 'center',
     },
 
@@ -219,7 +232,7 @@ const GlobalStyles = StyleSheet.create({
         alignSelf: "stretch",
         width: window.full,
         height: 300,
-      
+
     },
     camera: {
         flex: 1,
@@ -241,11 +254,30 @@ const GlobalStyles = StyleSheet.create({
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0
     },
     map: {
         width: '100%',
         height: '100%',
+        position: 'absolute',
+
     },
+
+    mapDetailsContainer: {
+
+        padding: medium,
+
+    },
+
+    flexRow: {
+        display: 'flex',
+        flexDirection: 'row',
+    },
+
     divLine: {
         borderBottomColor: gray,
         borderBottomWidth: StyleSheet.hairlineWidth,
@@ -267,25 +299,25 @@ const GlobalStyles = StyleSheet.create({
         borderWidth: 0.5,
         padding: 15,
         width: 150,
-      },
-      // Arrow below the bubble
-  arrow: {
-    backgroundColor: 'transparent',
-    borderColor: 'transparent',
-    borderTopColor: '#fff',
-    borderWidth: 16,
-    alignSelf: 'center',
-    marginTop: -32,
-  },
-  arrowBorder: {
-    backgroundColor: 'transparent',
-    borderColor: 'transparent',
-    borderTopColor: '#007a87',
-    borderWidth: 16,
-    alignSelf: 'center',
-    marginTop: -0.5,
-    // marginBottom: -15
-  },
+    },
+    // Arrow below the bubble
+    arrow: {
+        backgroundColor: 'transparent',
+        borderColor: 'transparent',
+        borderTopColor: '#fff',
+        borderWidth: 16,
+        alignSelf: 'center',
+        marginTop: -32,
+    },
+    arrowBorder: {
+        backgroundColor: 'transparent',
+        borderColor: 'transparent',
+        borderTopColor: '#007a87',
+        borderWidth: 16,
+        alignSelf: 'center',
+        marginTop: -0.5,
+        // marginBottom: -15
+    },
 
 });
 

@@ -1,12 +1,19 @@
 
 import React from 'react';
-import { StyleSheet, View, Dimensions, Alert } from 'react-native';
-import { Appbar, Card, Title, Button, Text, Divider } from 'react-native-paper';
+
+import { StyleSheet, View, Alert, ScrollView, Platform } from 'react-native';
+import { Card, Button, Title, Text, Divider, IconButton, MD3Colors, Modal, Portal, Provider } from 'react-native-paper';
+
 import MapView, { Marker, Callout, Geojson, Polyline } from 'react-native-maps';
 import { useEffect, useState } from 'react';
 import * as FileSystem from 'expo-file-system';
 import { gpsJsonToGoogleMarkers, gpsJsonToPolyline } from '../utils/geojson-utils';
 import GlobalStyles from '../styles/global-styles';
+
+import HYBRID_IMG from '../../assets/map/hybrid.jpg';
+import SATELLITE_IMG from '../../assets/map/satellite.jpg';
+import STANDARD_IMG from '../../assets/map/standard.jpg';
+import TERRAIN__IMG from '../../assets/map/terrain.jpg';
 
 const MapScreen = ({ route, navigation }) => {
     const { videoAsset } = route.params;
@@ -16,6 +23,13 @@ const MapScreen = ({ route, navigation }) => {
         latitudeDelta: 0,
         longitudeDelta: 0,
     });
+    const [mapStyle, setMapStyle] = useState({
+        id: 0,
+        name: 'Standard',
+        style: 'standard',
+        uri: STANDARD_IMG,
+    });
+    const [showMarkers, setShowMarkers] = useState(true);
     const [markers, setMarkers] = useState([]);
     const [geojsonData, setGeojsonData] = useState([]);
     const [lines, setLines] = useState({});
@@ -80,82 +94,184 @@ const MapScreen = ({ route, navigation }) => {
     }, [])
 
 
+    const mapStylesArray = [
+        {
+            id: 0,
+            name: 'Standard',
+            style: 'standard',
+            uri: STANDARD_IMG,
+        },
+        {
+            id: 1,
+            name: 'Satellite',
+            style: 'satellite',
+            uri: SATELLITE_IMG,
+        },
+        {
+            id: 2,
+            name: 'Hybrid',
+            style: 'hybrid',
+            uri: HYBRID_IMG,
+        },
+        {
+            id: 3,
+            name: 'Terrain',
+            style: 'terrain',
+            uri: TERRAIN__IMG,
+        }
+    ];
 
+    const changeMapStyle = (style) => {
+        setMapStyle(style);
+    };
+
+    const toggleMarkers = () => {
+        setShowMarkers(!showMarkers);
+    };
+
+
+    const [visible, setVisible] = useState(false);
+
+    const showModal = () => setVisible(true);
+    const hideModal = () => setVisible(false);
+    const containerStyle = { backgroundColor: 'white', padding: 20 };
 
     return (
-        <View style={GlobalStyles.container}>
-            <View style={[GlobalStyles.mapContainer]}>
-                <MapView style={GlobalStyles.map}
-                    region={mapRegion}
-                    showsBuildings={true}
-                    showsTraffic={true}
-                    showsMyLocationButton={true}
-                    mapType={'terrain'}
-                    showsCompass={true}
-                    toolbarEnabled={true}>
-
-                    {markers.length &&
-                        <Polyline
-                            coordinates={lines.lines}
-                            strokeColor="#000"
-                            strokeColors={lines.colors}
-                            strokeWidth={5}
-                        />
-
-                    }
+        <Provider>
+            <View style={GlobalStyles.container}>
 
 
-                    {markers.length &&
-                        markers.map((marker, index) => (
-                            <Marker
-                                key={index}
-                                coordinate={{
-                                    latitude: marker.latitude,
-                                    longitude: marker.longitude,
-                                }}
+                <View style={[GlobalStyles.container, GlobalStyles.mapContainer]}>
+                    <MapView style={GlobalStyles.map}
+                        region={mapRegion}
+                        showsBuildings={true}
+                        showsTraffic={true}
+                        showsMyLocationButton={true}
+                        showsUserLocation={true}
+                        mapType={mapStyle.style}
+                        showsCompass={true}
+                        toolbarEnabled={true}
+                        showsScale={true}
+                        rotateEnabled={true}
+                        loadingEnabled={true}
+                        loadingIndicatorColor={MD3Colors.blue500}
+                        isAccessibilityElement={true}
 
-                                title={marker.title}
-                                description={marker.subtitle}
-                                pinColor={marker.color}
-                            >
+                        >
+
+                        {(markers.length && showMarkers) &&
+                            <Polyline
+                                coordinates={lines.lines}
+                                strokeColor="#000"
+                                strokeColors={lines.colors}
+                                strokeWidth={5}
+                            />
+
+                        }
 
 
-                                <Callout tooltip>
-                                    <View>
 
-                                        <View style={[GlobalStyles.bubble]}>
+                        {(markers.length && showMarkers) &&
+                            markers.map((marker, index) => (
+                                <Marker
+                                    key={index}
+                                    coordinate={{
+                                        latitude: marker.latitude,
+                                        longitude: marker.longitude,
+                                    }}
+                                   
+                                    title={marker.title}
+                                    description={marker.subtitle}
+                                    pinColor={marker.color}
+                                >
 
-                                            <Text variant='titleMedium'>
-                                                {marker.title}
-                                            </Text>
-                                            <Text variant='labelSmall'>
-                                                Speed : {marker.subtitle}
-                                            </Text>
-                                            <Text variant='labelSmall'>
-                                                Heading : {marker.heading}
-                                            </Text>
-                                            <Text variant='labelSmall'>
-                                                Altitude : {marker.altitude}
-                                            </Text>
 
+                                    <Callout tooltip>
+                                        <View>
+
+                                            <View style={[GlobalStyles.bubble]}>
+
+                                                <Text variant='titleMedium'>
+                                                    {marker.title}
+                                                </Text>
+                                                <Text variant='labelSmall'>
+                                                    Speed : {marker.subtitle}
+                                                </Text>
+                                                <Text variant='labelSmall'>
+                                                    Heading : {marker.heading}
+                                                </Text>
+                                                <Text variant='labelSmall'>
+                                                    Altitude : {marker.altitude}
+                                                </Text>
+
+
+                                            </View>
+
+                                            <View style={[GlobalStyles.arrowBorder]} />
+                                            <View style={[GlobalStyles.arrow]} />
 
                                         </View>
 
-                                        <View style={[GlobalStyles.arrowBorder]} />
-                                        <View style={[GlobalStyles.arrow]} />
+                                    </Callout>
 
-                                    </View>
+                                </Marker>
+                            )
+                            )
+                        }
+                    </MapView>
+                </View>
 
-                                </Callout>
+                <View style={[GlobalStyles.mapDetailsContainer, GlobalStyles.flexRow, GlobalStyles.divSpaceBetween]}>
 
-                            </Marker>
-                        )
-                        )
-                    }
-                </MapView>
+
+                    <Card style={[GlobalStyles.divDark, GlobalStyles.roundedTop, GlobalStyles.roundedBottom]} elevation={5}>
+
+                        <IconButton
+                            icon={'layers'}
+                            iconColor={MD3Colors.neutral100}
+                            size={22}
+                            onPress={showModal}
+                        />
+
+
+                        <IconButton
+                            icon={'map-marker'}
+                            iconColor={MD3Colors.neutral100}
+                            size={22}
+                            onPress={toggleMarkers}
+                        />
+
+                    </Card>
+
+                </View>
+
+
+
+
+                <Portal>
+                    <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
+                        <Card style={[GlobalStyles.divDark, GlobalStyles.roundedTop, GlobalStyles.roundedBottom]} elevation={5}>
+
+                            <Card.Content>
+                                <View style={[GlobalStyles.rowContainerWrap, GlobalStyles.divSpaceBetween]}>
+                                    {
+                                        mapStylesArray.map((mapStyle) => (
+                                            <Card key={mapStyle.id} mode="elevated" onPress={() => { changeMapStyle(mapStyle) }} style={[GlobalStyles.styleCard, GlobalStyles.borderRounded]}>
+                                                <Card.Cover source={mapStyle.uri} style={[GlobalStyles.styleCard, GlobalStyles.borderRounded]} />
+
+                                            </Card>
+                                        ))
+                                    }
+
+                                </View>
+                            </Card.Content>
+
+                        </Card>
+                    </Modal>
+                </Portal>
+
             </View>
-        </View>
-
+        </Provider>
     )
 }
 
