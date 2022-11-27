@@ -239,6 +239,10 @@ const GlobalStyles = StyleSheet.create({
         justifyContent: 'space-between',
     },
 
+    alignCenter: {
+        alignItems: 'center',
+    },
+
 
     rowSpaceEven: {
         alignItems: 'center',

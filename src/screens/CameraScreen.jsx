@@ -27,7 +27,9 @@ const CameraScreen = ({ navigation }) => {
   const [hasLocationPermission, setHasLocationPermission] = useState();
   const [isRecording, setIsRecording] = useState(false);
   const [video, setVideo] = useState();
-  const [settings, setSettings] = useState(DEFAULT_CAMERA_SETTINGS)
+  const [settings, setSettings] = useState(DEFAULT_CAMERA_SETTINGS);
+
+  const [initialLocationTracker, setInitialLocationTracker] = useState();
 
 
   const saveVideoData = async (recordedVideo, gpsLocations) => {
@@ -73,6 +75,10 @@ const CameraScreen = ({ navigation }) => {
   let recordVideo = async () => {
     if (!cameraRef) return;
 
+    if(setInitialLocationTracker){
+      setInitialLocationTracker(null)
+    }
+
     //* Clear Locations and Video
     setVideo(null);
     //* Set Location subscription
@@ -114,21 +120,33 @@ const CameraScreen = ({ navigation }) => {
     setHasMediaLibraryPermission(mediaLibraryPermission.status === "granted");
     setHasLocationPermission(locationPermission.status === "granted");
 
-
-    // setInitialValues();
   }
 
   const setInitialValues = async () => {
-
     try {
       let tempSettings = await AsyncStorage.getItem('AMD_Settings')
       tempSettings = JSON.parse(tempSettings)
-      if (tempSettings && Object.keys(tempSettings).length >= 1 && Object.getPrototypeOf(tempSettings) === Object.prototype) {
-        setSettings(tempSettings);
+      if (tempSettings) {
+        setSettings(tempSettings)
       }
       else {
         setSettings(DEFAULT_CAMERA_SETTINGS);
       }
+     
+      let location = await Location.watchPositionAsync(
+        {accuracy:Location.Accuracy.Highest, timeInterval: 1000, distanceInterval: 10},
+        (loc) => {
+          if(loc.coords.speed >= 5){
+            recordVideo();
+          }
+
+        
+        }
+      );
+      setInitialLocationTracker(location);
+        
+      
+
     } catch (err) {
       Alert.alert('Unable to load Settings')
     }
@@ -147,24 +165,24 @@ const CameraScreen = ({ navigation }) => {
     const updatedValue = updatedAttribute[key];
     const tempSettings = settings;
     tempSettings[key] = updatedValue;
-    console.log(tempSettings);
     setSettings(settings => ({
       ...settings,
       ...updatedAttribute
     }));
-    // setSettings(tempSettings);
     saveSetting(tempSettings);
-    console.log(settings);
   }
 
   useFocusEffect(
     useCallback(() => {
-      setInitialValues();
+      if (isFocused) {
+        setPermissions();
+        setInitialValues();
+      }
+   
     }, [])
   );
 
   useEffect(() => {
-    console.log("Acquiring Camera Setting...")
     setPermissions();
 
     const unsubscribe = navigation.addListener('focus', () => {
@@ -233,7 +251,7 @@ const CameraScreen = ({ navigation }) => {
 
 
         <View style={[GlobalStyles.rowSpaceEven, GlobalStyles.divBlack, GlobalStyles.flex1]}>
-          <View style={[GlobalStyles.divCenter, GlobalStyles.container]}>
+          <View style={[GlobalStyles.divCenter, GlobalStyles.alignCenter,  GlobalStyles.container]}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <Avatar.Image size={45} source={CAMERA_IMG} />
             </TouchableOpacity>
