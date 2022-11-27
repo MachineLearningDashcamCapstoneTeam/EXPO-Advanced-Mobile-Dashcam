@@ -157,12 +157,17 @@ export default function SettingsScreen({ navigation }) {
               Camera Settings
             </Text>
 
+            <SettingOptionItem
+              key={settings.loadCameraWhenApplicationStarts}
+              title={'Load Camera When Application Starts'}
+              settings={settings}
+              settingKey={'loadCameraWhenApplicationStarts'}
+              buttonsArray={loadCameraWhenApplicationStarts}
+              updateSetting={updateSetting}>
+ 
+            </SettingOptionItem>
 
-            {/* <SettingOptionItem key={settings} title={'load Camera When Application Starts'} settings={settings} settingValue={loadCameraWhenApplicationStarts} settingKey={'loadCameraWhenApplicationStarts'} buttonsArray={loadCameraWhenApplicationStarts} updateSetting={updateSetting}>
-
-            </SettingOptionItem> */}
-
-            <View style={[GlobalStyles.marginYsm]}>
+            {/* <View style={[GlobalStyles.marginYsm]}>
               <Text style={[GlobalStyles.paddingBsm]} variant='labelMedium'>
               Load Camera When Application Starts
               </Text>
@@ -171,7 +176,7 @@ export default function SettingsScreen({ navigation }) {
                 onValueChange={(loadCamera) => {updateSetting( 'loadCameraWhenApplicationStarts', loadCamera); setArbTrigger(loadCamera)}}
                 buttons={loadCameraWhenApplicationStarts}
               />
-            </View>
+            </View> */}
 
             <View style={[GlobalStyles.marginYsm]}>
               <Text style={[GlobalStyles.paddingBsm]} variant='labelMedium'>
