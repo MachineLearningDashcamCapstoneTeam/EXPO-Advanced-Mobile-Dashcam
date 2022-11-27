@@ -167,28 +167,6 @@ export default function SettingsScreen({ navigation }) {
  
             </SettingOptionItem>
 
-            {/* <View style={[GlobalStyles.marginYsm]}>
-              <Text style={[GlobalStyles.paddingBsm]} variant='labelMedium'>
-              Load Camera When Application Starts
-              </Text>
-              <SegmentedButtons
-                value={settings.loadCameraWhenApplicationStarts}
-                onValueChange={(loadCamera) => {updateSetting( 'loadCameraWhenApplicationStarts', loadCamera); setArbTrigger(loadCamera)}}
-                buttons={loadCameraWhenApplicationStarts}
-              />
-            </View> */}
-
-            {/* <View style={[GlobalStyles.marginYsm]}>
-              <Text style={[GlobalStyles.paddingBsm]} variant='labelMedium'>
-                Resolution
-              </Text>
-              <SegmentedButtons
-                value={settings.resolution}
-                onValueChange={(resolution) => {updateSetting('resolution', resolution); setArbTrigger(resolution)}}
-                buttons={resolutions}
-              />
-            </View> */}
-
             <SettingOptionItem
               key={settings.resolution}
               title={'Resolution'}
@@ -198,17 +176,6 @@ export default function SettingsScreen({ navigation }) {
               updateSetting={updateSetting}>
  
             </SettingOptionItem>
-
-            <View style={[GlobalStyles.marginYsm]}>
-              <Text style={[GlobalStyles.paddingBsm]} variant='labelMedium'>
-                Camera Type
-              </Text>
-              <SegmentedButtons
-                value={settings.cameraType}
-                onValueChange={(cameraType) => {updateSetting( 'cameraType', cameraType ); setArbTrigger(cameraType)}}
-                buttons={cameraTypes}
-              />
-            </View>
 
             <SettingOptionItem
               key={settings.cameraType}
@@ -231,29 +198,38 @@ export default function SettingsScreen({ navigation }) {
               />
             </View>
 
+            <SettingOptionItem
+              key={settings.zoomLevel}
+              title={'Camera Zoom'}
+              settings={settings}
+              settingKey={'zoomLevel'}
+              buttonsArray={zoomLevel}
+              updateSetting={updateSetting}>
+ 
+            </SettingOptionItem>
 
-            <View style={[GlobalStyles.marginYsm]}>
-              <Text style={[GlobalStyles.paddingBsm]} variant='labelMedium'>
-                Start Automatic Recording
-              </Text>
-              <SegmentedButtons
-                value={settings.automaticRecording}
-                onValueChange={(automaticRecording) => {updateSetting( 'automaticRecording', automaticRecording ), setArbTrigger(automaticRecording)}}
-                buttons={automaticRecordings}
 
-              />
-            </View>
-            <View style={[GlobalStyles.marginYsm]}>
-              <Text style={[GlobalStyles.paddingBsm]} variant='labelMedium'>
-                Max Video Duration
-              </Text>
-              <SegmentedButtons
-                value={settings.recordingLength}
-                onValueChange={(recordingLength) => {updateSetting( 'recordingLength', recordingLength ), setArbTrigger(recordingLength)}}
-                buttons={recordingLengths}
+            <SettingOptionItem
+              key={settings.automaticRecording}
+              title={'Start Automatic Recording'}
+              settings={settings}
+              settingKey={'automaticRecording'}
+              buttonsArray={automaticRecording}
+              updateSetting={updateSetting}>
+ 
+            </SettingOptionItem>
 
-              />
-            </View>
+
+            <SettingOptionItem
+              key={settings.recordingLength}
+              title={'Max Video Duration'}
+              settings={settings}
+              settingKey={'recordingLength'}
+              buttonsArray={recordingLength}
+              updateSetting={updateSetting}>
+ 
+            </SettingOptionItem>
+
             <View style={[GlobalStyles.marginYsm]}>
               <Text style={[GlobalStyles.paddingBsm]} variant='labelMedium'>
                 Max Video File Size
@@ -265,7 +241,15 @@ export default function SettingsScreen({ navigation }) {
               />
             </View>
 
-
+            <SettingOptionItem
+              key={settings.maxVideoFileSize}
+              title={'Max Video File Size'}
+              settings={settings}
+              settingKey={'maxVideoFileSize'}
+              buttonsArray={maxVideoFileSize}
+              updateSetting={updateSetting}>
+ 
+            </SettingOptionItem>
 
             <View style={[GlobalStyles.divLine, GlobalStyles.marginYsm]} />
 
@@ -273,17 +257,16 @@ export default function SettingsScreen({ navigation }) {
             <Text variant='titleLarge' >
               Network Settings
             </Text>
-            <View style={[GlobalStyles.marginYsm]}>
-              <Text style={[GlobalStyles.paddingBsm]} variant='labelMedium'>
-                Allow sharing and uploading with Mobile Data
-              </Text>
-              <SegmentedButtons
-                value={settings.allowUploadWithMobileData}
-                onValueChange={(allowUploadWithMobileData) => {updateSetting( 'allowUploadWithMobileData', allowUploadWithMobileData ); setArbTrigger(allowUploadWithMobileData)}}
-                buttons={allowUploadWithMobileData}
-              />
-            </View>
 
+            <SettingOptionItem
+              key={settings.allowUploadWithMobileData}
+              title={'Allow sharing and uploading with Mobile Data'}
+              settings={settings}
+              settingKey={'allowUploadWithMobileData'}
+              buttonsArray={allowUploadWithMobileData}
+              updateSetting={updateSetting}>
+ 
+            </SettingOptionItem>
             <View style={[GlobalStyles.divLine, GlobalStyles.marginYsm]} />
 
             {saveResetButtons()}
