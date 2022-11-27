@@ -178,7 +178,7 @@ export default function SettingsScreen({ navigation }) {
               />
             </View> */}
 
-            <View style={[GlobalStyles.marginYsm]}>
+            {/* <View style={[GlobalStyles.marginYsm]}>
               <Text style={[GlobalStyles.paddingBsm]} variant='labelMedium'>
                 Resolution
               </Text>
@@ -187,7 +187,18 @@ export default function SettingsScreen({ navigation }) {
                 onValueChange={(resolution) => {updateSetting('resolution', resolution); setArbTrigger(resolution)}}
                 buttons={resolutions}
               />
-            </View>
+            </View> */}
+
+            <SettingOptionItem
+              key={settings.resolution}
+              title={'Resolution'}
+              settings={settings}
+              settingKey={'resolution'}
+              buttonsArray={resolution}
+              updateSetting={updateSetting}>
+ 
+            </SettingOptionItem>
+
             <View style={[GlobalStyles.marginYsm]}>
               <Text style={[GlobalStyles.paddingBsm]} variant='labelMedium'>
                 Camera Type
@@ -198,6 +209,17 @@ export default function SettingsScreen({ navigation }) {
                 buttons={cameraTypes}
               />
             </View>
+
+            <SettingOptionItem
+              key={settings.cameraType}
+              title={'Camera Type'}
+              settings={settings}
+              settingKey={'cameraType'}
+              buttonsArray={cameraType}
+              updateSetting={updateSetting}>
+ 
+            </SettingOptionItem>
+
             <View style={[GlobalStyles.marginYsm]}>
               <Text style={[GlobalStyles.paddingBsm]} variant='labelMedium'>
                 Camera Zoom
