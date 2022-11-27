@@ -13,7 +13,6 @@ export default function SettingsScreen({ navigation }) {
 
 
   const [settings, setSettings] = useState(DEFAULT_CAMERA_SETTINGS);
-  //const [arbTrigger, setArbTrigger] = useState();
 
   const [loadCameraWhenApplicationStarts, setLoadCameraWhenApplicationStarts] = useState([
     { label: 'No', value: false },
@@ -31,7 +30,7 @@ export default function SettingsScreen({ navigation }) {
     { label: 'Back', value: 'Back' }
   ]);
 
-  const [zooms, setZoom] = useState([
+  const [zoomLevels, setZoomLevels] = useState([
     { label: 'No Zoom', value: 0 },
     { label: 'Medium', value: 0.5 },
     { label: 'Max Zoom', value: 1 }
@@ -56,7 +55,7 @@ export default function SettingsScreen({ navigation }) {
     { label: 'Yes', value: true },
   ]);
 
-  const [allowUploadWithMobileData, setAllowUploadWithMobileData] = useState([
+  const [allowUploadWithMobileDataButtons, setAllowUploadWithMobileDataButtons] = useState([
     { label: 'No', value: false },
     { label: 'Yes', value: true },
   ]);
@@ -106,17 +105,6 @@ export default function SettingsScreen({ navigation }) {
     setSettings(tempSettings);
     saveSetting(tempSettings);
 
-    // console.log (key)
-    // console.log(updatedValue)
-    // // const tempSettings = {
-    // //   ...settings,
-    // //   ...{key: updatedValue}
-    // // }
-    // const tempSettings = settings;
-    // tempSettings[key] = updatedValue;
-    // console.log(tempSettings);
-    // setSettings(tempSettings);
-    // saveSetting(tempSettings);
   }
 
   const resetSettings = async () => {
@@ -158,7 +146,7 @@ export default function SettingsScreen({ navigation }) {
             </Text>
 
             <SettingOptionItem
-              key={settings.loadCameraWhenApplicationStarts}
+           
               title={'Load Camera When Application Starts'}
               settings={settings}
               settingKey={'loadCameraWhenApplicationStarts'}
@@ -167,86 +155,66 @@ export default function SettingsScreen({ navigation }) {
  
             </SettingOptionItem>
 
-            <SettingOptionItem
-              key={settings.resolution}
+                 <SettingOptionItem
+             
               title={'Resolution'}
               settings={settings}
               settingKey={'resolution'}
-              buttonsArray={resolution}
+              buttonsArray={resolutions}
               updateSetting={updateSetting}>
  
             </SettingOptionItem>
 
             <SettingOptionItem
-              key={settings.cameraType}
+             
               title={'Camera Type'}
               settings={settings}
               settingKey={'cameraType'}
-              buttonsArray={cameraType}
+              buttonsArray={cameraTypes}
               updateSetting={updateSetting}>
  
             </SettingOptionItem>
 
-            <View style={[GlobalStyles.marginYsm]}>
-              <Text style={[GlobalStyles.paddingBsm]} variant='labelMedium'>
-                Camera Zoom
-              </Text>
-              <SegmentedButtons
-                value={settings.zoomLevel}
-                onValueChange={(zoomLevel) => {updateSetting( 'zoomLevel', zoomLevel ), setArbTrigger(zoomLevel)}}
-                buttons={zooms}
-              />
-            </View>
 
             <SettingOptionItem
-              key={settings.zoomLevel}
+           
               title={'Camera Zoom'}
               settings={settings}
               settingKey={'zoomLevel'}
-              buttonsArray={zoomLevel}
+              buttonsArray={zoomLevels}
               updateSetting={updateSetting}>
  
             </SettingOptionItem>
 
 
             <SettingOptionItem
-              key={settings.automaticRecording}
+             
               title={'Start Automatic Recording'}
               settings={settings}
               settingKey={'automaticRecording'}
-              buttonsArray={automaticRecording}
+              buttonsArray={automaticRecordings}
               updateSetting={updateSetting}>
  
             </SettingOptionItem>
 
 
             <SettingOptionItem
-              key={settings.recordingLength}
+              
               title={'Max Video Duration'}
               settings={settings}
               settingKey={'recordingLength'}
-              buttonsArray={recordingLength}
+              buttonsArray={recordingLengths}
               updateSetting={updateSetting}>
  
             </SettingOptionItem>
 
-            <View style={[GlobalStyles.marginYsm]}>
-              <Text style={[GlobalStyles.paddingBsm]} variant='labelMedium'>
-                Max Video File Size
-              </Text>
-              <SegmentedButtons
-                value={settings.maxVideoFileSize}
-                onValueChange={(maxVideoFileSize) => {updateSetting( 'maxVideoFileSize', maxVideoFileSize ), setArbTrigger(maxVideoFileSize)}}
-                buttons={maxVideoFileSizes}
-              />
-            </View>
 
             <SettingOptionItem
-              key={settings.maxVideoFileSize}
+         
               title={'Max Video File Size'}
               settings={settings}
               settingKey={'maxVideoFileSize'}
-              buttonsArray={maxVideoFileSize}
+              buttonsArray={maxVideoFileSizes}
               updateSetting={updateSetting}>
  
             </SettingOptionItem>
@@ -259,14 +227,16 @@ export default function SettingsScreen({ navigation }) {
             </Text>
 
             <SettingOptionItem
-              key={settings.allowUploadWithMobileData}
+            
               title={'Allow sharing and uploading with Mobile Data'}
               settings={settings}
               settingKey={'allowUploadWithMobileData'}
-              buttonsArray={allowUploadWithMobileData}
+              buttonsArray={allowUploadWithMobileDataButtons}
               updateSetting={updateSetting}>
  
             </SettingOptionItem>
+
+       
             <View style={[GlobalStyles.divLine, GlobalStyles.marginYsm]} />
 
             {saveResetButtons()}

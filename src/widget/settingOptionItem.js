@@ -10,7 +10,7 @@ const SettingOptionItem = ({title, settings, settingKey, buttonsArray, updateSet
 
 return ( 
 
-    <View key={settings[settingKey]} style={[GlobalStyles.marginYsm]}>
+    <View style={[GlobalStyles.marginYsm]}>
               <Text style={[GlobalStyles.paddingBsm]} variant='labelMedium'>
               {title}
               </Text>
