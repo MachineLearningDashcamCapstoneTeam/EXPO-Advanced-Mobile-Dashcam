@@ -39,7 +39,7 @@ const GoogleVideoCard = ({ file, deleteDriveFile }) => {
                 </View>
                 <View style={[GlobalStyles.divLine, GlobalStyles.marginYsm]} />
                 <View style={[GlobalStyles.marginYsm]}>
-                    <Button style={[GlobalStyles.buttonDangerOutline]} icon="delete" mode="outlined" onPress={() => deleteDriveFile(file)} > Delete</Button>
+                    <Button style={[GlobalStyles.buttonDangerOutline]} icon="delete" labelStyle={{ color: '#DF2935' }} mode="outlined" onPress={() => deleteDriveFile(file)} > Delete</Button>
                 </View>
             </Card.Content>
         </Card>

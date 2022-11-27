@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import * as MediaLibrary from 'expo-media-library'
 import { View, StyleSheet, Alert, ScrollView, Platform } from 'react-native';
-import { Card, Button, Title, Text } from 'react-native-paper';
+import { Card, Button, Title, Text, Divider, IconButton, MD3Colors } from 'react-native-paper';
 import { Video } from 'expo-av';
 import { timeStampToDate } from '../utils/fetch-time';
 import { shareAsync } from 'expo-sharing';
@@ -15,7 +15,7 @@ import { useContext } from 'react';
 import NetInfo from "@react-native-community/netinfo";
 import { DEFAULT_CAMERA_SETTINGS, ALBUM_NAME, AMD_SETTINGS, FAVORITE_VIDEOS_IDS } from '../constants';
 import * as Sharing from "expo-sharing";
-import {decode as atob, encode as btoa} from 'base-64'
+import { decode as atob, encode as btoa } from 'base-64'
 
 export default function VideoPlayerScreen({ route, navigation }) {
   const { accessTokenContextValue, setAccessTokenContextValue } = useContext(AccessContext);
@@ -84,7 +84,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
     if (connection.type === 'wifi' || settings.allowUploadWithMobileData) {
 
       //* Get the video
-      let videoAssetData = await FileSystem.readAsStringAsync(videoAsset.uri , { encoding: FileSystem.EncodingType.Base64 });
+      let videoAssetData = await FileSystem.readAsStringAsync(videoAsset.uri, { encoding: FileSystem.EncodingType.Base64 });
 
       //* Get the text file 
       const filename = `${FileSystem.documentDirectory}${videoAsset.filename}.txt`;
@@ -117,7 +117,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
       let connection = await NetInfo.fetch();
       if (connection.type === 'wifi' || settings.allowUploadWithMobileData) {
         const UTI = 'public.item';
-        await  Sharing.shareAsync(videoAsset.uri, {UTI});
+        await Sharing.shareAsync(videoAsset.uri, { UTI });
       }
       else {
         Alert.alert(`You are currently on a ${connection.type}! Your settings only allow uploading on a WIFI network.`);
@@ -184,78 +184,101 @@ export default function VideoPlayerScreen({ route, navigation }) {
   }
   return (
     <ScrollView style={GlobalStyles.container}>
-      <View style={[GlobalStyles.divDark, GlobalStyles.header, GlobalStyles.flex2]}>
+      <View style={[GlobalStyles.divDark, GlobalStyles.header, GlobalStyles.flex1]}>
 
-        <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant='titleMedium'>
+        <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant='titleLarge'>
           Created on: {timeStampToDate(video.creationTime)}
         </Text>
 
+        <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant="bodyMedium">
+          Local Videos are stored in the App's Documents Directory alongside a GeoJSON file.
+        </Text>
+
       </View>
-      <View style={GlobalStyles.flex5}>
 
-        <Card key={video.id} mode="elevated" style={[GlobalStyles.borderRounded, GlobalStyles.marginYsm]}>
+      <View style={[GlobalStyles.rowSpaceEven, GlobalStyles.divBlack]}>
+
+
+        <IconButton
+          icon={'trash-can-outline'}
+          iconColor={MD3Colors.neutral100}
+          size={22}
+          onPress={() => deleteVideo(video)}
+        />
+        <IconButton
+          icon={'map'}
+          iconColor={MD3Colors.neutral100}
+          size={22}
+          onPress={() => navigation.navigate('Map', { videoAsset: video })}
+        />
+
+        <LockButton savedFavoriteVideosIds={savedFavoriteVideosIds} videoAsset={video} deleteVideoFromFavoriteVideos={deleteVideoFromFavoriteVideos} saveVideoToSavedVideoIds={saveVideoToSavedVideoIds} />
+
+        <IconButton
+          icon={'share'}
+          iconColor={MD3Colors.neutral100}
+          size={22}
+          onPress={shareWithSimpleShare}
+        />
+
+      </View>
+
+
+      <Video
+        ref={videoPlayer}
+        style={GlobalStyles.video}
+        source={{ uri: (Platform.OS === "android") ? video.uri : video.localUri }}
+        useNativeControls
+        resizeMode='cover'
+        isLooping
+        onPlaybackStatusUpdate={status => setStatus(() => status)}
+      />
+
+
+      <View style={[GlobalStyles.flex1, GlobalStyles.divWhite]}>
+
+
+        <View style={[GlobalStyles.marginBsm]}>
+
+          <Text variant='bodyMedium'>
+            Duration: {video.duration}s
+          </Text>
+
+          <Text variant='bodyMedium'>
+            Size: {video.height} x {video.width}
+          </Text>
+
+          <Text variant='bodyMedium'>
+            Created on: {timeStampToDate(video.creationTime)}
+          </Text>
+
+          <Text variant='bodyMedium'>
+            Last Modified: {timeStampToDate(video.modificationTime)}
+          </Text>
+
+        </View>
+
+        <Card style={[GlobalStyles.divDark, GlobalStyles.roundedTop, GlobalStyles.roundedBottom]} elevation={5}>
+
           <Card.Content>
-
-
-
-            <View style={[GlobalStyles.rowContainerWrap, GlobalStyles.marginYsm]}>
-              <View style={GlobalStyles.buttonContainer}>
-                <LockButton savedFavoriteVideosIds={savedFavoriteVideosIds} videoAsset={video} deleteVideoFromFavoriteVideos={deleteVideoFromFavoriteVideos} saveVideoToSavedVideoIds={saveVideoToSavedVideoIds} />
-              </View>
-              <View style={GlobalStyles.buttonContainer}>
-                <Button style={[GlobalStyles.buttonMain, GlobalStyles.button]} icon="share" mode="contained" onPress={shareWithSimpleShare}>Share Video</Button>
-              </View>
-            </View>
-
-            <Video
-              ref={videoPlayer}
-              style={GlobalStyles.video}
-              source={{ uri: (Platform.OS === "android") ? video.uri : video.localUri }}
-              useNativeControls
-              resizeMode='cover'
-              isLooping
-              onPlaybackStatusUpdate={status => setStatus(() => status)}
-            />
-
-            <View style={[GlobalStyles.marginYsm]}>
-
-              <Text variant='labelMedium'>
-                Duration: {video.duration}s
-              </Text>
-
-              <Text variant='labelMedium'>
-                Size: {video.height} x {video.width}
-              </Text>
-
-              <Text variant='labelMedium'>
-                Created on: {timeStampToDate(video.creationTime)}
-              </Text>
-
-
-              <Text variant='labelMedium'>
-                Last Modified: {timeStampToDate(video.modificationTime)}
-              </Text>
-
-            </View>
+            <Text style={[GlobalStyles.whiteText]} variant="labelLarge">Uploading to the Cloud</Text>
+            <Divider style={[GlobalStyles.marginYsm]} />
+            <Text style={[GlobalStyles.whiteText]} variant="bodyMedium">Use the Upload to Google Drive Option to save your videos on the Cloud.</Text>
 
             <View style={[GlobalStyles.rowContainerWrap, GlobalStyles.marginYsm]}>
               {accessTokenContextValue && <View style={GlobalStyles.buttonContainer}>
                 <Button style={[GlobalStyles.buttonMain, GlobalStyles.button]} icon="share" mode="contained" onPress={saveToGoogleDrive} >Save to Google Drive</Button>
               </View>}
-
-              <View style={GlobalStyles.buttonContainer}>
-                <Button style={[GlobalStyles.button]} icon="map" mode="outlined" onPress={() => navigation.navigate('Map', { videoAsset: video })} >Map</Button>
-              </View>
-            </View>
-
-            <View style={[GlobalStyles.divLine, GlobalStyles.marginYsm]} />
-
-            <View style={[GlobalStyles.marginYsm]}>
-              <Button style={[GlobalStyles.buttonDangerOutline]} labelStyle={{ color: '#DF2935' }} icon="delete" mode="outlined" onPress={() => deleteVideo(video)} >Delete </Button>
             </View>
           </Card.Content>
+
         </Card>
+
+
+
       </View>
+
+
     </ScrollView>
   );
 }

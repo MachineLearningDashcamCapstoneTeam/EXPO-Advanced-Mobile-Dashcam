@@ -20,8 +20,8 @@ const Tab = createBottomTabNavigator();
 function Home() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name='Home' component={HomeScreen} />
-      <Stack.Screen name='Help' component={HelpScreen} />
+      <Stack.Screen name='Home' component={HomeScreen} options={{ headerShown: false }}/>
+      <Stack.Screen name='Help' component={HelpScreen} options={{ headerShown: false }}/>
     </Stack.Navigator>
   );
 }

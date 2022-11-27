@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEffect, useState, useContext } from 'react';
-import { View, Image } from 'react-native';
-import { Button, Text, Card } from 'react-native-paper';
+import { View, Image, ScrollView } from 'react-native';
+import { Button, Text, Card, Divider, Searchbar } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
@@ -25,6 +25,8 @@ function HomeScreen({ navigation }) {
   const [request, response, promptAsync] = Google.useAuthRequest(GOOGLE_CONFIG);
   const [settings, setSettings] = useState(DEFAULT_CAMERA_SETTINGS)
 
+  const [searchQuery, setSearchQuery] = useState('');
+  const onChangeSearch = query => setSearchQuery(query);
 
   useEffect(() => {
     checkIfUserLoggedIn();
@@ -84,30 +86,48 @@ function HomeScreen({ navigation }) {
   return (
     <View style={[GlobalStyles.container]}>
 
-
-      <Image blurRadius={1} source={HEADER_IMG} style={[GlobalStyles.header, GlobalStyles.flex2, GlobalStyles.roundedBottom]} />
-
-
-      <View style={[GlobalStyles.paddingYmd, GlobalStyles.flex4, GlobalStyles.roundedTop, GlobalStyles.divWhite, GlobalStyles.divCenter]}>
-
-        <Text style={[GlobalStyles.textCenter, GlobalStyles.textBold, GlobalStyles.marginBsm]}>Access the Application</Text>
-
-        <Button style={GlobalStyles.buttonLg} icon="camera" mode="contained" onPress={() => navigation.navigate('Camera')}>
-          Camera
-        </Button>
-        <Button style={GlobalStyles.buttonLg} icon="format-list-bulleted" mode="outlined" onPress={() => navigation.navigate('Videos')}>
-          Videos
-        </Button>
-        <Button style={GlobalStyles.buttonLg} icon="cog" mode="outlined" onPress={() => navigation.navigate('Settings')}>
-          Settings
-        </Button>
+      <Image source={HEADER_IMG} style={[GlobalStyles.headerImage, GlobalStyles.flex1]} />
 
 
+
+
+
+
+      <View style={[GlobalStyles.flex4, GlobalStyles.roundedTop, GlobalStyles.divWhite]}>
+
+      <Searchbar
+          placeholder="Search"
+          onChangeText={onChangeSearch}
+          value={searchQuery}
+          style={[GlobalStyles.borderRounded, GlobalStyles.divWhite]}
+        />
+      
+        <View style={[GlobalStyles.divCenter, GlobalStyles.marginYlg]}>
+          <Button style={GlobalStyles.buttonLg} icon="camera" mode="contained" onPress={() => navigation.navigate('Camera')}>
+            Camera
+          </Button>
+          <Button style={GlobalStyles.buttonLg} icon="format-list-bulleted" mode="outlined" onPress={() => navigation.navigate('Videos')}>
+            Videos
+          </Button>
+          <Button style={GlobalStyles.buttonLg} icon="cog" mode="outlined" onPress={() => navigation.navigate('Settings')}>
+            Settings
+          </Button>
+        </View>
+
+        <Card style={[GlobalStyles.divDark, GlobalStyles.roundedTop, GlobalStyles.roundedBottom]} elevation={5}>
+
+          <Card.Content>
+            <Text style={[GlobalStyles.whiteText]} variant="labelLarge">Uploading to the Cloud</Text>
+            <Divider style={[GlobalStyles.marginYsm]} />
+            <Text style={[GlobalStyles.whiteText]} variant="bodyMedium">Use the Upload to Google Drive Option to save your videos on the Cloud.</Text>
+          </Card.Content>
+
+        </Card>
 
       </View>
 
 
-      <View style={[GlobalStyles.divDark, GlobalStyles.flex1, GlobalStyles.shadowLg, GlobalStyles.divCenter, GlobalStyles.roundedTop]}>
+      <View style={[GlobalStyles.divDark, GlobalStyles.flex1, GlobalStyles.shadowLg, GlobalStyles.divCenter]} elevation={5}>
         {showUserInfo()}
       </View>
 

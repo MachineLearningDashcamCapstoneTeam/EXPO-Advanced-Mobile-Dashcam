@@ -121,7 +121,7 @@ export default function RecordingsScreen({ navigation }) {
   const deleteDriveFile = async (file) => {
     const response = await deleteGoogleDriveFile(accessTokenContextValue, file.id);
     if (response.status === 204) {
-      
+
       let tempList = googleDriveFiles;
       tempList = tempList.filter(item => item.id !== file.id);
       setGoogleDriveFiles([...tempList])
@@ -143,8 +143,8 @@ export default function RecordingsScreen({ navigation }) {
             {
               value.map((file) => (
                 ((file.fileExtension === "MP4" || file.fileExtension === "mp4" || file.fileExtension === 'jpg') &&
-                <GoogleVideoCard key={file.id} file={file} deleteDriveFile={deleteDriveFile} />
-              )
+                  <GoogleVideoCard key={file.id} file={file} deleteDriveFile={deleteDriveFile} />
+                )
               ))
             }
           </View>
@@ -206,7 +206,7 @@ export default function RecordingsScreen({ navigation }) {
               );
             })}
 
-          </List.Section>    
+          </List.Section>
         </View>
       )
     }
@@ -215,7 +215,7 @@ export default function RecordingsScreen({ navigation }) {
     <ScrollView style={GlobalStyles.container}>
       <View style={[GlobalStyles.divDark, GlobalStyles.header, GlobalStyles.flex2]}>
         <Text variant='titleLarge' style={GlobalStyles.whiteText}>{selectedMenu === 0 ? 'Local Videos' : 'Cloud Videos'}</Text>
-        <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant='labelLarge'>
+        <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant="bodyMedium">
           {selectedMenu === 0 ? 'Local Videos are recordings and GPS Data saved on the phone. Use filters to swift through the recordings.' : 'Cloud Videos are recordings and GPS Data saved on Google Drive.'}
         </Text>
         {accessTokenContextValue &&

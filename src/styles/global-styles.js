@@ -142,10 +142,10 @@ const GlobalStyles = StyleSheet.create({
         marginVertical: 10,
     },
     marginYmd: {
-        marginBottom: 20,
+        marginVertical: 20,
     },
     marginYlg: {
-        marginBottom: 30,
+        marginVertical: 30,
     },
     divDark: {
         backgroundColor: dark,
@@ -219,7 +219,7 @@ const GlobalStyles = StyleSheet.create({
         alignSelf: "stretch",
         width: window.full,
         height: 300,
-        marginBottom: 10,
+      
     },
     camera: {
         flex: 1,
