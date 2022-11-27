@@ -44,21 +44,20 @@ const CameraScreen = ({ navigation }) => {
       const gpsData = gpsJsonToGeojson(gpsLocations)
       const fileUri = `${FileSystem.documentDirectory}${videoAsset.filename}.txt`;
       await FileSystem.writeAsStringAsync(fileUri, JSON.stringify(gpsData), { encoding: FileSystem.EncodingType.UTF8 });
-     
+
       if (expoAlbum) {
         await MediaLibrary.addAssetsToAlbumAsync([videoAsset], expoAlbum.id).then((result) => {
-          console.log(result)
+          
         });
 
-     
+
       } else {
         await MediaLibrary.createAlbumAsync(ALBUM_NAME, videoAsset).then((result) => {
-          console.log(result)
+          
         });
 
-       
-      }
 
+      }
 
       setVideo(null);
       if (settings.automaticRecording === true) {
@@ -74,41 +73,46 @@ const CameraScreen = ({ navigation }) => {
 
   let recordVideo = async () => {
     if (!cameraRef) return;
+    try {
 
-    if(setInitialLocationTracker){
-      setInitialLocationTracker(null)
-    }
-
-    //* Clear Locations and Video
-    setVideo(null);
-    //* Set Location subscription
-    //* Get location every second (1000 milliseconds)
-    const tempLocations = [];
-    let locSub = await Location.watchPositionAsync({
-      accuracy: Location.Accuracy.High,
-      timeInterval: 1000,
-      distanceInterval: 0
-    },
-      (location) => {
-        tempLocations.push(location);
+      if (setInitialLocationTracker) {
+        setInitialLocationTracker(null)
       }
-    );
-    //* Set the camera options and made sure exif data is set
-    let cameraOptions = {
-      quality: settings.resolution,
-      maxDuration: parseInt(settings.recordingLength) * 60,
-      mute: false,
-      exif: true,
+
+      //* Clear Locations and Video
+      setVideo(null);
+      //* Set Location subscription
+      //* Get location every second (1000 milliseconds)
+      const tempLocations = [];
+      let locSub = await Location.watchPositionAsync({
+        accuracy: Location.Accuracy.High,
+        timeInterval: 1000,
+        distanceInterval: 0
+      },
+        (location) => {
+          tempLocations.push(location);
+        }
+      );
+      //* Set the camera options and made sure exif data is set
+      let cameraOptions = {
+        quality: settings.resolution,
+        maxDuration: parseInt(settings.recordingLength) * 60,
+        mute: false,
+        exif: true,
+      };
+      setIsRecording(true);
+      await cameraRef.current.recordAsync(cameraOptions).then((recordedVideo) => {
+        setVideo(recordedVideo);
+        setIsRecording(false);
+        locSub.remove();
+        saveVideoData(recordedVideo, tempLocations)
+      }).catch((error) => {
+        console.error(error);
+      });
+    }
+    catch (err) {
+      
     };
-    setIsRecording(true);
-    await cameraRef.current.recordAsync(cameraOptions).then((recordedVideo) => {
-      setVideo(recordedVideo);
-      setIsRecording(false);
-      locSub.remove();
-      saveVideoData(recordedVideo, tempLocations)
-    }).catch((error) => {
-      console.error(error);
-    });
   };
   const setPermissions = async () => {
     const cameraPermission = await Camera.requestCameraPermissionsAsync();
@@ -132,20 +136,20 @@ const CameraScreen = ({ navigation }) => {
       else {
         setSettings(DEFAULT_CAMERA_SETTINGS);
       }
-     
+
       let location = await Location.watchPositionAsync(
-        {accuracy:Location.Accuracy.Highest, timeInterval: 1000, distanceInterval: 10},
+        { accuracy: Location.Accuracy.Highest, timeInterval: 1000, distanceInterval: 10 },
         (loc) => {
-          if(loc.coords.speed >= 5){
+          if (loc.coords.speed >= 5) {
             recordVideo();
           }
 
-        
+
         }
       );
       setInitialLocationTracker(location);
-        
-      
+
+
 
     } catch (err) {
       Alert.alert('Unable to load Settings')
@@ -178,7 +182,7 @@ const CameraScreen = ({ navigation }) => {
         setPermissions();
         setInitialValues();
       }
-   
+
     }, [])
   );
 
@@ -251,7 +255,7 @@ const CameraScreen = ({ navigation }) => {
 
 
         <View style={[GlobalStyles.rowSpaceEven, GlobalStyles.divBlack, GlobalStyles.flex1]}>
-          <View style={[GlobalStyles.divCenter, GlobalStyles.alignCenter,  GlobalStyles.container]}>
+          <View style={[GlobalStyles.divCenter, GlobalStyles.alignCenter, GlobalStyles.container]}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <Avatar.Image size={45} source={CAMERA_IMG} />
             </TouchableOpacity>
