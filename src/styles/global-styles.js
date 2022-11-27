@@ -27,6 +27,11 @@ const GlobalStyles = StyleSheet.create({
         width: windowWidth * 0.22,
     },
 
+    thirdFlex: {
+        marginHorizontal: 1,
+        width: windowWidth * 0.32,
+    },
+
     textGray: {
         color: gray,
     },
@@ -78,6 +83,25 @@ const GlobalStyles = StyleSheet.create({
     
         flex: 6,
         padding: medium,
+    },
+
+    shadowLg: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.8,
+        shadowRadius: 1, 
+       
+        elevation: 5
+    },
+
+    roundedTop:{
+        borderTopLeftRadius: border,
+        borderTopRightRadius: border,
+    },
+
+    roundedBottom:{
+        borderBottomLeftRadius: border,
+        borderBottomRightRadius: border,
     },
 
 
@@ -171,7 +195,7 @@ const GlobalStyles = StyleSheet.create({
     },
   
     divCenter: {
-        alignItems: 'center',
+       
         justifyContent: 'center',
     },
 

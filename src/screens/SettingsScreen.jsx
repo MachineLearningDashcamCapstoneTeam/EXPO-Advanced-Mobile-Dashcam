@@ -131,12 +131,7 @@ export default function SettingsScreen({ navigation }) {
 
   return (
     <ScrollView style={GlobalStyles.container}>
-      <View style={[GlobalStyles.divDark, GlobalStyles.header, GlobalStyles.flex1]}>
-        <Title style={GlobalStyles.whiteText}>Camera and Recording Settings</Title>
-        <Text style={GlobalStyles.whiteText} variant='labelLarge'>
-          Change your settings and then click save to apply.
-        </Text>
-      </View>
+      
       <View style={GlobalStyles.flex5}>
         <Card mode="elevated" style={[GlobalStyles.borderRounded, GlobalStyles.marginYsm]}>
 

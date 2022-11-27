@@ -43,6 +43,7 @@ export default function UserStack() {
     <AccessTokenContextProvider>
       <NavigationContainer>
         <Tab.Navigator
+         
           screenOptions={({ route }) => ({
             tabBarIcon: ({ focused, color, size }) => {
               let iconName;
@@ -64,10 +65,11 @@ export default function UserStack() {
             },
             tabBarActiveTintColor: 'blue',
             tabBarInactiveTintColor: 'gray',
+            tabBarShowLabel: false 
           })}
         >
           <Tab.Screen name="Main" component={Home} options={{ headerShown: false }} />
-          <Tab.Screen name="Camera" component={CameraScreen} />
+          <Tab.Screen name="Camera" component={CameraScreen}  options={{ headerShown: false }}/>
           <Tab.Screen name='Videos' component={Recordings} options={{ headerShown: false }} />
           <Tab.Screen name='Settings' component={SettingsScreen} />
         </Tab.Navigator>

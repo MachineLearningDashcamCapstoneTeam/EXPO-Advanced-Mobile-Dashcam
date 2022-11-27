@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEffect, useState, useContext } from 'react';
 import { View, Image } from 'react-native';
-import { Button } from 'react-native-paper';
+import { Button, Text, Card } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
@@ -9,15 +9,16 @@ import { DEFAULT_CAMERA_SETTINGS, GOOGLE_CONFIG } from '../constants';
 import { getGoogleUserInfo } from '../services/googleService';
 
 import { AccessContext } from '../context/accessTokenContext';
-import HEADER_IMG  from'../../assets/header.jpg';
+import HEADER_IMG from '../../assets/header.jpg';
 import GlobalStyles from '../styles/global-styles';
-import UserCard from '../widget/userCard';
-import CloudCard from '../widget/cloudCard';
+import UserCard from '../widget/home/userCard';
+import DefaultCard from '../widget/home/defaultCard';
 import { Alert } from 'react-native';
 
 WebBrowser.maybeCompleteAuthSession();
 
 function HomeScreen({ navigation }) {
+
   const { accessTokenContextValue, setAccessTokenContextValue } = useContext(AccessContext);
   const [user, setUser] = useState();
   const [accessToken, setAccessToken] = useState();
@@ -36,7 +37,7 @@ function HomeScreen({ navigation }) {
       let tempSettings = await AsyncStorage.getItem('AMD_Settings')
       tempSettings = JSON.parse(tempSettings)
       if (tempSettings && Object.keys(tempSettings).length >= 1 && Object.getPrototypeOf(tempSettings) === Object.prototype) {
-        if(tempSettings.loadCameraWhenApplicationStarts){
+        if (tempSettings.loadCameraWhenApplicationStarts) {
           navigation.navigate('Camera')
         }
       }
@@ -68,22 +69,28 @@ function HomeScreen({ navigation }) {
     setUser(data)
   };
 
+
+
   //* Show the user details only if the user exists. If not, show the default menu
   const showUserInfo = () => {
     if (user) {
       return <UserCard user={user} />
     }
     else {
-      return <CloudCard fetchGoogle={fetchGoogle} /> 
+      return <DefaultCard fetchGoogle={fetchGoogle} />
     }
   }
 
   return (
-    <View style={GlobalStyles.container}>
+    <View style={[GlobalStyles.container]}>
 
-      <Image blurRadius={1} source={HEADER_IMG} style={[GlobalStyles.header, GlobalStyles.flex2]} />
 
-      <View style={[GlobalStyles.divWhite, GlobalStyles.marginYsm, GlobalStyles.divSpaceBetween, GlobalStyles.flex3]}>
+      <Image blurRadius={1} source={HEADER_IMG} style={[GlobalStyles.header, GlobalStyles.flex2, GlobalStyles.roundedBottom]} />
+
+
+      <View style={[GlobalStyles.paddingYmd, GlobalStyles.flex4, GlobalStyles.roundedTop, GlobalStyles.divWhite, GlobalStyles.divCenter]}>
+
+        <Text style={[GlobalStyles.textCenter, GlobalStyles.textBold, GlobalStyles.marginBsm]}>Access the Application</Text>
 
         <Button style={GlobalStyles.buttonLg} icon="camera" mode="contained" onPress={() => navigation.navigate('Camera')}>
           Camera
@@ -94,15 +101,16 @@ function HomeScreen({ navigation }) {
         <Button style={GlobalStyles.buttonLg} icon="cog" mode="outlined" onPress={() => navigation.navigate('Settings')}>
           Settings
         </Button>
-        <Button style={GlobalStyles.buttonLg} icon="help-circle-outline" mode="outlined" onPress={() => navigation.navigate('Help')}>
-          App Help
-        </Button>
+
+
 
       </View>
 
-      
 
-      {showUserInfo()}
+      <View style={[GlobalStyles.divDark, GlobalStyles.flex1, GlobalStyles.shadowLg, GlobalStyles.divCenter, GlobalStyles.roundedTop]}>
+        {showUserInfo()}
+      </View>
+
     </View>
   );
 }
