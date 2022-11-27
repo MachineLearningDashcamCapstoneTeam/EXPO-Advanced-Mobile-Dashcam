@@ -13,7 +13,7 @@ export default function SettingsScreen({ navigation }) {
 
 
   const [settings, setSettings] = useState(DEFAULT_CAMERA_SETTINGS);
-  const [arbTrigger, setArbTrigger] = useState();
+  //const [arbTrigger, setArbTrigger] = useState();
 
   const [loadCameraWhenApplicationStarts, setLoadCameraWhenApplicationStarts] = useState([
     { label: 'No', value: false },
@@ -95,17 +95,28 @@ export default function SettingsScreen({ navigation }) {
   }, [])
 
   const updateSetting = (key, updatedValue) => {
-    console.log (key)
-    console.log(updatedValue)
-    // const tempSettings = {
-    //   ...settings,
-    //   ...{key: updatedValue}
-    // }
-    const tempSettings = settings;
-    tempSettings[key] = updatedValue;
-    console.log(tempSettings);
+
+    const tempSystem = {}
+    tempSystem[key] = updatedValue
+ 
+    const tempSettings = {
+      ...settings,
+      ...tempSystem
+    }
     setSettings(tempSettings);
     saveSetting(tempSettings);
+
+    // console.log (key)
+    // console.log(updatedValue)
+    // // const tempSettings = {
+    // //   ...settings,
+    // //   ...{key: updatedValue}
+    // // }
+    // const tempSettings = settings;
+    // tempSettings[key] = updatedValue;
+    // console.log(tempSettings);
+    // setSettings(tempSettings);
+    // saveSetting(tempSettings);
   }
 
   const resetSettings = async () => {

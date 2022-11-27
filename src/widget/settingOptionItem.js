@@ -6,7 +6,7 @@ import { Card, Button, Title, Text, Snackbar, SegmentedButtons, Divider } from '
 import GlobalStyles from '../styles/global-styles';
 import { DEFAULT_CAMERA_SETTINGS } from '../constants';
 
-const SettingOptionItem = ({title, settings, settingValue, settingKey, buttonsArray, updateSetting}) =>  {
+const SettingOptionItem = ({title, settings, settingKey, buttonsArray, updateSetting}) =>  {
 
 return ( 
 
@@ -16,7 +16,7 @@ return (
               </Text>
               <SegmentedButtons
                 value={settings[settingKey]}
-                onValueChange={(settingValue) => {updateSetting( settingKey, settingValue , setArbTrigger(settingValue))}}
+                onValueChange={(settingValue) => { updateSetting( settingKey, settingValue )}}
                 buttons={buttonsArray}
               />
             </View>
