@@ -29,7 +29,7 @@ function Home() {
 function Recordings() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name='Recordings' component={RecordingsScreen} />
+      <Stack.Screen name='Recordings' component={RecordingsScreen}  options={{ headerShown: false }}/>
       <Stack.Screen name="Video Player" component={VideoPlayerScreen} />
       <Stack.Screen name="Map" component={MapScreen} />
     </Stack.Navigator>
@@ -63,7 +63,7 @@ export default function UserStack() {
               // You can return any component that you like here!
               return <Ionicons name={iconName} size={size} color={color} />;
             },
-            tabBarActiveTintColor: 'blue',
+            tabBarActiveTintColor: '#142D5E',
             tabBarInactiveTintColor: 'gray',
             tabBarShowLabel: false 
           })}
@@ -71,7 +71,7 @@ export default function UserStack() {
           <Tab.Screen name="Main" component={Home} options={{ headerShown: false }} />
           <Tab.Screen name="Camera" component={CameraScreen}  options={{ headerShown: false }}/>
           <Tab.Screen name='Videos' component={Recordings} options={{ headerShown: false }} />
-          <Tab.Screen name='Settings' component={SettingsScreen} />
+          <Tab.Screen name='Settings' component={SettingsScreen}  options={{ headerShown: false }}/>
         </Tab.Navigator>
       </NavigationContainer>
     </AccessTokenContextProvider>

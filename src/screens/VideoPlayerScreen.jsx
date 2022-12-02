@@ -22,6 +22,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
   const { videoAsset } = route.params;
 
   const [video, setVideo] = useState({});
+  const [geojsonExists, setGeojsonExists] = useState(false);
   const videoPlayer = useRef(null);
   const [savedFavoriteVideosIds, setSavedFavoriteVideosIds] = useState([]);
   const [status, setStatus] = useState({});
@@ -53,6 +54,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
       else {
         setSettings(DEFAULT_CAMERA_SETTINGS);
       }
+
 
       setVideo(videoAsset);
     } catch (err) {
@@ -182,15 +184,27 @@ export default function VideoPlayerScreen({ route, navigation }) {
       Alert.alert("Video is Locked");
     }
   }
+
+
+
+  const getDotIfGeojsonExists = () => {
+    if (geojsonExists) {
+      return
+    }
+    else {
+      <Text style={[GlobalStyles.smallRedDot]} >{'\u2B24'}</Text>
+    }
+  }
+
   return (
     <ScrollView style={GlobalStyles.container}>
-      <View style={[GlobalStyles.divDark, GlobalStyles.header, GlobalStyles.flex1]}>
+      <View style={[GlobalStyles.divMain, GlobalStyles.paddingXmd, GlobalStyles.paddingYmd]}>
 
         <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant='titleLarge'>
           Created on: {timeStampToDate(video.creationTime)}
         </Text>
 
-        <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant="bodyMedium">
+        <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant="bodySmall">
           Local Videos are stored in the App's Documents Directory alongside a GeoJSON file.
         </Text>
 
@@ -237,47 +251,43 @@ export default function VideoPlayerScreen({ route, navigation }) {
 
       <View style={[GlobalStyles.flex1, GlobalStyles.divWhite]}>
 
-
-        <View style={[GlobalStyles.marginBsm]}>
-
-          <Text variant='bodyMedium'>
-            Duration: {video.duration}s
-          </Text>
-
-          <Text variant='bodyMedium'>
-            Size: {video.height} x {video.width}
-          </Text>
-
-          <Text variant='bodyMedium'>
-            Created on: {timeStampToDate(video.creationTime)}
-          </Text>
-
-          <Text variant='bodyMedium'>
-            Last Modified: {timeStampToDate(video.modificationTime)}
-          </Text>
-
-        </View>
-
-        <Card style={[GlobalStyles.divDark, GlobalStyles.roundedTop, GlobalStyles.roundedBottom]} elevation={5}>
-
+        <Card style={[GlobalStyles.divWhite,  GlobalStyles.roundedTop, GlobalStyles.roundedBottom]}>
           <Card.Content>
-            <Text style={[GlobalStyles.whiteText]} variant="labelLarge">Uploading to the Cloud</Text>
-            <Divider style={[GlobalStyles.marginYsm]} />
-            <Text style={[GlobalStyles.whiteText]} variant="bodyMedium">Use the Upload to Google Drive Option to save your videos on the Cloud.</Text>
 
+            <Text  variant='titleLarge'>
+              Details
+            </Text>
+
+            <Divider style={[ GlobalStyles.marginYsm]}  />
+
+            <Text variant='bodySmall'>
+              Duration: {video.duration}s
+            </Text>
+
+            <Text variant='bodySmall'>
+              Size: {video.height} x {video.width}
+            </Text>
+
+            <Text variant='bodySmall'>
+              Created on: {timeStampToDate(video.creationTime)}
+            </Text>
+
+
+            <Text variant='bodySmall' >
+            <Text style={[GlobalStyles.smallGreenDot]} >{'\u2B24'}</Text> GPS Data Exists</Text>
+
+              <Divider style={[ GlobalStyles.marginYsm]}  />
             <View style={[GlobalStyles.rowContainerWrap, GlobalStyles.marginYsm]}>
               {accessTokenContextValue && <View style={GlobalStyles.buttonContainer}>
-                <Button style={[GlobalStyles.buttonMain, GlobalStyles.button]} icon="share" mode="contained" onPress={saveToGoogleDrive} >Save to Google Drive</Button>
+                <Button style={[GlobalStyles.button]} icon="share" mode="contained" onPress={saveToGoogleDrive} >Save to Google Drive</Button>
               </View>}
             </View>
-          </Card.Content>
 
+          </Card.Content>
         </Card>
 
 
-
       </View>
-
 
     </ScrollView>
   );
