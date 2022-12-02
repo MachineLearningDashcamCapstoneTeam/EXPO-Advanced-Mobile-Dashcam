@@ -1,7 +1,7 @@
 import { StyleSheet, Dimensions } from 'react-native';
 const windowWidth = Dimensions.get('window').width;
-const main = 'rgb(41, 72, 161)';
-const gray = 'rgb(116, 116, 116)';
+const main = '#142D5E';
+const gray = '#F5F7FB';
 const white = 'rgb(255, 255, 255)';
 const dark = 'rgb(37, 37, 37)';
 const black = 'rgb(0,0,0)';
@@ -14,12 +14,16 @@ const navbarBlack = '#000000';
 const small = 10;
 const medium = 20;
 const large = 30;
-const border = 10;
+const border = 20;
 
 
 const GlobalStyles = StyleSheet.create({
     container: {
         flex: 1,
+    },
+
+    fontBold: {
+        fontWeight: '100',
     },
 
     quarterFlex: {
@@ -120,6 +124,7 @@ const GlobalStyles = StyleSheet.create({
 
     button: {
         padding: 1,
+        borderRadius: border/2,
     },
 
     buttonLg: {
@@ -127,6 +132,9 @@ const GlobalStyles = StyleSheet.create({
         marginBottom: 5,
     },
 
+    borderRoundedHalf: {
+        borderRadius: border/2,
+    },
 
 
     borderRounded: {
@@ -160,12 +168,26 @@ const GlobalStyles = StyleSheet.create({
     marginYlg: {
         marginVertical: 30,
     },
+    divGray: {
+        backgroundColor: gray,
+    },
+
     divDark: {
         backgroundColor: dark,
     },
     divMain: {
         backgroundColor: main,
     },
+
+    reactNativeShadow: {
+        shadowColor: black,
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.8,
+        shadowRadius: 1,
+
+        elevation: 5
+    },
+
     divSmoke: {
         backgroundColor: smoke,
     },
@@ -177,6 +199,25 @@ const GlobalStyles = StyleSheet.create({
     },
     divSpaceBetween: {
         justifyContent: 'space-between',
+    },
+
+    dividerWhite: {
+        color: white,
+        backgroundColor: white,
+    },
+
+    smallGreenDot: {
+        width: 10,
+        height: 10,
+        borderRadius: 10 / 2,
+        color: success,
+    },
+
+    smallRedDot: {
+        width: 10,
+        height: 10,
+        borderRadius: 10 / 2,
+        color: error,
     },
 
 
@@ -214,6 +255,14 @@ const GlobalStyles = StyleSheet.create({
 
     paddingBsm: {
         paddingBottom: 10,
+    },
+
+    paddingXsm: {
+        paddingHorizontal: 10,
+    },
+
+    paddingXmd: {
+        paddingHorizontal: 20,
     },
 
     paddingYsm: {
@@ -254,6 +303,10 @@ const GlobalStyles = StyleSheet.create({
     card: {
         marginBottom: 0,
     },
+
+
+
+    //* Map Styles
     mapContainer: {
         backgroundColor: '#fff',
         alignItems: 'center',
