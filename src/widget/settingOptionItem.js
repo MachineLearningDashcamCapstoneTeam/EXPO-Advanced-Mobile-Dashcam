@@ -6,21 +6,26 @@ import { Card, Button, Title, Text, Snackbar, SegmentedButtons, Divider } from '
 import GlobalStyles from '../styles/global-styles';
 import { DEFAULT_CAMERA_SETTINGS } from '../constants';
 
-const SettingOptionItem = ({title, settings, settingKey, buttonsArray, updateSetting}) =>  {
+const SettingOptionItem = ({ title, settings, settingKey, buttonsArray, updateSetting }) => {
 
-return ( 
+  return (
+    <View style={[GlobalStyles.marginYsm]} >
 
-    <View style={[GlobalStyles.marginYsm]}>
-              <Text style={[GlobalStyles.paddingBsm]} variant='labelMedium'>
-              {title}
-              </Text>
-              <SegmentedButtons
-                value={settings[settingKey]}
-                onValueChange={(settingValue) => { updateSetting( settingKey, settingValue )}}
-                buttons={buttonsArray}
-              />
-            </View>
-)
+
+  
+      <Text style={[GlobalStyles.paddingBsm]} variant='labelMedium'>
+        {title}
+      </Text>
+      <SegmentedButtons
+        activeSegmentBackgroundColor = '#142D5E'
+        value={settings[settingKey]}
+        onValueChange={(settingValue) => { updateSetting(settingKey, settingValue) }}
+        buttons={buttonsArray}
+      />
+
+    </View>
+   
+  )
 
 }
 

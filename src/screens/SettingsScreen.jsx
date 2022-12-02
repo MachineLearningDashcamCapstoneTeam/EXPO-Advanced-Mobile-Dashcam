@@ -8,6 +8,7 @@ import { DEFAULT_CAMERA_SETTINGS } from '../constants';
 import SettingOptionItem from '../widget/settingOptionItem';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function SettingsScreen({ navigation }) {
 
@@ -97,7 +98,7 @@ export default function SettingsScreen({ navigation }) {
 
     const tempSystem = {}
     tempSystem[key] = updatedValue
- 
+
     const tempSettings = {
       ...settings,
       ...tempSystem
@@ -130,115 +131,196 @@ export default function SettingsScreen({ navigation }) {
   }
 
   return (
-    <ScrollView style={GlobalStyles.container}>
-      
-      <View style={GlobalStyles.flex5}>
-        <Card mode="elevated" style={[GlobalStyles.borderRounded, GlobalStyles.marginYsm]}>
+    <SafeAreaView style={[GlobalStyles.container]}>
+      <ScrollView >
+        <View style={[GlobalStyles.divMain, GlobalStyles.paddingXmd, GlobalStyles.paddingYmd]}>
+          <Text variant='titleLarge' style={GlobalStyles.whiteText}>Settings</Text>
+          <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant="bodySmall">
+            The following settings will be used when you start a recording. You can change these settings at any time.
+          </Text>
+        </View>
 
-          <Card.Content>
-            <Text variant='titleLarge' >
-              Camera Settings
-            </Text>
-
-            <SettingOptionItem
-           
-              title={'Load Camera When Application Starts'}
-              settings={settings}
-              settingKey={'loadCameraWhenApplicationStarts'}
-              buttonsArray={loadCameraWhenApplicationStarts}
-              updateSetting={updateSetting}>
- 
-            </SettingOptionItem>
-
-                 <SettingOptionItem
-             
-              title={'Resolution'}
-              settings={settings}
-              settingKey={'resolution'}
-              buttonsArray={resolutions}
-              updateSetting={updateSetting}>
- 
-            </SettingOptionItem>
-
-            <SettingOptionItem
-             
-              title={'Camera Type'}
-              settings={settings}
-              settingKey={'cameraType'}
-              buttonsArray={cameraTypes}
-              updateSetting={updateSetting}>
- 
-            </SettingOptionItem>
+        <View style={[GlobalStyles.flex1]}>
 
 
-            <SettingOptionItem
-           
-              title={'Camera Zoom'}
-              settings={settings}
-              settingKey={'zoomLevel'}
-              buttonsArray={zoomLevels}
-              updateSetting={updateSetting}>
- 
-            </SettingOptionItem>
+          <Card style={[GlobalStyles.roundedTop, GlobalStyles.roundedBottom, GlobalStyles.divWhite, GlobalStyles.marginYsm]}>
+
+            <Card.Content>
+
+              <Text variant='titleLarge' >
+                Camera Settings
+              </Text>
+
+              <Divider style={[GlobalStyles.marginYsm]} />
+
+              <SettingOptionItem
+
+                title={'Load Camera When Application Starts'}
+                settings={settings}
+                settingKey={'loadCameraWhenApplicationStarts'}
+                buttonsArray={loadCameraWhenApplicationStarts}
+                updateSetting={updateSetting}>
+
+              </SettingOptionItem>
+
+              <SettingOptionItem
+
+                title={'Resolution'}
+                settings={settings}
+                settingKey={'resolution'}
+                buttonsArray={resolutions}
+                updateSetting={updateSetting}>
+
+              </SettingOptionItem>
+
+              <SettingOptionItem
+
+                title={'Camera Type'}
+                settings={settings}
+                settingKey={'cameraType'}
+                buttonsArray={cameraTypes}
+                updateSetting={updateSetting}>
+
+              </SettingOptionItem>
 
 
-            <SettingOptionItem
-             
-              title={'Start Automatic Recording'}
-              settings={settings}
-              settingKey={'automaticRecording'}
-              buttonsArray={automaticRecordings}
-              updateSetting={updateSetting}>
- 
-            </SettingOptionItem>
+              <SettingOptionItem
+
+                title={'Camera Zoom'}
+                settings={settings}
+                settingKey={'zoomLevel'}
+                buttonsArray={zoomLevels}
+                updateSetting={updateSetting}>
+
+              </SettingOptionItem>
 
 
-            <SettingOptionItem
-              
-              title={'Max Video Duration'}
-              settings={settings}
-              settingKey={'recordingLength'}
-              buttonsArray={recordingLengths}
-              updateSetting={updateSetting}>
- 
-            </SettingOptionItem>
+              <SettingOptionItem
+
+                title={'Start Automatic Recording'}
+                settings={settings}
+                settingKey={'automaticRecording'}
+                buttonsArray={automaticRecordings}
+                updateSetting={updateSetting}>
+
+              </SettingOptionItem>
 
 
-            <SettingOptionItem
-         
-              title={'Max Video File Size'}
-              settings={settings}
-              settingKey={'maxVideoFileSize'}
-              buttonsArray={maxVideoFileSizes}
-              updateSetting={updateSetting}>
- 
-            </SettingOptionItem>
+              <SettingOptionItem
 
-            <View style={[GlobalStyles.divLine, GlobalStyles.marginYsm]} />
+                title={'Max Video Duration'}
+                settings={settings}
+                settingKey={'recordingLength'}
+                buttonsArray={recordingLengths}
+                updateSetting={updateSetting}>
+
+              </SettingOptionItem>
 
 
-            <Text variant='titleLarge' >
-              Network Settings
-            </Text>
+              <SettingOptionItem
 
-            <SettingOptionItem
-            
-              title={'Allow sharing and uploading with Mobile Data'}
-              settings={settings}
-              settingKey={'allowUploadWithMobileData'}
-              buttonsArray={allowUploadWithMobileDataButtons}
-              updateSetting={updateSetting}>
- 
-            </SettingOptionItem>
+                title={'Max Video File Size'}
+                settings={settings}
+                settingKey={'maxVideoFileSize'}
+                buttonsArray={maxVideoFileSizes}
+                updateSetting={updateSetting}>
 
-       
-            <View style={[GlobalStyles.divLine, GlobalStyles.marginYsm]} />
+              </SettingOptionItem>
 
-            {saveResetButtons()}
-          </Card.Content>
-        </Card>
+            </Card.Content>
 
-      </View>
-    </ScrollView>
+          </Card>
+
+
+
+          <Card style={[GlobalStyles.roundedTop, GlobalStyles.roundedBottom, GlobalStyles.divWhite, GlobalStyles.marginYsm]}>
+
+            <Card.Content>
+
+              <Text variant='titleLarge' >
+                Network Settings
+              </Text>
+
+              <Divider style={[GlobalStyles.marginYsm]} />
+
+              <SettingOptionItem
+
+                title={'Allow sharing and uploading with Mobile Data'}
+                settings={settings}
+                settingKey={'allowUploadWithMobileData'}
+                buttonsArray={allowUploadWithMobileDataButtons}
+                updateSetting={updateSetting}>
+
+              </SettingOptionItem>
+
+            </Card.Content>
+          </Card>
+
+
+          <View style={[GlobalStyles.divLine, GlobalStyles.marginYsm]} />
+
+
+          <Card style={[GlobalStyles.divWhite, GlobalStyles.roundedTop, GlobalStyles.roundedBottom]}>
+            <Card.Content>
+
+              <Text variant='titleLarge'>
+                Details
+              </Text>
+
+              <Divider style={[GlobalStyles.marginYsm]} />
+
+              <Text variant='bodySmall'>
+                Load Camera When Application Starts: {settings.loadCameraWhenApplicationStarts ? 'Yes' : 'No'}
+              </Text>
+
+              <Text variant='bodySmall'>
+                Resolution: {settings.resolution}
+              </Text>
+
+              <Text variant='bodySmall'>
+                Camera Type: {settings.cameraType}
+              </Text>
+
+              <Text variant='bodySmall'>
+                Camera Zoom: {settings.zoomLevel}
+              </Text>
+
+              <Text variant='bodySmall'>
+                Start Automatic Recording: {settings.automaticRecording ? 'Yes' : 'No'}
+              </Text>
+
+              <Text variant='bodySmall'>
+                Max Video Duration: {settings.recordingLength}
+              </Text>
+
+              <Text variant='bodySmall'>
+                Max Video File Size: {settings.maxVideoFileSize}
+              </Text>
+
+              <Text variant='bodySmall'>
+                Allow sharing and uploading with Mobile Data: {settings.allowUploadWithMobileData ? 'Yes' : 'No'}
+              </Text>
+
+
+
+
+
+
+              <Divider style={[GlobalStyles.marginYsm]} />
+
+              {saveResetButtons()}
+
+
+            </Card.Content>
+          </Card>
+
+        </View>
+
+
+
+
+
+      </ScrollView>
+    </SafeAreaView>
   );
 }

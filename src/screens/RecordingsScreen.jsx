@@ -1,4 +1,4 @@
-import { Card, Button, Text, DataTable, List, Searchbar } from 'react-native-paper';
+import { Card, Button, Text, DataTable, List, Searchbar, Divider } from 'react-native-paper';
 import { View, ScrollView, Alert, Image } from 'react-native';
 import { useEffect, useState, useContext } from 'react';
 import * as MediaLibrary from 'expo-media-library';
@@ -10,6 +10,7 @@ import GoogleVideoCard from '../widget/googleVideoCard';
 import GlobalStyles from '../styles/global-styles';
 import LocalVideoCard from '../widget/localVideoCard';
 import RenderGoogleListItem from '../widget/googleVideoListItem';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function RecordingsScreen({ navigation }) {
   const { accessTokenContextValue, setAccessTokenContextValue } = useContext(AccessContext);
@@ -49,6 +50,7 @@ export default function RecordingsScreen({ navigation }) {
       Alert.alert("Unable to load Album");
     });
     if (accessTokenContextValue) {
+      console.log('Getting Google Drive Files')
       getDriveFiles();
     }
   }
@@ -110,7 +112,6 @@ export default function RecordingsScreen({ navigation }) {
   const getDriveFiles = async () => {
     const response = await getDashcamVideos(accessTokenContextValue);
     if (response.status === 200) {
-      console.log(response);
       let tempList = response.data.files;
       tempList = tempList.filter((videoFile) => videoFile.fileExtension === "MP4" || videoFile.fileExtension === "mp4");
       const groupedArray = groupGoogleFilesByTime(tempList);
@@ -212,14 +213,19 @@ export default function RecordingsScreen({ navigation }) {
     }
   }
   return (
-    <ScrollView style={GlobalStyles.container}>
-      <View style={[GlobalStyles.divDark, GlobalStyles.header, GlobalStyles.flex2]}>
+    <SafeAreaView style={GlobalStyles.container}>
+
+   
+    <ScrollView >
+      <View style={[GlobalStyles.divMain,  GlobalStyles.paddingXmd, GlobalStyles.paddingYmd]}>
         <Text variant='titleLarge' style={GlobalStyles.whiteText}>{selectedMenu === 0 ? 'Local Videos' : 'Cloud Videos'}</Text>
-        <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant="bodyMedium">
+        <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant="bodySmall">
           {selectedMenu === 0 ? 'Local Videos are recordings and GPS Data saved on the phone. Use filters to swift through the recordings.' : 'Cloud Videos are recordings and GPS Data saved on Google Drive.'}
         </Text>
+
+      
         {accessTokenContextValue &&
-          <Button style={GlobalStyles.button} icon="filter" mode="elevated" onPress={() => selectedMenu === 0 ? setSelectedMenu(1) : setSelectedMenu(0)} >{selectedMenu === 0 ? 'Cloud Videos' : 'Local Videos'}</Button>
+          <Button style={[GlobalStyles.button, GlobalStyles.divWhite]} icon="filter" mode="elevated" onPress={() => selectedMenu === 0 ? setSelectedMenu(1) : setSelectedMenu(0)} >{selectedMenu === 0 ? 'Cloud Videos' : 'Local Videos'}</Button>
         }
       </View>
 
@@ -231,10 +237,11 @@ export default function RecordingsScreen({ navigation }) {
           placeholder="Search"
           onChangeText={onChangeSearch}
           value={searchQuery}
-          style={[GlobalStyles.borderRounded, GlobalStyles.divWhite]}
+          style={[GlobalStyles.borderRoundedHalf, GlobalStyles.divWhite]}
         />
         {videoWidgets()}
       </View>
     </ScrollView>
+    </SafeAreaView>
   );
 }

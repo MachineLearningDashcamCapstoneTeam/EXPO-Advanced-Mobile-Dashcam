@@ -7,10 +7,7 @@ const DefaultCard = ({fetchGoogle}) => {
        
 
           <Button
-            style={GlobalStyles.button} icon="google" mode="elevated"
-            onPress={() => fetchGoogle()}>
-            Login to Google Drive
-          </Button>
+            style={GlobalStyles.button} icon="google" mode="elevated" onPress={fetchGoogle} >Sign in with Google</Button>
        
       );
 }

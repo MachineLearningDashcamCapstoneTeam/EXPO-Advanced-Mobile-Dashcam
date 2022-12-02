@@ -14,6 +14,7 @@ import GlobalStyles from '../styles/global-styles';
 import UserCard from '../widget/home/userCard';
 import DefaultCard from '../widget/home/defaultCard';
 import { Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -84,7 +85,8 @@ function HomeScreen({ navigation }) {
   }
 
   return (
-    <View style={[GlobalStyles.container]}>
+    <SafeAreaView  style={[GlobalStyles.container, GlobalStyles.divWhite]}>
+ 
 
       <Image source={HEADER_IMG} style={[GlobalStyles.headerImage, GlobalStyles.flex1]} />
 
@@ -95,31 +97,35 @@ function HomeScreen({ navigation }) {
 
       <View style={[GlobalStyles.flex4, GlobalStyles.roundedTop, GlobalStyles.divWhite]}>
 
-      <Searchbar
-          placeholder="Search"
-          onChangeText={onChangeSearch}
-          value={searchQuery}
-          style={[GlobalStyles.borderRounded, GlobalStyles.divWhite]}
-        />
-      
-        <View style={[GlobalStyles.divCenter, GlobalStyles.marginYlg]}>
-          <Button style={GlobalStyles.buttonLg} icon="camera" mode="contained" onPress={() => navigation.navigate('Camera')}>
-            Camera
-          </Button>
-          <Button style={GlobalStyles.buttonLg} icon="format-list-bulleted" mode="outlined" onPress={() => navigation.navigate('Videos')}>
-            Videos
-          </Button>
-          <Button style={GlobalStyles.buttonLg} icon="cog" mode="outlined" onPress={() => navigation.navigate('Settings')}>
-            Settings
-          </Button>
-        </View>
+      <Text variant='headlineMedium' style={[GlobalStyles.fontBold]} >
+          AM Dashcam
+        </Text>
 
-        <Card style={[GlobalStyles.divDark, GlobalStyles.roundedTop, GlobalStyles.roundedBottom]} elevation={5}>
+
+
+        <Card style={[GlobalStyles.divWhite, GlobalStyles.roundedTop, GlobalStyles.roundedBottom, GlobalStyles.marginYlg]} elevation={5}>
 
           <Card.Content>
-            <Text style={[GlobalStyles.whiteText]} variant="labelLarge">Uploading to the Cloud</Text>
-            <Divider style={[GlobalStyles.marginYsm]} />
-            <Text style={[GlobalStyles.whiteText]} variant="bodyMedium">Use the Upload to Google Drive Option to save your videos on the Cloud.</Text>
+            <View style={[GlobalStyles.divCenter]}>
+              <Button style={GlobalStyles.buttonLg} icon="camera" mode="contained" onPress={() => navigation.navigate('Camera')}>
+                Camera
+              </Button>
+              <Button style={[GlobalStyles.buttonLg, GlobalStyles.divWhite]} icon="format-list-bulleted" mode="outlined" onPress={() => navigation.navigate('Videos')}>
+                Videos
+              </Button>
+              <Button style={[GlobalStyles.buttonLg, GlobalStyles.divWhite]} icon="cog" mode="outlined" onPress={() => navigation.navigate('Settings')}>
+                Settings
+              </Button>
+            </View>
+          </Card.Content>
+        </Card>
+
+        <Card style={[GlobalStyles.divWhite, GlobalStyles.roundedTop, GlobalStyles.roundedBottom]} elevation={5}>
+
+          <Card.Content>
+            <Text  variant='titleMedium'>Uploading to the Cloud</Text>
+            <Divider style={[ GlobalStyles.marginYsm]}  />
+            <Text variant="bodySmall">Use the Upload to Google Drive Option to save your videos on the Cloud.</Text>
           </Card.Content>
 
         </Card>
@@ -127,11 +133,12 @@ function HomeScreen({ navigation }) {
       </View>
 
 
-      <View style={[GlobalStyles.divDark, GlobalStyles.flex1, GlobalStyles.shadowLg, GlobalStyles.divCenter]} elevation={5}>
+      <View style={[GlobalStyles.divMain, GlobalStyles.flex1, GlobalStyles.shadowLg, GlobalStyles.divCenter, GlobalStyles.roundedTop]} elevation={5}>
         {showUserInfo()}
       </View>
 
-    </View>
+    
+    </SafeAreaView>
   );
 }
 
