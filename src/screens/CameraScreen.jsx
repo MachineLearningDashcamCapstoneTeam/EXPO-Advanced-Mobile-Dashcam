@@ -2,7 +2,6 @@ import { StyleSheet, View, TouchableOpacity, Settings } from 'react-native';
 import { useEffect, useState, useRef, useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Camera, CameraType } from 'expo-camera';
-
 import * as MediaLibrary from 'expo-media-library';
 import * as Location from 'expo-location';
 import * as FileSystem from 'expo-file-system';
