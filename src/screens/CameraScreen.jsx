@@ -1,4 +1,4 @@
-import { StyleSheet, View, TouchableOpacity, Settings } from 'react-native';
+import { View, TouchableOpacity} from 'react-native';
 import { useEffect, useState, useRef, useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Camera, CameraType } from 'expo-camera';
