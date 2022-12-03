@@ -142,8 +142,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
 
       let connection = await NetInfo.fetch();
       if (connection.type === 'wifi' || settings.allowUploadWithMobileData) {
-        const UTI = 'public.item';
-        await Sharing.shareAsync(videoAsset.uri, { UTI });
+        await Sharing.shareAsync(videoAsset.uri);
       }
       else {
         Alert.alert(`You are currently on a ${connection.type}! Your settings only allow uploading on a WIFI network.`);
