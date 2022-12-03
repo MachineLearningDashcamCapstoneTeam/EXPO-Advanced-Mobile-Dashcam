@@ -191,9 +191,6 @@ export const uploadDashcamVideos = async (accessToken, videoAsset, videoAssetDat
             const cameraFolder = getObjectsWhereKeyEqualsValue(response.data.files, 'name', 'Dashcam')[0];
             if (cameraFolder) {
 
-                // console.log("videoAssetData", videoAssetData);
-                console.log(accessToken);
-
                 
                 let videoData = {
                     'name': `${timestampToDateTimeString(videoAsset.creationTime)}.mp4`,
