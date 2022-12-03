@@ -32,22 +32,16 @@ export default function RecordingsScreen({ navigation }) {
     }
   }
   const getAlbumData = async () => {
-    await MediaLibrary.getAlbumAsync(ALBUM_NAME).then((selectedAlbum) => {
-      return selectedAlbum;
-    }).then((selectedAlbum) => {
-      MediaLibrary.getAssetsAsync({ album: selectedAlbum.id, mediaType: 'video' }).then((assets) => {
-
-        let tempList = assets['assets'];
-        const groupedArray = groupByTime(tempList);
-        setVideos(groupedArray)
-
-      }).catch((error) => {
-        console.log(error)
-        Alert.alert("Unable to load Videos from the Album");
-      });
-    }).catch((error) => {
-      Alert.alert("Unable to load Album");
-    });
+    try {
+      const selectedAlbum = await MediaLibrary.getAlbumAsync(ALBUM_NAME);
+      const assets = await MediaLibrary.getAssetsAsync({ album: selectedAlbum.id, mediaType: 'video' });
+      const groupedArray = groupByTime(assets['assets']);
+      setVideos(groupedArray);
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Unable to load Videos from the Album");
+    }
+  
     if (accessTokenContextValue) {
       console.log('Getting Google Drive Files')
       getDriveFiles();
