@@ -184,98 +184,15 @@ const getContentLengthUsingRequestAndBase64 = (base64String) => {
 }
 
 
+
+
 export const uploadDashcamVideosAndGpsData = async (accessToken, videoAsset, videoAssetData, geojson) => {
     try {
         const response = await getGoogleDriveFolders(accessToken);
         if (response.status === 200) {
             const cameraFolder = getObjectsWhereKeyEqualsValue(response.data.files, 'name', 'Dashcam')[0];
-            if (cameraFolder) {
-
-                
-                let videoData = {
-                    'name': `${timestampToDateTimeString(videoAsset.creationTime)}.mp4`,
-                    'mimeType': 'video/mp4',
-                    'parents': [`${cameraFolder.id}`],
-                };
-
-
-                //* Create Resumable Post
-                const uploadResponseVideoPost = await axios({
-                    method: 'POST',
-                    url: GOOGLE_UPLOAD_URL,
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                        'Content-Type': 'application/json'
-                    },
-                    data: JSON.stringify(videoData),
-                });
-                const videoLocation = uploadResponseVideoPost.headers.location
-
-                videoAssetData = Buffer.from(videoAssetData, 'base64')
-                const fileSize = getContentLengthUsingRequestAndBase64(videoAssetData)
-                console.log("videoLocation", videoLocation);
-                console.log("fileSize", fileSize);
-                
-                const uploadResponseVideoPut = await axios({
-                    method: "PUT",
-                    url: videoLocation,
-                    headers: { 
-                        "Content-Length": fileSize,
-                       
-                    },
-                    data: videoAssetData,
-                });
-
-
-                
-
-                //* Prepare the Geojson Data
-                let geojsonData = {
-                    'name': `${timestampToDateTimeString(videoAsset.creationTime)}.geojson`,
-                    'mimeType': 'text/json',
-                    'parents': [`${cameraFolder.id}`],
-                };
-
-                //* Create Resumable Post
-                const uploadResponseGeojsonPost = await axios({
-                    method: 'POST',
-                    url: GOOGLE_UPLOAD_URL,
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                        'Content-Type': 'application/json'
-                    },
-                    data: JSON.stringify(geojsonData),
-                });
-                const geojsonLocation = uploadResponseGeojsonPost.request.responseHeaders.location;
-
-                //* Create resumable put
-                const uploadResponseGeojsonPut = await axios({
-                    method: "PUT",
-                    url: geojsonLocation,
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                        "Content-Length": `bytes ${geojsonData.length}`
-                    },
-                    data: Buffer.from(geojson),
-                });
-
-
-                return uploadResponseGeojsonPut;
-            }
-
-            const createResponse = await createDashcamFolder(accessToken);
-            if (createResponse === 200) {
-                getDashcamVideos(accessToken);
-            } else {
-                return createResponse;
-            }
-        }
-        return response;
-    } catch (error) {
-        console.log(error)
-        return error;
+ 
     }
 }
-
 
 export default getGoogleDriveFiles;
