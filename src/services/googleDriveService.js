@@ -211,6 +211,24 @@ export const uploadDashcamVideosAndGpsData = async (accessToken, videoAsset, vid
                 data: JSON.stringify(videoData),
             });
 
+            const geojsonLocation = uploadResponseGeojsonPost.request.responseHeaders.location;
+ 
+            //* Create resumable put
+            const uploadResponseGeojsonPut = await axios({
+                method: "PUT",
+                url: geojsonLocation,
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    "Content-Length": `bytes ${geojsonData.length}`
+                },
+                data: Buffer.from(geojson),
+            });
+
+
+            return uploadResponseGeojsonPut;
+        }
+
+
  
  
     }
