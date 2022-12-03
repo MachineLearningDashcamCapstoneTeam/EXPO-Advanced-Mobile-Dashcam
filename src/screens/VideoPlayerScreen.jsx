@@ -56,6 +56,8 @@ export default function VideoPlayerScreen({ route, navigation }) {
       }
 
 
+      loadGPSData();
+
       setVideo(videoAsset);
     } catch (err) {
       Alert.alert('Unable to load Settings')
@@ -77,6 +79,28 @@ export default function VideoPlayerScreen({ route, navigation }) {
     }
   }
 
+
+
+
+  let loadGPSData = async () => {
+    try {
+      //* Get the file from the documents directory
+      const filename = `${FileSystem.documentDirectory}${videoAsset.filename}.txt`;
+      const result = await FileSystem.readAsStringAsync(filename, {
+        encoding: FileSystem.EncodingType.UTF8
+      });
+      if (result) {
+        setGeojsonExists(true);
+      }
+      else {
+        setGeojsonExists(false);
+      }
+
+    }
+    catch (error) {
+      setGeojsonExists(false);
+    }
+  };
 
 
 
@@ -189,15 +213,15 @@ export default function VideoPlayerScreen({ route, navigation }) {
 
   const getDotIfGeojsonExists = () => {
     if (geojsonExists) {
-      return
+      return (<Text variant='bodySmall' style={[GlobalStyles.smallGreenDot]} >{'\u2B24'} GPS Data Exists</Text>)
     }
     else {
-      <Text style={[GlobalStyles.smallRedDot]} >{'\u2B24'}</Text>
+      return (<Text variant='bodySmall' style={[GlobalStyles.smallRedDot]} >{'\u2B24'} GPS Data does not exist</Text>)
     }
   }
 
   return (
-    <View  style={[GlobalStyles.container]}>
+    <ScrollView style={[GlobalStyles.container]}>
       <View style={[GlobalStyles.divMain, GlobalStyles.paddingXmd, GlobalStyles.paddingYmd]}>
 
         <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant='titleLarge'>
@@ -251,14 +275,14 @@ export default function VideoPlayerScreen({ route, navigation }) {
 
       <View style={[GlobalStyles.flex1, GlobalStyles.divWhite]}>
 
-        <Card style={[GlobalStyles.divWhite,  GlobalStyles.roundedTop, GlobalStyles.roundedBottom]}>
+        <Card style={[GlobalStyles.divWhite, GlobalStyles.roundedTop, GlobalStyles.roundedBottom]}>
           <Card.Content>
 
-            <Text  variant='titleLarge'>
+            <Text variant='titleLarge'>
               Details
             </Text>
 
-            <Divider style={[ GlobalStyles.marginYsm]}  />
+            <Divider style={[GlobalStyles.marginYsm]} />
 
             <Text variant='bodySmall'>
               Duration: {video.duration}s
@@ -273,10 +297,15 @@ export default function VideoPlayerScreen({ route, navigation }) {
             </Text>
 
 
-            <Text variant='bodySmall' >
-            <Text style={[GlobalStyles.smallGreenDot]} >{'\u2B24'}</Text> GPS Data Exists</Text>
 
-              <Divider style={[ GlobalStyles.marginYsm]}  />
+            <Text variant='bodySmall'>
+              {getDotIfGeojsonExists()}
+            </Text>
+
+
+
+
+            <Divider style={[GlobalStyles.marginYsm]} />
             <View style={[GlobalStyles.rowContainerWrap, GlobalStyles.marginYsm]}>
               {accessTokenContextValue && <View style={GlobalStyles.buttonContainer}>
                 <Button style={[GlobalStyles.button]} icon="share" mode="contained" onPress={saveToGoogleDrive} >Save to Google Drive</Button>
@@ -289,6 +318,6 @@ export default function VideoPlayerScreen({ route, navigation }) {
 
       </View>
 
-    </View>
+    </ScrollView>
   );
 }

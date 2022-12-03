@@ -18,7 +18,7 @@ const LoggingScreen = () => {
                 setLoggingMessages([]);
             }
         } catch (error) {
-            console.error(error);
+            setLoggingMessages([]);
         }
     }
 
@@ -26,22 +26,39 @@ const LoggingScreen = () => {
         getLoggingMessages();
     }, []);
 
-    const renderLoggingMessages = (messages) => {
-        return messages.map(message => (
-            <Card key={message.id} style={[GlobalStyles.roundedTop, GlobalStyles.roundedBottom, GlobalStyles.divWhite, GlobalStyles.marginYsm]}>
-                <Card.Content>
-                    <Text variant='bodySmall'>
-                        {message.message}
-                    </Text>
+    const renderLoggingMessages = () => {
+        if (loggingMessages.length) {
+            return (loggingMessages.map(message => (
+                <Card key={message.id} style={[GlobalStyles.roundedTop, GlobalStyles.roundedBottom, GlobalStyles.divWhite, GlobalStyles.marginYsm]}>
+                    <Card.Content>
+                        <Text variant='bodySmall'>
+                            {message.message}
+                        </Text>
+                        <Text variant='bodySmall'>
+                            {message.date}
+                        </Text>
+                    </Card.Content>
+                </Card>
 
-                    <Text variant='bodySmall'>
-                        {message.date}
-                    </Text>
-                </Card.Content>
-            </Card>
-
-        ));
+            )));
+        }
+        else {
+            return (
+                <Card style={[GlobalStyles.roundedTop, GlobalStyles.roundedBottom, GlobalStyles.divWhite, GlobalStyles.marginYsm]}>
+                    <Card.Content>
+                        <Text variant='titleLarge'>
+                            Details
+                        </Text>
+                        <Divider style={[GlobalStyles.marginYsm]} />
+                        <Text variant='bodySmall'>
+                            No logging messages found. Please try again later.
+                        </Text>
+                    </Card.Content>
+                </Card>
+            );
+        }
     }
+
 
     const clearLoggingMessages = async () => {
         try {
@@ -79,17 +96,9 @@ const LoggingScreen = () => {
                 </View>
 
 
-                <View style={[GlobalStyles.flex1, GlobalStyles.divWhite]}>
-                    {loggingMessages.length === 0 && <Text variant="bodySmall">No logging messages exist.</Text>}
-                    {loggingMessages.length && renderLoggingMessages(loggingMessages)}
-                    {loggingMessages.length && (
-                        <View style={[GlobalStyles.rowContainerWrap, GlobalStyles.marginYsm]}>
-                            <View style={GlobalStyles.buttonContainer}>
+                <View style={[GlobalStyles.flex1]}>
+                    {renderLoggingMessages()}
 
-                                <Button style={GlobalStyles.button} icon="restart" mode="outlined" onPress={clearLoggingMessages}>Clear Logging Messages</Button>
-                            </View>
-                        </View>
-                    )}
                 </View>
             </ScrollView>
         </View>
