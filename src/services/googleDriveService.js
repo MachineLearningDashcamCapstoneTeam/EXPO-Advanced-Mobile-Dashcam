@@ -211,6 +211,42 @@ export const uploadDashcamVideosAndGpsData = async (accessToken, videoAsset, vid
                 data: JSON.stringify(videoData),
             });
 
+            const videoLocation = uploadResponseVideoPost.headers.location
+
+            
+
+            videoAssetData = Buffer.from(videoAssetData, 'base64')
+            const fileSize = getContentLengthUsingRequestAndBase64(videoAssetData)
+            console.log("videoLocation", videoLocation);
+            console.log("fileSize", fileSize);
+           
+            const uploadResponseVideoPut = await axios({
+                method: "PUT",
+                url: videoLocation,
+                headers: {
+                    "Content-Length": fileSize,
+                  
+                },
+                data: videoAssetData,
+            });
+
+            //* Geojson Data Prep
+            let geojsonData = {
+                'name': `${timestampToDateTimeString(videoAsset.creationTime)}.geojson`,
+                'mimeType': 'text/json',
+                'parents': [`${cameraFolder.id}`],
+            };
+
+              //* Create Resumable Post
+              const uploadResponseGeojsonPost = await axios({
+                method: 'POST',
+                url: GOOGLE_UPLOAD_URL,
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                },
+                data: JSON.stringify(geojsonData),
+            });
             const geojsonLocation = uploadResponseGeojsonPost.request.responseHeaders.location;
  
             //* Create resumable put
@@ -224,13 +260,19 @@ export const uploadDashcamVideosAndGpsData = async (accessToken, videoAsset, vid
                 data: Buffer.from(geojson),
             });
 
-
             return uploadResponseGeojsonPut;
         }
-
-
- 
- 
+            const createResponse = await createDashcamFolder(accessToken);
+            if (createResponse === 200) {
+            getDashcamVideos(accessToken);
+            } else {
+                return createResponse;
+            }
+        }
+        return response;
+    } catch (error) {
+        console.log(error)
+        return error;
     }
 }
 
