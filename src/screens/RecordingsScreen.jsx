@@ -9,7 +9,6 @@ import { AccessContext } from '../context/accessTokenContext';
 import GoogleVideoCard from '../widget/googleVideoCard';
 import GlobalStyles from '../styles/global-styles';
 import LocalVideoCard from '../widget/localVideoCard';
-import RenderGoogleListItem from '../widget/googleVideoListItem';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function RecordingsScreen({ navigation }) {

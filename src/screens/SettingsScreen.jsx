@@ -1,8 +1,8 @@
 
-import { StyleSheet, View, ScrollView, Alert } from 'react-native';
-import { useEffect, useState, useRef } from 'react';
+import {  View, ScrollView, Alert } from 'react-native';
+import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { Card, Button, Title, Text, Snackbar, SegmentedButtons, Divider } from 'react-native-paper';
+import { Card, Button,Text, Divider } from 'react-native-paper';
 import GlobalStyles from '../styles/global-styles';
 import { DEFAULT_CAMERA_SETTINGS } from '../constants';
 import SettingOptionItem from '../widget/settingOptionItem';
