@@ -199,6 +199,18 @@ export const uploadDashcamVideosAndGpsData = async (accessToken, videoAsset, vid
                     'mimeType': 'video/mp4',
                     'parents': [`${cameraFolder.id}`],
                 };
+
+                //* Create Resumable Post
+               const uploadResponseVideoPost = await axios({
+                method: 'POST',
+                url: GOOGLE_UPLOAD_URL,
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                },
+                data: JSON.stringify(videoData),
+            });
+
  
  
     }
