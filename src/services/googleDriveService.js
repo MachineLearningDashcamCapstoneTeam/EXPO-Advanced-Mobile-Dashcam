@@ -191,6 +191,15 @@ export const uploadDashcamVideosAndGpsData = async (accessToken, videoAsset, vid
         const response = await getGoogleDriveFolders(accessToken);
         if (response.status === 200) {
             const cameraFolder = getObjectsWhereKeyEqualsValue(response.data.files, 'name', 'Dashcam')[0];
+            if (cameraFolder) {
+ 
+              
+                let videoData = {
+                    'name': `${timestampToDateTimeString(videoAsset.creationTime)}.mp4`,
+                    'mimeType': 'video/mp4',
+                    'parents': [`${cameraFolder.id}`],
+                };
+ 
  
     }
 }
