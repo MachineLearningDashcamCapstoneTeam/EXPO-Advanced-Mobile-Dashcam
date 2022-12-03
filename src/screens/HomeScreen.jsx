@@ -14,7 +14,7 @@ import GlobalStyles from '../styles/global-styles';
 import UserCard from '../widget/home/userCard';
 import DefaultCard from '../widget/home/defaultCard';
 import { Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+
 
 WebBrowser.maybeCompleteAuthSession();
 
