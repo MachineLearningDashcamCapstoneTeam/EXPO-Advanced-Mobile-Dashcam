@@ -131,7 +131,7 @@ export default function SettingsScreen({ navigation }) {
   }
 
   return (
-    <SafeAreaView style={[GlobalStyles.container]}>
+    <View  style={[GlobalStyles.container, GlobalStyles.statusbarMargin]}>
       <ScrollView >
         <View style={[GlobalStyles.divMain, GlobalStyles.paddingXmd, GlobalStyles.paddingYmd]}>
           <Text variant='titleLarge' style={GlobalStyles.whiteText}>Settings</Text>
@@ -321,6 +321,6 @@ export default function SettingsScreen({ navigation }) {
 
 
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }

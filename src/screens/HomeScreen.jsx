@@ -85,8 +85,8 @@ function HomeScreen({ navigation }) {
   }
 
   return (
-    <SafeAreaView  style={[GlobalStyles.container, GlobalStyles.divWhite]}>
- 
+    <View  style={[GlobalStyles.container, GlobalStyles.divWhite, GlobalStyles.statusbarMargin]}>
+
 
       <Image source={HEADER_IMG} style={[GlobalStyles.headerImage, GlobalStyles.flex1]} />
 
@@ -97,7 +97,7 @@ function HomeScreen({ navigation }) {
 
       <View style={[GlobalStyles.flex4, GlobalStyles.roundedTop, GlobalStyles.divWhite]}>
 
-      <Text variant='headlineMedium' style={[GlobalStyles.fontBold]} >
+        <Text variant='headlineMedium' style={[GlobalStyles.fontBold]} >
           AM Dashcam
         </Text>
 
@@ -113,9 +113,24 @@ function HomeScreen({ navigation }) {
               <Button style={[GlobalStyles.buttonLg, GlobalStyles.divWhite]} icon="format-list-bulleted" mode="outlined" onPress={() => navigation.navigate('Videos')}>
                 Videos
               </Button>
-              <Button style={[GlobalStyles.buttonLg, GlobalStyles.divWhite]} icon="cog" mode="outlined" onPress={() => navigation.navigate('Settings')}>
-                Settings
-              </Button>
+
+              <View style={[GlobalStyles.divSpaceBetween, GlobalStyles.flexRow]}>
+
+                <View style={[GlobalStyles.buttonContainer]}>
+                  <Button style={[GlobalStyles.buttonLg, GlobalStyles.divWhite]} icon="cog" mode="outlined" onPress={() => navigation.navigate('Settings')}>
+                    Settings
+                  </Button>
+
+                </View>
+                <View style={[GlobalStyles.buttonContainer]}>
+                  <Button style={[GlobalStyles.buttonLg, GlobalStyles.divWhite]} icon="information" mode="outlined" onPress={() => navigation.navigate('Logging')}>
+                    Logging
+                  </Button>
+
+                </View>
+
+              </View>
+
             </View>
           </Card.Content>
         </Card>
@@ -123,8 +138,8 @@ function HomeScreen({ navigation }) {
         <Card style={[GlobalStyles.divWhite, GlobalStyles.roundedTop, GlobalStyles.roundedBottom]} elevation={5}>
 
           <Card.Content>
-            <Text  variant='titleMedium'>Uploading to the Cloud</Text>
-            <Divider style={[ GlobalStyles.marginYsm]}  />
+            <Text variant='titleMedium'>Uploading to the Cloud</Text>
+            <Divider style={[GlobalStyles.marginYsm]} />
             <Text variant="bodySmall">Use the Upload to Google Drive Option to save your videos on the Cloud.</Text>
           </Card.Content>
 
@@ -137,8 +152,8 @@ function HomeScreen({ navigation }) {
         {showUserInfo()}
       </View>
 
-    
-    </SafeAreaView>
+
+    </View>
   );
 }
 

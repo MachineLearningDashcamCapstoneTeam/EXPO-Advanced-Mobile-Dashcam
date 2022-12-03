@@ -1,4 +1,5 @@
-import { StyleSheet, Dimensions } from 'react-native';
+import { StyleSheet, Dimensions , StatusBar} from 'react-native';
+
 const windowWidth = Dimensions.get('window').width;
 const main = '#142D5E';
 const gray = '#F5F7FB';
@@ -20,6 +21,11 @@ const border = 20;
 const GlobalStyles = StyleSheet.create({
     container: {
         flex: 1,
+       
+    },
+
+    statusbarMargin: {
+        marginTop: StatusBar.currentHeight
     },
 
     fontBold: {

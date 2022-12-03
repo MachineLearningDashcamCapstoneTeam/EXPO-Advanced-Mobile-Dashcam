@@ -9,6 +9,7 @@ import SettingsScreen from '../screens/SettingsScreen';
 import VideoPlayerScreen from '../screens/VideoPlayerScreen';
 import MapScreen from '../screens/MapScreen';
 import HelpScreen from '../screens/HelpScreen';
+import LoggingScreen from '../screens/LoggingScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AccessTokenContextProvider } from '../context/accessTokenContext';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -22,6 +23,7 @@ function Home() {
     <Stack.Navigator>
       <Stack.Screen name='Home' component={HomeScreen} options={{ headerShown: false }}/>
       <Stack.Screen name='Help' component={HelpScreen} options={{ headerShown: false }}/>
+    
     </Stack.Navigator>
   );
 }
@@ -58,6 +60,8 @@ export default function UserStack() {
                 iconName = focused ? 'ios-list' : 'ios-list-outline';
               } else if (route.name === 'Settings') {
                 iconName = focused ? 'ios-settings' : 'ios-settings-outline';
+              } else if (route.name === 'Logging') {
+                iconName = focused ? 'ios-information-circle-sharp' : 'ios-information-circle-outline';
               }
               
               // You can return any component that you like here!
@@ -72,6 +76,7 @@ export default function UserStack() {
           <Tab.Screen name="Camera" component={CameraScreen}  options={{ headerShown: false }}/>
           <Tab.Screen name='Videos' component={Recordings} options={{ headerShown: false }} />
           <Tab.Screen name='Settings' component={SettingsScreen}  options={{ headerShown: false }}/>
+          <Tab.Screen name='Logging' component={LoggingScreen} options={{ headerShown: false }} />
         </Tab.Navigator>
       </NavigationContainer>
     </AccessTokenContextProvider>

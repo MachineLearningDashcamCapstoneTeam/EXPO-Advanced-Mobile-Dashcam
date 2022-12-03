@@ -197,7 +197,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
   }
 
   return (
-    <ScrollView style={GlobalStyles.container}>
+    <View  style={[GlobalStyles.container]}>
       <View style={[GlobalStyles.divMain, GlobalStyles.paddingXmd, GlobalStyles.paddingYmd]}>
 
         <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant='titleLarge'>
@@ -289,6 +289,6 @@ export default function VideoPlayerScreen({ route, navigation }) {
 
       </View>
 
-    </ScrollView>
+    </View>
   );
 }

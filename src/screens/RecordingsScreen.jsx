@@ -213,7 +213,7 @@ export default function RecordingsScreen({ navigation }) {
     }
   }
   return (
-    <SafeAreaView style={GlobalStyles.container}>
+    <View  style={[GlobalStyles.container, GlobalStyles.statusbarMargin]}>
 
    
     <ScrollView >
@@ -242,6 +242,6 @@ export default function RecordingsScreen({ navigation }) {
         {videoWidgets()}
       </View>
     </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
