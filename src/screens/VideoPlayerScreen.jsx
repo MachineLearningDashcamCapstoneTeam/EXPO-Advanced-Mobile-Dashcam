@@ -9,7 +9,7 @@ import * as FileSystem from 'expo-file-system';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import GlobalStyles from '../styles/global-styles';
 import LockButton from '../widget/lockButton';
-import { uploadDashcamVideos, uploadGoogleDriveFile } from '../services/googleDriveService';
+import { uploadDashcamVideosAndGpsData, uploadGoogleDriveFile } from '../services/googleDriveService';
 import { AccessContext } from '../context/accessTokenContext';
 import { useContext } from 'react';
 import NetInfo from "@react-native-community/netinfo";
@@ -120,7 +120,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
 
 
       //* Upload the video
-      const response = await uploadDashcamVideos(accessTokenContextValue, videoAsset, videoAssetData, GeoJSON)
+      const response = await uploadDashcamVideosAndGpsData(accessTokenContextValue, videoAsset, videoAssetData, GeoJSON)
       if (response.status === 200) {
         Alert.alert("Successfully uploaded video to Google Drive");
       }

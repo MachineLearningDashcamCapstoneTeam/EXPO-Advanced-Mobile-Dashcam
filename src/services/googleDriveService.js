@@ -184,15 +184,12 @@ const getContentLengthUsingRequestAndBase64 = (base64String) => {
 }
 
 
-export const uploadDashcamVideos = async (accessToken, videoAsset, videoAssetData, geojson) => {
+export const uploadDashcamVideosAndGpsData = async (accessToken, videoAsset, videoAssetData, geojson) => {
     try {
         const response = await getGoogleDriveFolders(accessToken);
         if (response.status === 200) {
             const cameraFolder = getObjectsWhereKeyEqualsValue(response.data.files, 'name', 'Dashcam')[0];
             if (cameraFolder) {
-
-                // console.log("videoAssetData", videoAssetData);
-                console.log(accessToken);
 
                 
                 let videoData = {
