@@ -283,6 +283,7 @@ export const uploadDashcamVideosAndGPSData = async (
 
 export const uploadDashcamVideos = async (accessToken, videoAsset, videoAssetData) => {
   try {
+    //* get google drive folder "dashcam"
     const response = await getGoogleDriveFolders(accessToken);
     if (response.status === 200) {
       const cameraFolder = getObjectsWhereKeyEqualsValue(response.data.files, 'name', 'Dashcam')[0];
@@ -305,11 +306,9 @@ export const uploadDashcamVideos = async (accessToken, videoAsset, videoAssetDat
         });
 
         const videoLocation = uploadResponseVideoPost.headers.location;
-
+        //*convert video data to google drive type
         videoAssetData = Buffer.from(videoAssetData, 'base64');
         const fileSize = getContentLengthUsingRequestAndBase64(videoAssetData);
-        console.log('videoLocation', videoLocation);
-        console.log('fileSize', fileSize);
 
         const uploadResponseVideoPut = await axios({
           method: 'PUT',
