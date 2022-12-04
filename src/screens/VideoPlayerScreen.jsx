@@ -9,7 +9,7 @@ import * as FileSystem from 'expo-file-system';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import GlobalStyles from '../styles/global-styles';
 import LockButton from '../widget/lockButton';
-import { uploadDashcamVideosAndGpsData, uploadGoogleDriveFile } from '../services/googleDriveService';
+import { uploadDashcamVideosAndGpsData, uploadDashcamVideos } from '../services/googleDriveService';
 import { AccessContext } from '../context/accessTokenContext';
 import { useContext } from 'react';
 import NetInfo from "@react-native-community/netinfo";
@@ -118,7 +118,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
         encoding: FileSystem.EncodingType.UTF8
       });
 
-
+      if (GeoJSON){
       //* Upload the video
       const response = await uploadDashcamVideosAndGpsData(accessTokenContextValue, videoAsset, videoAssetData, GeoJSON)
       if (response.status === 200) {
@@ -127,6 +127,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
       else {
         console.log(response)
         Alert.alert('Unable to upload');
+      }
       }
 
     }
