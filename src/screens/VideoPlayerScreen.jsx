@@ -85,10 +85,10 @@ export default function VideoPlayerScreen({ route, navigation }) {
     try {
       //* Get the file from the documents directory
       const filename = `${FileSystem.documentDirectory}${videoAsset.filename}.txt`;
-      const result = await FileSystem.readAsStringAsync(filename, {
+      const geojson = await FileSystem.readAsStringAsync(filename, {
         encoding: FileSystem.EncodingType.UTF8,
       });
-      if (result) {
+      if (geojson) {
         setGeojsonExists(true);
       } else {
         setGeojsonExists(false);
@@ -113,12 +113,25 @@ export default function VideoPlayerScreen({ route, navigation }) {
       });
 
       if (GeoJSON) {
-        //* Upload the video
+        //* Upload the video with GeoJSON
         const response = await uploadDashcamVideosAndGpsData(
           accessTokenContextValue,
           videoAsset,
           videoAssetData,
           GeoJSON
+        );
+        if (response.status === 200) {
+          Alert.alert('Successfully uploaded video to Google Drive');
+        } else {
+          console.log(response);
+          Alert.alert('Unable to upload');
+        }
+      } else {
+        //* Upload the video without GeoJSON
+        const response = await uploadDashcamVideos(
+          accessTokenContextValue,
+          videoAsset,
+          videoAssetData
         );
         if (response.status === 200) {
           Alert.alert('Successfully uploaded video to Google Drive');
