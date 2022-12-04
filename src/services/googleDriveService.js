@@ -230,37 +230,9 @@ export const uploadDashcamVideosAndGpsData = async (accessToken, videoAsset, vid
                 data: videoAssetData,
             });
 
-            //* Geojson Data Prep
-            let geojsonData = {
-                'name': `${timestampToDateTimeString(videoAsset.creationTime)}.geojson`,
-                'mimeType': 'text/json',
-                'parents': [`${cameraFolder.id}`],
-            };
+        
 
-              //* Create Resumable Post
-              const uploadResponseGeojsonPost = await axios({
-                method: 'POST',
-                url: GOOGLE_UPLOAD_URL,
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                    'Content-Type': 'application/json'
-                },
-                data: JSON.stringify(geojsonData),
-            });
-            const geojsonLocation = uploadResponseGeojsonPost.request.responseHeaders.location;
- 
-            //* Create resumable put
-            const uploadResponseGeojsonPut = await axios({
-                method: "PUT",
-                url: geojsonLocation,
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                    "Content-Length": `bytes ${geojsonData.length}`
-                },
-                data: Buffer.from(geojson),
-            });
-
-            return uploadResponseGeojsonPut;
+            
         }
             const createResponse = await createDashcamFolder(accessToken);
             if (createResponse === 200) {
