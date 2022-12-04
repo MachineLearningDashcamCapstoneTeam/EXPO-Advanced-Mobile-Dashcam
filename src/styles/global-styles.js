@@ -353,6 +353,8 @@ const GlobalStyles = StyleSheet.create({
     divBlack: {
         backgroundColor: navbarBlack,
     },
+
+    //! Move these to map styles
     bubble: {
         flexDirection: 'column',
         alignSelf: 'flex-start',
@@ -363,7 +365,6 @@ const GlobalStyles = StyleSheet.create({
         padding: 15,
         width: 150,
     },
-    // Arrow below the bubble
     arrow: {
         backgroundColor: 'transparent',
         borderColor: 'transparent',
@@ -379,7 +380,6 @@ const GlobalStyles = StyleSheet.create({
         borderWidth: 16,
         alignSelf: 'center',
         marginTop: -0.5,
-        // marginBottom: -15
     },
 
 });
