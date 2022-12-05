@@ -22,7 +22,7 @@ function HomeScreen({ navigation }) {
 
   const { accessTokenContextValue, setAccessTokenContextValue } = useContext(AccessContext);
   const [user, setUser] = useState();
-  const [accessToken, setAccessToken] = useState();
+  
   const [request, response, promptAsync] = Google.useAuthRequest(GOOGLE_CONFIG);
   const [settings, setSettings] = useState(DEFAULT_CAMERA_SETTINGS)
 
@@ -55,7 +55,7 @@ function HomeScreen({ navigation }) {
   //* Check if the user already logged in with google
   const checkIfUserLoggedIn = () => {
     if (response?.type === "success") {
-      setAccessToken(response.authentication.accessToken);
+  
       setAccessTokenContextValue(response.authentication.accessToken);
       if (user === undefined) {
         getUserData(response.authentication.accessToken);
