@@ -1,15 +1,15 @@
-import { Card, Button, Text, DataTable, List, Searchbar, Divider } from 'react-native-paper';
-import { View, ScrollView, Alert, Image } from 'react-native';
+import {  Button, Text,  List, Searchbar } from 'react-native-paper';
+import { View, ScrollView, Alert } from 'react-native';
 import { useEffect, useState, useContext } from 'react';
 import * as MediaLibrary from 'expo-media-library';
-import { ALBUM_NAME, AMD_SETTINGS } from '../constants';
+import { ALBUM_NAME,  } from '../constants';
 import { groupByTime, groupGoogleFilesByTime, sortByLengthShortToLong, sortByLengthLongToShort, sortByTimeRecentToOldest, sortByTimeOldestToRecent } from '../utils/sorting-video-assets';
 import { getDashcamVideos, deleteGoogleDriveFile } from '../services/googleDriveService';
 import { AccessContext } from '../context/accessTokenContext';
 import GoogleVideoCard from '../widget/googleVideoCard';
 import GlobalStyles from '../styles/global-styles';
 import LocalVideoCard from '../widget/localVideoCard';
-import { SafeAreaView } from 'react-native-safe-area-context';
+
 
 export default function RecordingsScreen({ navigation }) {
   const { accessTokenContextValue, setAccessTokenContextValue } = useContext(AccessContext);

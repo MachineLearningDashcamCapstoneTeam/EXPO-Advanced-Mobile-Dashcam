@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, View, ScrollView } from 'react-native';
+import {  View, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { Card, Button, Title, Text, Snackbar, SegmentedButtons, Divider } from 'react-native-paper';
-import HEADER_IMG from '../../assets/header.jpg';
+import { Card,  Text,  Divider } from 'react-native-paper';
+
 import GlobalStyles from '../styles/global-styles';
 
 const LoggingScreen = () => {

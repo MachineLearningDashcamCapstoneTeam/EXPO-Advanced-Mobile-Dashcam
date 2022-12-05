@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEffect, useState, useContext } from 'react';
-import { View, Image, ScrollView } from 'react-native';
-import { Button, Text, Card, Divider, Searchbar } from 'react-native-paper';
+import { View, Image } from 'react-native';
+import { Button, Text, Card, Divider } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';

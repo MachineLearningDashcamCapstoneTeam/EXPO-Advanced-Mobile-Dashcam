@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import * as MediaLibrary from 'expo-media-library';
-import { View, StyleSheet, Alert, ScrollView, Platform } from 'react-native';
-import { Card, Button, Title, Text, Divider, IconButton, MD3Colors } from 'react-native-paper';
+import { View,  Alert, ScrollView, Platform } from 'react-native';
+import { Card, Button,  Text, Divider, IconButton, MD3Colors } from 'react-native-paper';
 import { Video } from 'expo-av';
 import { timeStampToDate } from '../utils/fetch-time';
 import { shareAsync } from 'expo-sharing';
