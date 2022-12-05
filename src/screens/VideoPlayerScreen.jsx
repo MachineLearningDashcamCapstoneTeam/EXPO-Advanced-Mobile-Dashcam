@@ -163,9 +163,10 @@ export default function VideoPlayerScreen({ route, navigation }) {
 
         const platform = Platform.OS;
         if (platform === 'android') {
-          await Sharing.shareAsync(videoAsset.uri);
+          await shareAsync(videoAsset.uri);
         } else if (platform === 'ios') {
-          await Sharing.shareAsync(videoAsset.localUri);
+          console.log(videoAsset)
+          await shareAsync(videoAsset.localUri);
         }
 
       } else {
