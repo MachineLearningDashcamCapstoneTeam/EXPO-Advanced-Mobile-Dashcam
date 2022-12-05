@@ -102,7 +102,16 @@ export default function VideoPlayerScreen({ route, navigation }) {
     let connection = await NetInfo.fetch();
     if (connection.type === 'wifi' || settings.allowUploadWithMobileData) {
       //* Get the video
-      let videoAssetData = await FileSystem.readAsStringAsync(videoAsset.uri, {
+
+      const uri = ''
+      const platform = Platform.OS;
+      if (platform === 'android') {
+        uri = videoAsset.uri;
+      } else if (platform === 'ios') {
+        uri = videoAsset.localUri;
+      }
+
+      let videoAssetData = await FileSystem.readAsStringAsync(uri, {
         encoding: FileSystem.EncodingType.Base64,
       });
 
@@ -151,8 +160,14 @@ export default function VideoPlayerScreen({ route, navigation }) {
     try {
       let connection = await NetInfo.fetch();
       if (connection.type === 'wifi' || settings.allowUploadWithMobileData) {
-        console.log(videoAsset.uri)
-        //await Sharing.shareAsync(videoAsset.uri);
+
+        const platform = Platform.OS;
+        if (platform === 'android') {
+          await Sharing.shareAsync(videoAsset.uri);
+        } else if (platform === 'ios') {
+          await Sharing.shareAsync(videoAsset.localUri);
+        }
+
       } else {
         Alert.alert(
           `You are currently on a ${connection.type}! Your settings only allow uploading on a WIFI network.`
