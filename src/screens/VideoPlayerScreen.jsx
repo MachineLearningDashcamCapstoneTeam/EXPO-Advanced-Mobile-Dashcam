@@ -30,7 +30,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
   const [geojsonExists, setGeojsonExists] = useState(false);
   const videoPlayer = useRef(null);
   const [savedFavoriteVideosIds, setSavedFavoriteVideosIds] = useState([]);
-  const [status, setStatus] = useState({});
+  
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
   const [settings, setSettings] = useState(DEFAULT_CAMERA_SETTINGS);
 
@@ -151,7 +151,8 @@ export default function VideoPlayerScreen({ route, navigation }) {
     try {
       let connection = await NetInfo.fetch();
       if (connection.type === 'wifi' || settings.allowUploadWithMobileData) {
-        await Sharing.shareAsync(videoAsset.uri);
+        console.log(videoAsset.uri)
+        //await Sharing.shareAsync(videoAsset.uri);
       } else {
         Alert.alert(
           `You are currently on a ${connection.type}! Your settings only allow uploading on a WIFI network.`
@@ -276,7 +277,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
         useNativeControls
         resizeMode="cover"
         isLooping
-        onPlaybackStatusUpdate={(status) => setStatus(() => status)}
+      
       />
 
       <View style={[GlobalStyles.flex1, GlobalStyles.divWhite]}>
