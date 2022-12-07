@@ -1,8 +1,8 @@
 
 import React from 'react';
-import { StyleSheet, View, Alert, ScrollView, Platform } from 'react-native';
-import { Card, Button, Title, Text, Divider, IconButton, MD3Colors, Modal, Portal, Provider } from 'react-native-paper';
-import MapView, { Marker, Callout, Geojson, Polyline, MarkerAnimated } from 'react-native-maps';
+import {  View, Alert } from 'react-native';
+import { Card,  Text,  IconButton, MD3Colors, Modal, Portal, Provider } from 'react-native-paper';
+import MapView, { Marker, Callout, Polyline} from 'react-native-maps';
 import { useEffect, useState } from 'react';
 import * as FileSystem from 'expo-file-system';
 import { gpsJsonToGoogleMarkers, gpsJsonToPolyline } from '../utils/geojson-utils';

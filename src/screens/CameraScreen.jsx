@@ -73,7 +73,8 @@ const CameraScreen = ({ navigation }) => {
     if (!cameraRef) return;
     try {
 
-      if (setInitialLocationTracker) {
+      if (initialLocationTracker) {
+        initialLocationTracker.remove()
         setInitialLocationTracker(null)
       }
 

@@ -8,7 +8,7 @@ import { DEFAULT_CAMERA_SETTINGS } from '../constants';
 import SettingOptionItem from '../widget/settingOptionItem';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
+
 
 export default function SettingsScreen({ navigation }) {
 
