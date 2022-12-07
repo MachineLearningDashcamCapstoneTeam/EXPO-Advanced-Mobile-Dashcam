@@ -1,8 +1,8 @@
 
 import React from 'react';
-import {  View, Alert } from 'react-native';
-import { Card,  Text,  IconButton, MD3Colors, Modal, Portal, Provider } from 'react-native-paper';
-import MapView, { Marker, Callout, Polyline} from 'react-native-maps';
+import { View, Alert } from 'react-native';
+import { Card, Text, IconButton, MD3Colors, Modal, Portal, Provider } from 'react-native-paper';
+import MapView, { Marker, Callout, Polyline } from 'react-native-maps';
 import { useEffect, useState } from 'react';
 import * as FileSystem from 'expo-file-system';
 import { gpsJsonToGoogleMarkers, gpsJsonToPolyline } from '../utils/geojson-utils';
@@ -14,7 +14,7 @@ import TERRAIN__IMG from '../../assets/map/terrain.jpg';
 const MapScreen = ({ route, navigation }) => {
     const { videoAsset } = route.params;
     const [mapRegion, setMapRegion] = useState({
-        latitude: 37.773972 , 
+        latitude: 37.773972,
         longitude: -122.4194,
         latitudeDelta: 0,
         longitudeDelta: 0,
@@ -40,23 +40,21 @@ const MapScreen = ({ route, navigation }) => {
             if (result) {
                 //* Get the gps data from json and set the initial map location
                 const gpsData = JSON.parse(result);
-                if (gpsData) {
-                    setMapRegion({
-                        latitude: gpsData.features[0].geometry.coordinates[1],
-                        longitude: gpsData.features[0].geometry.coordinates[0],
-                        latitudeDelta: 0.0922,
-                        longitudeDelta: 0.0421,
-                    })
-                    //* Create the google gps markers using the gps data
-                    const gpsMarkers = gpsJsonToGoogleMarkers(gpsData);
-                    const polylines = gpsJsonToPolyline(gpsData);
-                    setGeojsonData(gpsData);
-                    setLines(polylines);
-                    setMarkers(gpsMarkers);
-                }
-                else {
-                    throw 'No GPS Data exists'
-                }
+                if (gpsData === null) throw 'No GPS Data exists';
+
+                setMapRegion({
+                    latitude: gpsData.features[0].geometry.coordinates[1],
+                    longitude: gpsData.features[0].geometry.coordinates[0],
+                    latitudeDelta: 0.0922,
+                    longitudeDelta: 0.0421,
+                })
+                //* Create the google gps markers using the gps data
+                const gpsMarkers = gpsJsonToGoogleMarkers(gpsData);
+                const polylines = gpsJsonToPolyline(gpsData);
+                setGeojsonData(gpsData);
+                setLines(polylines);
+                setMarkers(gpsMarkers);
+
             }
             else {
                 setGeojsonData([]);

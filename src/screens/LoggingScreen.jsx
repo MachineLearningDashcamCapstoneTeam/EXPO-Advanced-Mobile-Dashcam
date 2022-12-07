@@ -12,11 +12,7 @@ const LoggingScreen = () => {
         try {
             const messages = await AsyncStorage.getItem('loggingMessages');
             const messagesArray = JSON.parse(messages);
-            if (messagesArray) {
-                setLoggingMessages(messagesArray);
-            } else {
-                setLoggingMessages([]);
-            }
+            messagesArray ? setLoggingMessages(messagesArray) : setLoggingMessages([]);
         } catch (error) {
             setLoggingMessages([]);
         }
@@ -86,8 +82,6 @@ const LoggingScreen = () => {
         <View style={[GlobalStyles.container, GlobalStyles.statusbarMargin]}>
             <ScrollView >
 
-
-
                 <View style={[GlobalStyles.divMain, GlobalStyles.paddingXmd, GlobalStyles.paddingYmd]}>
                     <Text variant='titleLarge' style={GlobalStyles.whiteText}>Logging Messages</Text>
                     <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant="bodySmall">
@@ -98,7 +92,6 @@ const LoggingScreen = () => {
 
                 <View style={[GlobalStyles.flex1]}>
                     {renderLoggingMessages()}
-
                 </View>
             </ScrollView>
         </View>
