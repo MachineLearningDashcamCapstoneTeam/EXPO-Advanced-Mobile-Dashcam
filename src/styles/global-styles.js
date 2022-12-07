@@ -1,5 +1,4 @@
 import { StyleSheet, Dimensions , StatusBar} from 'react-native';
-
 const windowWidth = Dimensions.get('window').width;
 const main = '#142D5E';
 const gray = '#F5F7FB';
@@ -17,31 +16,25 @@ const medium = 20;
 const large = 30;
 const border = 20;
 
-
 const GlobalStyles = StyleSheet.create({
     container: {
         flex: 1,
        
     },
-
     statusbarMargin: {
         marginTop: StatusBar.currentHeight
     },
-
     fontBold: {
         fontWeight: '100',
     },
-
     quarterFlex: {
         marginHorizontal: 1,
         width: windowWidth * 0.22,
     },
-
     thirdFlex: {
         marginHorizontal: 1,
         width: windowWidth * 0.32,
     },
-
     textGray: {
         color: gray,
     },
@@ -57,7 +50,6 @@ const GlobalStyles = StyleSheet.create({
     textWarning: {
         color: warning,
     },
-
     styleCard:{
         height: 50,
         width: 50,
@@ -65,23 +57,18 @@ const GlobalStyles = StyleSheet.create({
         
     },
 
-
     height100: {
         height: 90,
     },
-
     height50: {
         height: 50,
     },
-
     width50: {
         width: 50,
     },
-
     marginBsm: {
         marginBottom: small,
     },
-
     flex1: {
         flex: 1,
         padding: medium,
@@ -103,45 +90,36 @@ const GlobalStyles = StyleSheet.create({
         padding: medium,
     },
     flex6: {
-
         flex: 6,
         padding: medium,
     },
-
     shadowLg: {
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.8,
         shadowRadius: 1,
-
         elevation: 5
     },
-
     roundedTop: {
         borderTopLeftRadius: border,
         borderTopRightRadius: border,
     },
-
     roundedBottom: {
         borderBottomLeftRadius: border,
         borderBottomRightRadius: border,
     },
 
-
     button: {
         padding: 1,
         borderRadius: border/2,
     },
-
     buttonLg: {
         padding: 5,
         marginBottom: 5,
     },
-
     borderRoundedHalf: {
         borderRadius: border/2,
     },
-
 
     borderRounded: {
         borderRadius: border,
@@ -150,7 +128,6 @@ const GlobalStyles = StyleSheet.create({
         flex: 1,
         marginHorizontal: 2,
     },
-
     avatarContainer: {
         flex: 1,
         marginHorizontal: 2,
@@ -164,7 +141,6 @@ const GlobalStyles = StyleSheet.create({
         justifyContent: 'center',
     },
 
-
     marginYsm: {
         marginVertical: 10,
     },
@@ -177,23 +153,19 @@ const GlobalStyles = StyleSheet.create({
     divGray: {
         backgroundColor: gray,
     },
-
     divDark: {
         backgroundColor: dark,
     },
     divMain: {
         backgroundColor: main,
     },
-
     reactNativeShadow: {
         shadowColor: black,
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.8,
         shadowRadius: 1,
-
         elevation: 5
     },
-
     divSmoke: {
         backgroundColor: smoke,
     },
@@ -206,19 +178,16 @@ const GlobalStyles = StyleSheet.create({
     divSpaceBetween: {
         justifyContent: 'space-between',
     },
-
     dividerWhite: {
         color: white,
         backgroundColor: white,
     },
-
     smallGreenDot: {
         width: 10,
         height: 10,
         borderRadius: 10 / 2,
         color: success,
     },
-
     smallRedDot: {
         width: 10,
         height: 10,
@@ -226,15 +195,12 @@ const GlobalStyles = StyleSheet.create({
         color: error,
     },
 
-
     rowContainerWrap: {
         flexWrap: 'wrap',
         display: 'flex',
         flexDirection: 'row',
-
         marginHorizontal: "auto",
     },
-
     buttonMain: {
         backgroundColor: main,
     },
@@ -246,31 +212,24 @@ const GlobalStyles = StyleSheet.create({
         borderColor: error,
         backgroundColor: white,
     },
-
     buttonSuccess: {
         backgroundColor: success,
     },
     buttonWarning: {
         backgroundColor: warning,
     },
-
     divCenter: {
-
         justifyContent: 'center',
     },
-
     paddingBsm: {
         paddingBottom: 10,
     },
-
     paddingXsm: {
         paddingHorizontal: 10,
     },
-
     paddingXmd: {
         paddingHorizontal: 20,
     },
-
     paddingYsm: {
         paddingVertical: 10,
     },
@@ -287,17 +246,14 @@ const GlobalStyles = StyleSheet.create({
         alignSelf: "stretch",
         width: window.full,
         height: 300,
-
     },
     camera: {
         flex: 1,
         justifyContent: 'space-between',
     },
-
     alignCenter: {
         alignItems: 'center',
     },
-
 
     rowSpaceEven: {
         alignItems: 'center',
@@ -305,12 +261,9 @@ const GlobalStyles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
     },
-
     card: {
         marginBottom: 0,
     },
-
-
 
     //* Map Styles
     mapContainer: {
@@ -327,33 +280,24 @@ const GlobalStyles = StyleSheet.create({
         width: '100%',
         height: '100%',
         position: 'absolute',
-
     },
-
     mapDetailsContainer: {
-
         padding: medium,
-
     },
-
     flexRow: {
         display: 'flex',
         flexDirection: 'row',
     },
-
     divLine: {
         borderBottomColor: gray,
         borderBottomWidth: StyleSheet.hairlineWidth,
     },
-
     divBlackTrans: {
         backgroundColor: navbarBlackTrans,
     },
-
     divBlack: {
         backgroundColor: navbarBlack,
     },
-
     //! Move these to map styles
     bubble: {
         flexDirection: 'column',
@@ -381,7 +325,5 @@ const GlobalStyles = StyleSheet.create({
         alignSelf: 'center',
         marginTop: -0.5,
     },
-
 });
-
 export default GlobalStyles;

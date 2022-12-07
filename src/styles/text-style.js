@@ -10,13 +10,10 @@ const success = "#679436";
 const warning = "#FC9E4F";
 const smoke = 'rgb(250, 250, 250)';
 
-
 const TextStyles = StyleSheet.create({
-
     fontBold: {
         fontWeight: '100',
     },
-
     textGray: {
         color: gray,
     },
@@ -44,7 +41,6 @@ const TextStyles = StyleSheet.create({
     textSmoke: {
         color: smoke,
     },
-
     avatarContainer: {
         flex: 1,
         marginHorizontal: 2,
@@ -57,7 +53,6 @@ const TextStyles = StyleSheet.create({
         flex: 3,
         justifyContent: 'center',
     },
-
     dividerWhite: {
         color: white,
         backgroundColor: white,

@@ -1,5 +1,4 @@
 import { StyleSheet, Dimensions , StatusBar} from 'react-native';
-
 const windowWidth = Dimensions.get('window').width;
 const main = '#142D5E';
 const gray = '#F5F7FB';
@@ -17,9 +16,7 @@ const medium = 20;
 const large = 30;
 const border = 20;
 
-
 const MapStyles = StyleSheet.create({
-
     mapContainer: {
         backgroundColor: '#fff',
         alignItems: 'center',
@@ -34,15 +31,10 @@ const MapStyles = StyleSheet.create({
         width: '100%',
         height: '100%',
         position: 'absolute',
-
     },
-
     mapDetailsContainer: {
-
         padding: medium,
-
     },
-
     bubble: {
         flexDirection: 'column',
         alignSelf: 'flex-start',
@@ -69,7 +61,5 @@ const MapStyles = StyleSheet.create({
         alignSelf: 'center',
         marginTop: -0.5,
     },
-
 });
-
 export default MapStyles;

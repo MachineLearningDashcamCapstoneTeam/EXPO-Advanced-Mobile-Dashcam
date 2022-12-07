@@ -1,5 +1,4 @@
 import { StyleSheet, Dimensions , StatusBar} from 'react-native';
-
 const windowWidth = Dimensions.get('window').width;
 const main = '#142D5E';
 const gray = '#F5F7FB';
@@ -12,25 +11,20 @@ const warning = "#FC9E4F";
 const smoke = 'rgb(250, 250, 250)';
 const border = 20;
 
-
 const ButtonStyles = StyleSheet.create({
  
-
     button: {
         padding: 1,
         borderRadius: border/2,
     },
-
     buttonLg: {
         padding: 5,
         marginBottom: 5,
     },
-
     buttonContainer: {
         flex: 1,
         marginHorizontal: 2,
     },
-
 
     buttonMain: {
         backgroundColor: main,
@@ -41,18 +35,15 @@ const ButtonStyles = StyleSheet.create({
     buttonWhite: {
         backgroundColor: white,
     },
-
     buttonDark: {
         backgroundColor: dark,
     },
     buttonBlack: {
-
         backgroundColor: black,
     },
     buttonSmoke: {
         backgroundColor: smoke,
     },
-
     buttonDanger: {
         backgroundColor: error,
     },
@@ -61,14 +52,11 @@ const ButtonStyles = StyleSheet.create({
         borderColor: error,
         backgroundColor: white,
     },
-
     buttonSuccess: {
         backgroundColor: success,
     },
     buttonWarning: {
         backgroundColor: warning,
     },
-
 });
-
 export default ButtonStyles;

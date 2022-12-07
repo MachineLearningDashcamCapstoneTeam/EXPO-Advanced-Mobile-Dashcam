@@ -1,5 +1,4 @@
 import { StyleSheet, Dimensions , StatusBar} from 'react-native';
-
 const windowWidth = Dimensions.get('window').width;
 const main = '#142D5E';
 const gray = '#F5F7FB';
@@ -17,29 +16,23 @@ const medium = 20;
 const large = 30;
 const border = 20;
 
-
 const ContainerStyles = StyleSheet.create({
     container: {
         flex: 1,
        
     },
-
     statusbarMargin: {
         marginTop: StatusBar.currentHeight
     },
-
    
-
     quarterFlex: {
         marginHorizontal: 1,
         width: windowWidth * 0.22,
     },
-
     thirdFlex: {
         marginHorizontal: 1,
         width: windowWidth * 0.32,
     },
-
    
     styleCard:{
         height: 50,
@@ -48,23 +41,18 @@ const ContainerStyles = StyleSheet.create({
         
     },
 
-
     height100: {
         height: 90,
     },
-
     height50: {
         height: 50,
     },
-
     width50: {
         width: 50,
     },
-
     marginBsm: {
         marginBottom: small,
     },
-
     flex1: {
         flex: 1,
         padding: medium,
@@ -86,45 +74,36 @@ const ContainerStyles = StyleSheet.create({
         padding: medium,
     },
     flex6: {
-
         flex: 6,
         padding: medium,
     },
-
     shadowLg: {
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.8,
         shadowRadius: 1,
-
         elevation: 5
     },
-
     roundedTop: {
         borderTopLeftRadius: border,
         borderTopRightRadius: border,
     },
-
     roundedBottom: {
         borderBottomLeftRadius: border,
         borderBottomRightRadius: border,
     },
 
-
     button: {
         padding: 1,
         borderRadius: border/2,
     },
-
     buttonLg: {
         padding: 5,
         marginBottom: 5,
     },
-
     borderRoundedHalf: {
         borderRadius: border/2,
     },
-
 
     borderRounded: {
         borderRadius: border,
@@ -133,7 +112,6 @@ const ContainerStyles = StyleSheet.create({
         flex: 1,
         marginHorizontal: 2,
     },
-
 
     marginYsm: {
         marginVertical: 10,
@@ -147,14 +125,12 @@ const ContainerStyles = StyleSheet.create({
     divGray: {
         backgroundColor: gray,
     },
-
     divDark: {
         backgroundColor: dark,
     },
     divMain: {
         backgroundColor: main,
     },
-
     divSmoke: {
         backgroundColor: smoke,
     },
@@ -167,40 +143,30 @@ const ContainerStyles = StyleSheet.create({
     divSpaceBetween: {
         justifyContent: 'space-between',
     },
-
     dividerWhite: {
         color: white,
         backgroundColor: white,
     },
 
-
     rowContainerWrap: {
         flexWrap: 'wrap',
         display: 'flex',
         flexDirection: 'row',
-
         marginHorizontal: "auto",
     },
 
-
-
     divCenter: {
-
         justifyContent: 'center',
     },
-
     paddingBsm: {
         paddingBottom: 10,
     },
-
     paddingXsm: {
         paddingHorizontal: 10,
     },
-
     paddingXmd: {
         paddingHorizontal: 20,
     },
-
     paddingYsm: {
         paddingVertical: 10,
     },
@@ -211,11 +177,9 @@ const ContainerStyles = StyleSheet.create({
         paddingVertical: 30,
     },
 
-
     alignCenter: {
         alignItems: 'center',
     },
-
 
     rowSpaceEven: {
         alignItems: 'center',
@@ -223,28 +187,21 @@ const ContainerStyles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
     },
-
     card: {
         marginBottom: 0,
     },
-
-
 
     flexRow: {
         display: 'flex',
         flexDirection: 'row',
     },
-
     divLine: {
         borderBottomColor: gray,
         borderBottomWidth: StyleSheet.hairlineWidth,
     },
 
-
     divBlack: {
         backgroundColor: navbarBlack,
     },
-
 });
-
 export default ContainerStyles;
