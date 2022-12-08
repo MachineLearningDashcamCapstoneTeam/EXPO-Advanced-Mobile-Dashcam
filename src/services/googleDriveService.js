@@ -182,7 +182,6 @@ export const getDashcamVideos = async (accessToken) => {
     }
     return response;
   } catch (error) {
-    console.log(error);
     return error;
   }
 };
@@ -191,7 +190,7 @@ const getContentLengthUsingRequestAndBase64 = (base64String) => {
   return Buffer.byteLength(base64String, 'base64');
 };
 
-export const uploadDashcamVideosAndGPSData = async (
+export const uploadDashcamVideosAndGpsData = async (
   accessToken,
   videoAsset,
   videoAssetData,
@@ -222,8 +221,6 @@ export const uploadDashcamVideosAndGPSData = async (
 
         videoAssetData = Buffer.from(videoAssetData, 'base64');
         const fileSize = getContentLengthUsingRequestAndBase64(videoAssetData);
-        console.log('videoLocation', videoLocation);
-        console.log('fileSize', fileSize);
 
         const uploadResponseVideoPut = await axios({
           method: 'PUT',
@@ -276,7 +273,6 @@ export const uploadDashcamVideosAndGPSData = async (
     }
     return response;
   } catch (error) {
-    console.log(error);
     return error;
   }
 };
@@ -330,7 +326,6 @@ export const uploadDashcamVideos = async (accessToken, videoAsset, videoAssetDat
     }
     return response;
   } catch (error) {
-    console.log(error);
     return error;
   }
 };

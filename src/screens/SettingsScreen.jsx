@@ -65,7 +65,13 @@ export default function SettingsScreen({ navigation }) {
     try {
       await AsyncStorage.setItem('AMD_Settings', JSON.stringify(tempSettings))
     } catch (e) {
-      Alert.alert("Unable to save Settings");
+      Alert.alert(
+        'Error',
+        `${err}`,
+        [
+          { text: 'OK' },
+        ]
+      );
     }
   }
 
@@ -80,7 +86,13 @@ export default function SettingsScreen({ navigation }) {
         setSettings(DEFAULT_CAMERA_SETTINGS);
       }
     } catch (err) {
-      Alert.alert('Unable to load Settings')
+      Alert.alert(
+        'Unable to load settings',
+        `${err}`,
+        [
+          { text: 'OK' },
+        ]
+      );
     }
   };
 
@@ -112,9 +124,21 @@ export default function SettingsScreen({ navigation }) {
     try {
       setSettings(DEFAULT_CAMERA_SETTINGS);
       await AsyncStorage.setItem('AMD_Settings', JSON.stringify(DEFAULT_CAMERA_SETTINGS))
-      Alert.alert('Successfully Reset all Setting')
+      Alert.alert(
+        'Success',
+        `Settings have been reset to default.`,
+        [
+          { text: 'OK' },
+        ]
+      );
     } catch (e) {
-      Alert.alert("Unable to reset Settings");
+      Alert.alert(
+        'Error',
+        `Unable to reset settings.`,
+        [
+          { text: 'OK' },
+        ]
+      );
     }
   }
 

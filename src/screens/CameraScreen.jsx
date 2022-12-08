@@ -63,7 +63,13 @@ const CameraScreen = ({ navigation }) => {
       }
     }
     catch (err) {
-      console.error(err);
+      Alert.alert(
+        'Error',
+        `${err}`,
+        [
+          { text: 'OK' },
+        ]
+      );
     }
 
 
@@ -151,7 +157,13 @@ const CameraScreen = ({ navigation }) => {
 
 
     } catch (err) {
-      Alert.alert('Unable to load Settings')
+      Alert.alert(
+        'Unable to load settings',
+        `${err}`,
+        [
+          { text: 'OK' },
+        ]
+      );
     }
   };
 
@@ -159,7 +171,13 @@ const CameraScreen = ({ navigation }) => {
     try {
       await AsyncStorage.setItem('AMD_Settings', JSON.stringify(tempSettings))
     } catch (e) {
-      Alert.alert("Unable to save Settings");
+      Alert.alert(
+        'Error',
+        `${err}`,
+        [
+          { text: 'OK' },
+        ]
+      );
     }
   }
 

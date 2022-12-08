@@ -48,7 +48,13 @@ function HomeScreen({ navigation }) {
         setSettings(DEFAULT_CAMERA_SETTINGS);
       }
     } catch (err) {
-      Alert.alert('Unable to load Settings')
+      Alert.alert(
+        'Unable to load settings',
+        `${err}`,
+        [
+          { text: 'OK' },
+        ]
+      );
     }
   };
 

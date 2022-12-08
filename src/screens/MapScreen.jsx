@@ -57,14 +57,23 @@ const MapScreen = ({ route, navigation }) => {
 
             }
             else {
+                
                 setGeojsonData([]);
                 setLines([]);
                 setMarkers([]);
+
+              
             }
 
         }
         catch (error) {
-            Alert.alert('No GPS Data/file exists');
+            Alert.alert(
+                'Error',
+                `No GPS data exists.`,
+                [
+                  { text: 'OK' },
+                ]
+              );
         }
     };
     useEffect(() => {
@@ -230,7 +239,8 @@ const MapScreen = ({ route, navigation }) => {
 
                 <Portal>
                     <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
-                        <Card style={[GlobalStyles.divDark, GlobalStyles.roundedTop, GlobalStyles.roundedBottom]} elevation={5}>
+                    <Text variant="bodyLarge">Map Styles</Text>
+                        <Card style={[GlobalStyles.divDark, GlobalStyles.roundedTop, GlobalStyles.roundedBottom, GlobalStyles.marginYsm]} elevation={5}>
                             <Card.Content>
                                 <View style={[GlobalStyles.rowContainerWrap, GlobalStyles.divSpaceBetween]}>
                                     {

@@ -21,6 +21,10 @@ const GlobalStyles = StyleSheet.create({
         flex: 1,
        
     },
+    noPadding: {
+        padding: 0,
+    },
+
     statusbarMargin: {
         marginTop: StatusBar.currentHeight
     },
@@ -139,6 +143,26 @@ const GlobalStyles = StyleSheet.create({
     avatarText: {
         flex: 3,
         justifyContent: 'center',
+    },
+
+    marginXsm: {
+        marginHorizontal: 10,
+    },
+    marginXmd: {
+        marginHorizontal: 20,
+    },
+    marginXlg: {
+        marginHorizontal: 30,
+    },
+
+    marginRsm: {
+        marginRight: 10,
+    },
+    marginRmd: {
+        marginRight: 20,
+    },
+    marginRlg: {
+        marginRight: 30,
     },
 
     marginYsm: {

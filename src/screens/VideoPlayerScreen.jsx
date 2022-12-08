@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import * as MediaLibrary from 'expo-media-library';
-import { View,  Alert, ScrollView, Platform } from 'react-native';
-import { Card, Button,  Text, Divider, IconButton, MD3Colors } from 'react-native-paper';
+import { View, Alert, ScrollView, Platform } from 'react-native';
+import { Card, Button, Text, Divider, IconButton, MD3Colors } from 'react-native-paper';
 import { Video } from 'expo-av';
 import { timeStampToDate } from '../utils/fetch-time';
 import { shareAsync } from 'expo-sharing';
@@ -30,7 +30,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
   const [geojsonExists, setGeojsonExists] = useState(false);
   const videoPlayer = useRef(null);
   const [savedFavoriteVideosIds, setSavedFavoriteVideosIds] = useState([]);
-  
+
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
   const [settings, setSettings] = useState(DEFAULT_CAMERA_SETTINGS);
 
@@ -64,7 +64,13 @@ export default function VideoPlayerScreen({ route, navigation }) {
 
       setVideo(videoAsset);
     } catch (err) {
-      Alert.alert('Unable to load Settings');
+      Alert.alert(
+        'Unable to load settings',
+        `${err}`,
+        [
+          { text: 'OK' },
+        ]
+      );
     }
   };
 
@@ -103,7 +109,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
     if (connection.type === 'wifi' || settings.allowUploadWithMobileData) {
       //* Get the video
 
-      const uri = ''
+      let uri = ''
       const platform = Platform.OS;
       if (platform === 'android') {
         uri = videoAsset.uri;
@@ -130,10 +136,21 @@ export default function VideoPlayerScreen({ route, navigation }) {
           GeoJSON
         );
         if (response.status === 200) {
-          Alert.alert('Successfully uploaded video to Google Drive');
+          Alert.alert(
+            'Success',
+            `Successfully uploaded video to Google Drive`,
+            [
+              { text: 'OK'},
+            ]
+          );
         } else {
-          console.log(response);
-          Alert.alert('Unable to upload');
+          Alert.alert(
+            'Unable to Upload Video',
+            `${response}`,
+            [
+              { text: 'OK' },
+            ]
+          );
         }
       } else {
         //* Upload the video without GeoJSON
@@ -143,15 +160,30 @@ export default function VideoPlayerScreen({ route, navigation }) {
           videoAssetData
         );
         if (response.status === 200) {
-          Alert.alert('Successfully uploaded video to Google Drive');
+          Alert.alert(
+            'Success',
+            `Successfully uploaded video to Google Drive`,
+            [
+              { text: 'OK' },
+            ]
+          );
         } else {
-          console.log(response);
-          Alert.alert('Unable to upload');
+          Alert.alert(
+            'Unable to Upload Video',
+            `${response}`,
+            [
+              { text: 'OK' },
+            ]
+          );
         }
       }
     } else {
       Alert.alert(
-        `You are currently on a ${connection.type}! Your settings only allow uploading on a WIFI network.`
+        'Attention',
+        `You are currently on a ${connection.type}! Your settings only allow uploading on a WIFI network.`,
+        [
+          { text: 'OK' },
+        ]
       );
     }
   };
@@ -165,13 +197,16 @@ export default function VideoPlayerScreen({ route, navigation }) {
         if (platform === 'android') {
           await shareAsync(videoAsset.uri);
         } else if (platform === 'ios') {
-          console.log(videoAsset)
           await shareAsync(videoAsset.localUri);
         }
 
       } else {
         Alert.alert(
-          `You are currently on a ${connection.type}! Your settings only allow uploading on a WIFI network.`
+          'Attention',
+          `You are currently on a ${connection.type}! Your settings only allow uploading on a WIFI network.`,
+          [
+            { text: 'OK' },
+          ]
         );
       }
     } catch (err) {
@@ -293,7 +328,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
         useNativeControls
         resizeMode="cover"
         isLooping
-      
+
       />
 
       <View style={[GlobalStyles.flex1, GlobalStyles.divWhite]}>
@@ -313,19 +348,24 @@ export default function VideoPlayerScreen({ route, navigation }) {
 
             <Text variant="bodySmall">{getDotIfGeojsonExists()}</Text>
 
-            <Divider style={[GlobalStyles.marginYsm]} />
+
             <View style={[GlobalStyles.rowContainerWrap, GlobalStyles.marginYsm]}>
               {accessTokenContextValue && (
-                <View style={GlobalStyles.buttonContainer}>
-                  <Button
-                    style={[GlobalStyles.button]}
-                    icon="share"
-                    mode="contained"
-                    onPress={saveToGoogleDrive}
-                  >
-                    Save to Google Drive
-                  </Button>
-                </View>
+                <>
+
+                  <Divider style={[GlobalStyles.marginYsm]} />
+                  <View style={GlobalStyles.buttonContainer}>
+                    <Button
+                      style={[GlobalStyles.button]}
+                      icon="share"
+                      mode="contained"
+                      onPress={saveToGoogleDrive}
+                    >
+                      Save to Google Drive
+                    </Button>
+                  </View>
+                </>
+
               )}
             </View>
           </Card.Content>

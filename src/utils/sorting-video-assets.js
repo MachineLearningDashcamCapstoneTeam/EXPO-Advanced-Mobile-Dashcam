@@ -1,4 +1,4 @@
-import { timeStampToDate , googleDriveFileTimestampToData} from './fetch-time';
+import { timeStampToDate, googleDriveFileTimestampToData } from './fetch-time';
 
 export const groupByTime = (video_array) => {
     try {
@@ -10,8 +10,8 @@ export const groupByTime = (video_array) => {
 
         return temp_array;
     }
-    catch(err){
-       console.log(err);
+    catch (err) {
+        console.log(err);
     }
 
 }
@@ -19,45 +19,47 @@ export const groupByTime = (video_array) => {
 export const groupGoogleFilesByTime = (video_array) => {
     try {
         let temp_array = video_array.reduce((r, a) => {
-            let dateTime =  googleDriveFileTimestampToData(a.createdTime);
+            let dateTime = googleDriveFileTimestampToData(a.createdTime);
             r[dateTime] = [...r[dateTime] || [], a];
             return r;
         }, {});
 
         return temp_array;
     }
-    catch(err){
-       console.log(err);
+    catch (err) {
+        console.log(err);
     }
 
 }
 
 export const sortByTimeRecentToOldest = (video_array) => {
-    const sortedArray = video_array.sort(
-        (objA, objB) => objB.creationTime - objA.creationTime,
-    );
-    return sortedArray
+     
+    const keys = Object.keys(video_array);
+
+    // Sort the array of keys
+    keys.sort().reverse();
+
+    // Create a new object using the sorted array of keys
+    const sortedObj = {};
+    for (const key of keys) {
+        sortedObj[key] = video_array[key];
+    }
+
+    return sortedObj;
 }
 
 export const sortByTimeOldestToRecent = (video_array) => {
-    const sortedArray = video_array.sort(
-        (objA, objB) => objA.creationTime - objB.creationTime,
-    );
-    return sortedArray
+     
+    const keys = Object.keys(video_array);
+
+    // Sort the array of keys
+    keys.sort();
+
+    // Create a new object using the sorted array of keys
+    const sortedObj = {};
+    for (const key of keys) {
+        sortedObj[key] = video_array[key];
+    }
+
+    return sortedObj;
 }
-
-export const sortByLengthShortToLong = (video_array) => {
-    const sortedArray = video_array.sort(
-        (objA, objB) => objA.duration - objB.duration,
-    );
-    return sortedArray
-}
-
-export const sortByLengthLongToShort = (video_array) => {
-    const sortedArray = video_array.sort(
-        (objA, objB) => objB.duration - objA.duration,
-    );
-    return sortedArray
-}
-
-
