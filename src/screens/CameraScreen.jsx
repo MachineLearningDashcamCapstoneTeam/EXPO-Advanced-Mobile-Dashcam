@@ -1,4 +1,4 @@
-import { View, TouchableOpacity} from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
 import { useEffect, useState, useRef, useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Camera, CameraType } from 'expo-camera';
@@ -20,6 +20,7 @@ const CameraScreen = ({ navigation }) => {
   useKeepAwake();
   let cameraRef = useRef();
   const [snackBarVisible, setSnackBarVisible] = useState(false);
+  const [numberOfBatches, setNumberOfBatches] = useState(1);
   const [hasCameraPermission, setHasCameraPermission] = useState();
   const [hasMicrophonePermission, setHasMicrophonePermission] = useState();
   const [hasMediaLibraryPermission, setHasMediaLibraryPermission] = useState();
@@ -27,12 +28,11 @@ const CameraScreen = ({ navigation }) => {
   const [isRecording, setIsRecording] = useState(false);
   const [video, setVideo] = useState();
   const [settings, setSettings] = useState(DEFAULT_CAMERA_SETTINGS);
-  const [wasButtonClicked, setWasButtonClicked] = useState(false);
 
   const [initialLocationTracker, setInitialLocationTracker] = useState();
 
 
-  const saveVideoData = async (recordedVideo, gpsLocations, buttonClicked) => {
+  const saveVideoData = async (recordedVideo, gpsLocations) => {
 
     try {
       //* Get The album and video asset
@@ -47,33 +47,28 @@ const CameraScreen = ({ navigation }) => {
 
       if (expoAlbum) {
         await MediaLibrary.addAssetsToAlbumAsync([videoAsset], expoAlbum.id).then((result) => {
-          
         });
-
 
       } else {
         await MediaLibrary.createAlbumAsync(ALBUM_NAME, videoAsset).then((result) => {
-          
+
         });
-
-
       }
 
       setVideo(null);
-
-      let startAnotherRecording = false;
-      if (buttonClicked) {
-        startAnotherRecording = false;
+      const tempNumberOfBatches = numberOfBatches + 1;
+      setNumberOfBatches(tempNumberOfBatches);
+      if (settings.automaticRecording === true) {
+        if(tempNumberOfBatches < settings.numberOfBatches || tempNumberOfBatches < 2){
+          recordVideo();
+        }
+        else{
+          speak(numberOfBatches);
+        }
+       
       }
       else {
-        startAnotherRecording = settings.automaticRecording;
-      }
-
-      if (startAnotherRecording) {
-        recordVideo();
-      }
-      else{
-        speak();
+        speak(numberOfBatches);
       }
     }
     catch (err) {
@@ -115,7 +110,7 @@ const CameraScreen = ({ navigation }) => {
       //* Set the camera options and made sure exif data is set
       let cameraOptions = {
         quality: settings.resolution,
-        maxDuration: parseInt(settings.recordingLength) * 60,
+        maxDuration: parseInt(settings.recordingLength) * 1,
         mute: false,
         exif: true,
       };
@@ -124,18 +119,18 @@ const CameraScreen = ({ navigation }) => {
         setVideo(recordedVideo);
         setIsRecording(false);
         locSub.remove();
-        saveVideoData(recordedVideo, tempLocations, wasButtonClicked)
+        saveVideoData(recordedVideo, tempLocations)
       }).catch((error) => {
         console.error(error);
       });
     }
     catch (err) {
-      
+
     };
   };
 
-  const speak = () => {
-    const thingToSay = 'Stopped Video Recording. No data corruption detected.';
+  const speak = (numBatches) => {
+    const thingToSay = `No data corruption in ${numBatches} ${numBatches > 1 ? 'Videos' : 'Video'}.`;
     Speech.speak(thingToSay);
   };
 
@@ -168,8 +163,6 @@ const CameraScreen = ({ navigation }) => {
           if (loc.coords.speed >= 5) {
             recordVideo();
           }
-
-
         }
       );
       setInitialLocationTracker(location);
@@ -227,6 +220,7 @@ const CameraScreen = ({ navigation }) => {
     setPermissions();
 
     const unsubscribe = navigation.addListener('focus', () => {
+      setNumberOfBatches(1);
       activateKeepAwake();
     });
     //* Activate keep awake so the screen never turns off
@@ -238,6 +232,7 @@ const CameraScreen = ({ navigation }) => {
       setHasLocationPermission(null);
       setIsRecording(false);
       setVideo(null);
+      setNumberOfBatches(1);
       // setSettings(DEFAULT_CAMERA_SETTINGS);
       //* Deactivate keep awake so the system never keeps running
       deactivateKeepAwake();
@@ -253,10 +248,9 @@ const CameraScreen = ({ navigation }) => {
     return <ErrorCameraCard />
   }
   //* Stop the camera from recording.
-  let stopRecording = () => {
-    setWasButtonClicked(true)
+  let stopRecording = async () => {
     setIsRecording(false);
-    cameraRef.current.stopRecording();
+    await cameraRef.current.stopRecording();
   };
 
 
@@ -267,9 +261,9 @@ const CameraScreen = ({ navigation }) => {
 
 
         </View>
-        <Camera 
-       
-        zoom={settings.zoomLevel} style={[GlobalStyles.camera, GlobalStyles.flex6]} ref={cameraRef} onCameraReady={settings.automaticRecording === true ? recordVideo : null} quality={settings.resolution} type={settings.cameraType === 'Back' ? CameraType.back : CameraType.front} >
+        <Camera
+
+          zoom={settings.zoomLevel} style={[GlobalStyles.camera, GlobalStyles.flex6]} ref={cameraRef} onCameraReady={settings.automaticRecording === true ? recordVideo : null} quality={settings.resolution} type={settings.cameraType === 'Back' ? CameraType.back : CameraType.front} >
 
 
           <View></View>
