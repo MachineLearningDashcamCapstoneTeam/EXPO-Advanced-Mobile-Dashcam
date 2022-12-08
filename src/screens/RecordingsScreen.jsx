@@ -292,12 +292,17 @@ export default function RecordingsScreen({ navigation }) {
 
 
         <ScrollView >
-          <View style={[GlobalStyles.divMain, GlobalStyles.paddingXmd, GlobalStyles.paddingYmd, GlobalStyles.reactNativeShadow]}>
-            <Text variant='titleLarge' style={GlobalStyles.whiteText}>Frequently Asked Questions</Text>
-            <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant="bodySmall">
-              In this section, you will find answers to the most frequently asked questions about the app.
-            </Text>
-          </View>
+        <View style={[GlobalStyles.divMain,  GlobalStyles.paddingXmd, GlobalStyles.paddingYmd]}>
+        <Text variant='titleLarge' style={GlobalStyles.whiteText}>{selectedMenu === 0 ? 'Local Videos' : 'Cloud Videos'}</Text>
+        <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant="bodySmall">
+          {selectedMenu === 0 ? 'Local Videos are recordings and GPS Data saved on the phone. Use filters to swift through the recordings.' : 'Cloud Videos are recordings and GPS Data saved on Google Drive.'}
+        </Text>
+
+      
+        {accessTokenContextValue &&
+          <Button style={[GlobalStyles.button, GlobalStyles.divWhite]} icon="filter" mode="elevated" onPress={() => selectedMenu === 0 ? setSelectedMenu(1) : setSelectedMenu(0)} >{selectedMenu === 0 ? 'Cloud Videos' : 'Local Videos'}</Button>
+        }
+      </View>
 
 
 
