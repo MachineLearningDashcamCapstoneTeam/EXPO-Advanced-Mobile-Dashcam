@@ -54,7 +54,7 @@ export default function RecordingsScreen({ navigation }) {
       );
     }
 
-    if (accessTokenContextValue && googleDriveFiles.length === 0) {
+    if (accessTokenContextValue) {
       getDriveFiles();
     }
   }
@@ -91,9 +91,20 @@ export default function RecordingsScreen({ navigation }) {
 
   //* Sort the videos and reset the initial video list
   const sortByTimeOldToRecent = () => {
+    try {
     const tempList = videos;
     const sortedArray = sortByTimeOldestToRecent(tempList)
     setVideos(sortedArray)
+  }
+  catch (error) {
+    Alert.alert(
+      'Error',
+      `Unable to sort the video list`,
+      [
+        { text: 'OK' },
+      ]
+    );
+  }
   }
   //* Sort the videos and reset the initial video list
   const sortByTimeRecentToOld = () => {
@@ -281,24 +292,16 @@ export default function RecordingsScreen({ navigation }) {
 
 
         <ScrollView >
-          <View style={[GlobalStyles.divMain, GlobalStyles.paddingXmd, GlobalStyles.paddingYmd]}>
-            <Text variant='titleLarge' style={GlobalStyles.whiteText}>{selectedMenu === 0 ? 'Local Videos' : 'Cloud Videos'}</Text>
+          <View style={[GlobalStyles.divMain, GlobalStyles.paddingXmd, GlobalStyles.paddingYmd, GlobalStyles.reactNativeShadow]}>
+            <Text variant='titleLarge' style={GlobalStyles.whiteText}>Frequently Asked Questions</Text>
             <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant="bodySmall">
-              {selectedMenu === 0 ? 'Local Videos are recordings and GPS Data saved on the phone. Use filters to swift through the recordings.' : 'Cloud Videos are recordings and GPS Data saved on Google Drive.'}
+              In this section, you will find answers to the most frequently asked questions about the app.
             </Text>
-
-
-            {accessTokenContextValue &&
-              <Button style={[GlobalStyles.button, GlobalStyles.divWhite]} icon="filter" mode="elevated" onPress={() => selectedMenu === 0 ? setSelectedMenu(1) : setSelectedMenu(0)} >{selectedMenu === 0 ? 'Cloud Videos' : 'Local Videos'}</Button>
-            }
           </View>
 
 
 
-
-
-
-          <View style={GlobalStyles.flex5}>
+          <View style={GlobalStyles.flex1}>
 
 
             <View style={[GlobalStyles.flexRow, GlobalStyles.divSpaceBetween]}>
@@ -310,6 +313,8 @@ export default function RecordingsScreen({ navigation }) {
                   style={[GlobalStyles.borderRoundedHalf, GlobalStyles.divWhite]}
                 />
               </View>
+
+              {selectedMenu === 0 && 
               <View style={[ GlobalStyles.noPadding]}>
                 <Card style={[GlobalStyles.divDark, GlobalStyles.roundedTop, GlobalStyles.roundedBottom]} elevation={5}>
                   <IconButton
@@ -322,6 +327,7 @@ export default function RecordingsScreen({ navigation }) {
 
                 </Card>
               </View>
+}
             </View>
             {videoWidgets()}
           </View>

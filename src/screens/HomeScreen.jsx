@@ -123,7 +123,7 @@ function HomeScreen({ navigation }) {
               <View style={[GlobalStyles.divSpaceBetween, GlobalStyles.flexRow]}>
 
                 <View style={[GlobalStyles.buttonContainer]}>
-                  <Button style={[GlobalStyles.buttonLg, GlobalStyles.divWhite]} icon="cog" mode="outlined" onPress={() => navigation.navigate('Settings')}>
+                  <Button style={[GlobalStyles.buttonLg, GlobalStyles.divWhite]} icon="cog" mode="outlined" onPress={() => navigation.navigate('Setting')}>
                     Settings
                   </Button>
 

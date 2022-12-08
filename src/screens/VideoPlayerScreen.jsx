@@ -42,7 +42,13 @@ export default function VideoPlayerScreen({ route, navigation }) {
       loadFavorites();
       setInitialValues();
     } else {
-      Alert.alert('Media Library Permission is not granted');
+      Alert.alert(
+        'Error',
+        `Unable to access media library. Please check your permissions.`,
+        [
+          { text: 'OK' },
+        ]
+      );
     }
   };
 
@@ -140,7 +146,7 @@ export default function VideoPlayerScreen({ route, navigation }) {
             'Success',
             `Successfully uploaded video to Google Drive`,
             [
-              { text: 'OK'},
+              { text: 'OK' },
             ]
           );
         } else {
@@ -210,7 +216,13 @@ export default function VideoPlayerScreen({ route, navigation }) {
         );
       }
     } catch (err) {
-      Alert.alert(err);
+      Alert.alert(
+        'Error',
+        `${err}`,
+        [
+          { text: 'OK' },
+        ]
+      );
     }
   };
 
@@ -225,23 +237,50 @@ export default function VideoPlayerScreen({ route, navigation }) {
       const tempSavedFavoriteVideosIdsString = JSON.stringify(tempSavedFavoriteVideosIds);
       await AsyncStorage.setItem('FavoriteVideosIds', tempSavedFavoriteVideosIdsString);
       setSavedFavoriteVideosIds([...tempSavedFavoriteVideosIds]);
-      Alert.alert('Successfully Locked Video');
+      Alert.alert(
+        'Success',
+        `Successfully added video to favorites`,
+        [
+          { text: 'OK' },
+        ]
+      );
     }
   };
 
   const deleteVideoFromFavoriteVideos = async (videoAsset, isLocked = null) => {
-    if (isLocked === null) {
-      isLocked = savedFavoriteVideosIds.includes(videoAsset.id);
+    try {
+
+
+      if (isLocked === null) {
+        isLocked = savedFavoriteVideosIds.includes(videoAsset.id);
+      }
+      if (isLocked) {
+        //* Video exists, delete from the favorites list
+        let tempSavedFavoriteVideosIds = savedFavoriteVideosIds;
+        tempSavedFavoriteVideosIds = tempSavedFavoriteVideosIds.filter((id) => id !== videoAsset.id);
+        const tempSavedFavoriteVideosIdsString = JSON.stringify(tempSavedFavoriteVideosIds);
+        await AsyncStorage.setItem('FavoriteVideosIds', tempSavedFavoriteVideosIdsString);
+        setSavedFavoriteVideosIds([...tempSavedFavoriteVideosIds]);
+        Alert.alert(
+          'Success',
+          `Successfully removed video from favorites`,
+          [
+            { text: 'OK' },
+          ]
+        );
+      }
     }
-    if (isLocked) {
-      //* Video exists, delete from the favorites list
-      let tempSavedFavoriteVideosIds = savedFavoriteVideosIds;
-      tempSavedFavoriteVideosIds = tempSavedFavoriteVideosIds.filter((id) => id !== videoAsset.id);
-      const tempSavedFavoriteVideosIdsString = JSON.stringify(tempSavedFavoriteVideosIds);
-      await AsyncStorage.setItem('FavoriteVideosIds', tempSavedFavoriteVideosIdsString);
-      setSavedFavoriteVideosIds([...tempSavedFavoriteVideosIds]);
-      Alert.alert('Successfully Unlocked Video');
+    catch (err) {
+      Alert.alert(
+        'Error',
+        `${err}`,
+        [
+          { text: 'OK' },
+        ]
+      );
+
     }
+
   };
   const deleteVideo = (videoAsset, isLocked = null) => {
     if (isLocked === null) {
@@ -253,14 +292,32 @@ export default function VideoPlayerScreen({ route, navigation }) {
         if (success) {
           //* Also delete the video from favorites
           deleteVideoFromFavoriteVideos(videoAsset);
-          Alert.alert('Video successfully deleted');
+          Alert.alert(
+            'Success',
+            `Successfully deleted video`,
+            [
+              { text: 'OK' },
+            ]
+          );
           navigation.goBack();
         } else {
-          Alert.alert('Failed to delete video');
+          Alert.alert(
+            'Error',
+            `Unable to delete video`,
+            [
+              { text: 'OK' },
+            ]
+          );
         }
       });
     } else {
-      Alert.alert('Video is Locked');
+      Alert.alert(
+        'Attention',
+        `The video is locked and cannot be deleted`,
+        [
+          { text: 'OK' },
+        ]
+      );
     }
   };
 

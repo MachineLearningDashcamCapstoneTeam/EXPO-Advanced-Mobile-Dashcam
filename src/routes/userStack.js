@@ -38,6 +38,15 @@ function Recordings() {
   );
 }
 
+function Logging() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name='Loggings' component={LoggingScreen} options={{ headerShown: false }}/>
+      <Stack.Screen name='Help' component={HelpScreen} />
+    </Stack.Navigator>
+  );
+}
+
 //* The user stack contains all the screen that users can access
 //* An authentication stack can be added if we need to setup a login and sign up system
 export default function UserStack() {
@@ -76,7 +85,7 @@ export default function UserStack() {
           <Tab.Screen name="Camera" component={CameraScreen}  options={{ headerShown: false }}/>
           <Tab.Screen name='Videos' component={Recordings} options={{ headerShown: false }} />
           <Tab.Screen name='Settings' component={SettingsScreen}  options={{ headerShown: false }}/>
-          <Tab.Screen name='Logging' component={LoggingScreen} options={{ headerShown: false }} />
+          <Tab.Screen name='Logging' component={Logging} options={{ headerShown: false }} />
         </Tab.Navigator>
       </NavigationContainer>
     </AccessTokenContextProvider>

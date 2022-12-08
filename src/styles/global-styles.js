@@ -184,11 +184,14 @@ const GlobalStyles = StyleSheet.create({
         backgroundColor: main,
     },
     reactNativeShadow: {
-        shadowColor: black,
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.8,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 5 },
+        shadowOpacity: 0.0,
         shadowRadius: 1,
-        elevation: 5
+        elevation: 10, // changed to a greater value
+        borderColor: 'black',
+        borderWidth: 1,
+        zIndex: 99, // added zIndex
     },
     divSmoke: {
         backgroundColor: smoke,

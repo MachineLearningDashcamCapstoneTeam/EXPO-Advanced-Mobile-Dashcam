@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import {  View, ScrollView } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { Card,  Text,  Divider } from 'react-native-paper';
+import { Card, Text, Divider, Button } from 'react-native-paper';
 
 import GlobalStyles from '../styles/global-styles';
 
-const LoggingScreen = () => {
+const LoggingScreen = ({navigation}) => {
     const [loggingMessages, setLoggingMessages] = useState([]);
 
     const getLoggingMessages = async () => {
@@ -87,12 +87,16 @@ const LoggingScreen = () => {
                     <Text style={[GlobalStyles.paddingYsm, GlobalStyles.whiteText]} variant="bodySmall">
                         All logging messages are saved here. Use the button below to clear all messages.
                     </Text>
+
+                    <Button style={GlobalStyles.button} icon="frequently-asked-questions" mode="elevated" onPress={() => navigation.navigate('Help')} >FAQs</Button>
                 </View>
 
 
                 <View style={[GlobalStyles.flex1]}>
                     {renderLoggingMessages()}
                 </View>
+
+               
             </ScrollView>
         </View>
     );

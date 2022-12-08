@@ -21,7 +21,7 @@ const theme = {
     disabled: '#a1b2c3',
     placeholder: '#a1b2c3',
     backdrop: '#142D5E',
-    notification: '#f13a59',
+    notification: '#142D5E',
     
 
   },
